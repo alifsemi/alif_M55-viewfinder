@@ -1,0 +1,37 @@
+solution:
+  misc:
+    - C:
+      - -std=c99
+      - -Og
+      - -fdata-sections
+      - -mfloat-abi=hard
+    - Link:
+      - --specs=nosys.specs
+      - --entry=Reset_Handler
+      - -Wl,-Map=.map,--cref,-print-memory-usage,--gc-sections,--no-warn-rwx-segments
+      - -mfloat-abi=hard
+        # generate linker map
+        # output a cross reference table
+        # print memory usage to console
+        # exclude unused sections from the iamge
+        # suppress executable write segment warnings (used for ITCM)
+    - Library:
+      - -lm
+  target-types:
+    - device: Alif Semiconductor::AE722F80F55D5AS:M55_HE
+      type: HE
+      compiler: GCC
+      debug: "on"
+      define:
+        - "CORE_M55_HE"
+    - device: Alif Semiconductor::AE722F80F55D5AS:M55_HP
+      type: HP
+      compiler: GCC
+      debug: "on"
+      define:
+        - "CORE_M55_HP"
+  packs:
+    - pack: AlifSemiconductor::Ensemble@0.9.6
+    - pack: ARM::CMSIS
+  projects:
+    - project: cproject.yaml

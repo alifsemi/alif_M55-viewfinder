@@ -1,0 +1,71 @@
+project:
+  groups:
+    - group: App
+      files:
+        - file: app/main.c
+        - file: app/bayer2rgb.c
+          misc:
+            - C:
+              - -O2
+        - file: app/color_correction.c
+          misc:
+            - C:
+              - -O2
+
+        - file: app/gcc_M55_HE.ld
+          for-context: +HE
+        - file: app/gcc_M55_HP.ld
+          for-context: +HP
+    - group: Board
+      files:
+        - file: libs/board/devkit_gen2/board_init.c
+   #       for-context: .devkit_gen2
+   #     - file: libs/board/appkit_gen2/board_init.c
+   #       for-context: .appkit_gen2
+  add-path:
+    - app/
+    - libs/board/
+  components:
+    # needed for Alif Ensemble support
+    - component: AlifSemiconductor::Device:Startup&C Startup
+    - component: ARM::CMSIS:CORE@5.6.0
+    
+    # peripheral drivers & middleware, uncomment as needed
+    # - component: AlifSemiconductor::Device:SOC Peripherals:ADC
+    # - component: AlifSemiconductor::Device:SOC Peripherals:Analog Config
+    - component: AlifSemiconductor::Device:SOC Peripherals:CPI
+    - component: AlifSemiconductor::Device:SOC Peripherals:CDC
+    # - component: AlifSemiconductor::Device:SOC Peripherals:CRC
+    # - component: AlifSemiconductor::Device:SOC Peripherals:Comparator
+    # - component: AlifSemiconductor::Device:SOC Peripherals:DAC
+    # - component: AlifSemiconductor::Device:SOC Peripherals:DMA
+    # - component: AlifSemiconductor::Device:SOC Peripherals:Ethernet MAC
+    - component: AlifSemiconductor::Device:SOC Peripherals:GPIO
+    # - component: AlifSemiconductor::Device:SOC Peripherals:HWSEM
+    # - component: AlifSemiconductor::Device:SOC Peripherals:I2S
+    - component: AlifSemiconductor::Device:SOC Peripherals:I2C
+    # - component: AlifSemiconductor::Device:SOC Peripherals:I3C
+    # - component: AlifSemiconductor::Device:SOC Peripherals:LPTIMER
+    - component: AlifSemiconductor::Device:SOC Peripherals:MIPI CSI2
+    - component: AlifSemiconductor::Device:SOC Peripherals:MIPI DSI
+    # - component: AlifSemiconductor::Device:SOC Peripherals:MRAM Flash
+    # - component: AlifSemiconductor::Device:SOC Peripherals:OSPI Controller
+    - component: AlifSemiconductor::Device:SOC Peripherals:PINCONF
+    # - component: AlifSemiconductor::Device:SOC Peripherals:RTC
+    # - component: AlifSemiconductor::Device:SOC Peripherals:SPI
+    # - component: AlifSemiconductor::Device:SOC Peripherals:USART
+    # - component: AlifSemiconductor::Device:SOC Peripherals:UTIMER
+    # - component: AlifSemiconductor::Device:SOC Peripherals:WDT
+    
+    # - component: AlifSemiconductor::Device:OSPI XIP:core
+    # - component: AlifSemiconductor::Device:OSPI XIP:utility
+    # - component: AlifSemiconductor::Device:SE Services:MHU Driver
+    # - component: AlifSemiconductor::Device:SE Services:SE RunTime services&Lib
+    # - component: AlifSemiconductor::Device:SE Services:SE RunTime services&Source
+
+    # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
+    - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
+    # - component: AlifSemiconductor::BSP:External peripherals:Ethernet PHY
+    # - component: AlifSemiconductor::BSP:External peripherals:GT911 Touch Controller
+    - component: AlifSemiconductor::BSP:External peripherals:ILI9806E LCD panel
+    # - component: AlifSemiconductor::BSP:External peripherals:OSPI Flash ISSI

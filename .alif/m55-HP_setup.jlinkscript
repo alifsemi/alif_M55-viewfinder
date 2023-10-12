@@ -1,0 +1,18 @@
+///-----------------------------------------------------------------------------
+/// @file    b0_hp_jlink_patch.jlinkscript
+/// @brief   Disable WARM_RST handshakes in the PPU to fix resets through AIRCR
+///-----------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// SetupTarget()
+// If present, called after InitTarget() and after general debug connect
+// sequence has been performed by J-Link. Usually used for more high-level CPU
+// debug setup like writing certain memory locations, initializing PLL for
+// faster download etc.
+
+int SetupTarget(void)
+{
+  JLINK_MEM_WriteU32(0x1A600024, 0);
+
+  return 0;
+}

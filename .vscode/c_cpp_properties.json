@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "name": "HE",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+
+            "compileCommands": "${workspaceFolder}/tmp/cproject/HE/compile_commands.json"
+        },
+        {
+            "name": "HP",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+
+            "compileCommands": "${workspaceFolder}/tmp/cproject/HP/compile_commands.json"
+        }
+    ],
+    "version": 4
+}
