@@ -31,7 +31,7 @@ solution:
       define:
         - "CORE_M55_HP"
   packs:
-    - pack: AlifSemiconductor::Ensemble@1.0.0-rc4
+    - pack: AlifSemiconductor::Ensemble@1.0.0
     - pack: ARM::CMSIS
   projects:
     - project: cproject.yaml
