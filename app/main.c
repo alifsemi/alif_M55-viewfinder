@@ -12,10 +12,10 @@
 
 #include "Driver_GPIO.h"
 #include "Driver_CPI.h"    // Camera
-#include "Camera_Common.h"
 #include "Driver_CDC200.h" // Display
 #include "board.h"
 #include "bayer.h"
+#include "power.h"
 
 // From color_correction.c
 void white_balance(int ml_width, int ml_height, const uint8_t *sp, uint8_t *dp);
@@ -174,9 +174,23 @@ int display_init()
     return ret;
 }
 
+void clock_init()
+{
+    enable_cgu_clk38p4m();
+    enable_cgu_clk160m();
+    enable_cgu_clk100m();
+    enable_cgu_clk20m();
+}
+
 void main (void)
 {
     BOARD_Pinmux_Init();
+
+    /* Enable MIPI power. TODO: To be changed to aiPM call */
+    enable_mipi_dphy_power();
+    disable_mipi_dphy_isolation();
+
+    clock_init();
 
     // Init camera
     int ret = camera_init();
