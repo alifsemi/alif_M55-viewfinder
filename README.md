@@ -3,6 +3,8 @@
 This application is built on VSCode Getting Started Template (alif_vscode-template)
 The default hardware is Gen 2 Ensemble DevKit with camera module and display.
 
+**NOTE:** Ensemble DevKits do not ship with a camera and display by default. Please contact Alif to request. Eventually this application is targeted for the Gen2 ML/AI Application Kit when it is available.
+
 Demo application initializes camera and display modules and starts capturing frames
 in a single-frame mode. Each captured frame is processed through bayer-to-RGB and
 white balance before updating the frame to display buffer.
