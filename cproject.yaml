@@ -32,26 +32,31 @@ project:
     
     # peripheral drivers & middleware, uncomment as needed
     # - component: AlifSemiconductor::Device:SOC Peripherals:ADC
-    # - component: AlifSemiconductor::Device:SOC Peripherals:Analog Config
-    - component: AlifSemiconductor::Device:SOC Peripherals:CPI
+    # - component: AlifSemiconductor::Device:SOC Peripherals:CAN-FD
     - component: AlifSemiconductor::Device:SOC Peripherals:CDC
+    - component: AlifSemiconductor::Device:SOC Peripherals:CPI
     # - component: AlifSemiconductor::Device:SOC Peripherals:CRC
-    # - component: AlifSemiconductor::Device:SOC Peripherals:Comparator
     # - component: AlifSemiconductor::Device:SOC Peripherals:DAC
     # - component: AlifSemiconductor::Device:SOC Peripherals:DMA
     # - component: AlifSemiconductor::Device:SOC Peripherals:Ethernet MAC
     - component: AlifSemiconductor::Device:SOC Peripherals:GPIO
+    # - component: AlifSemiconductor::Device:SOC Peripherals:HSCMP
     # - component: AlifSemiconductor::Device:SOC Peripherals:HWSEM
-    # - component: AlifSemiconductor::Device:SOC Peripherals:I2S
     - component: AlifSemiconductor::Device:SOC Peripherals:I2C
+    # - component: AlifSemiconductor::Device:SOC Peripherals:I2C_I3C
+    # - component: AlifSemiconductor::Device:SOC Peripherals:I2S
     # - component: AlifSemiconductor::Device:SOC Peripherals:I3C
+    # - component: AlifSemiconductor::Device:SOC Peripherals:LPI2C
     # - component: AlifSemiconductor::Device:SOC Peripherals:LPTIMER
+    # - component: AlifSemiconductor::Device:SOC Peripherals:MHU
     - component: AlifSemiconductor::Device:SOC Peripherals:MIPI CSI2
     - component: AlifSemiconductor::Device:SOC Peripherals:MIPI DSI
-    # - component: AlifSemiconductor::Device:SOC Peripherals:MRAM Flash
-    # - component: AlifSemiconductor::Device:SOC Peripherals:OSPI Controller
+    # - component: AlifSemiconductor::Device:SOC Peripherals:MRAM
+    # - component: AlifSemiconductor::Device:SOC Peripherals:OSPI
+    # - component: AlifSemiconductor::Device:SOC Peripherals:PDM
     - component: AlifSemiconductor::Device:SOC Peripherals:PINCONF
     # - component: AlifSemiconductor::Device:SOC Peripherals:RTC
+    # - component: AlifSemiconductor::Device:SOC Peripherals:SDMMC
     # - component: AlifSemiconductor::Device:SOC Peripherals:SPI
     # - component: AlifSemiconductor::Device:SOC Peripherals:USART
     # - component: AlifSemiconductor::Device:SOC Peripherals:UTIMER
