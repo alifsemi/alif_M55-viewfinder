@@ -48,7 +48,7 @@ project:
     # - component: AlifSemiconductor::Device:SOC Peripherals:I3C
     # - component: AlifSemiconductor::Device:SOC Peripherals:LPI2C
     # - component: AlifSemiconductor::Device:SOC Peripherals:LPTIMER
-    # - component: AlifSemiconductor::Device:SOC Peripherals:MHU
+    - component: AlifSemiconductor::Device:SOC Peripherals:MHU
     - component: AlifSemiconductor::Device:SOC Peripherals:MIPI CSI2
     - component: AlifSemiconductor::Device:SOC Peripherals:MIPI DSI
     # - component: AlifSemiconductor::Device:SOC Peripherals:MRAM
@@ -64,9 +64,8 @@ project:
     
     # - component: AlifSemiconductor::Device:OSPI XIP:core
     # - component: AlifSemiconductor::Device:OSPI XIP:utility
-    # - component: AlifSemiconductor::Device:SE Services:MHU Driver
-    # - component: AlifSemiconductor::Device:SE Services:SE RunTime services&Lib
-    # - component: AlifSemiconductor::Device:SE Services:SE RunTime services&Source
+    - component: AlifSemiconductor::Device:SE runtime Services:core
+    - component: AlifSemiconductor::Device:SE runtime Services:Initialization Helper
 
     # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
     - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0

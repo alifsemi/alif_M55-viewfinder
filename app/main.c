@@ -17,6 +17,8 @@
 #include "bayer.h"
 #include "power.h"
 
+#include "se_services_port.h"
+
 // From color_correction.c
 void white_balance(int ml_width, int ml_height, const uint8_t *sp, uint8_t *dp);
 
@@ -176,15 +178,27 @@ int display_init()
 
 void clock_init()
 {
-    enable_cgu_clk38p4m();
-    enable_cgu_clk160m();
-    enable_cgu_clk100m();
-    enable_cgu_clk20m();
+    uint32_t service_error_code = 0;
+    /* Enable Clocks */
+    uint32_t error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_CLK_100M, true, &service_error_code);
+    if(error_code || service_error_code){
+        printf("SE: 100MHz clock enable error_code=%u se_error_code=%u\n", error_code, service_error_code);
+        return;
+    }
+
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_HFOSC, true, &service_error_code);
+    if(error_code || service_error_code){
+        printf("SE: HFOSC enable error_code=%u se_error_code=%u\n", error_code, service_error_code);
+        return;
+    }
 }
 
 void main (void)
 {
     BOARD_Pinmux_Init();
+
+    /* Initialize the SE services */
+    se_services_port_init();
 
     /* Enable MIPI power. TODO: To be changed to aiPM call */
     enable_mipi_dphy_power();
@@ -217,6 +231,7 @@ void main (void)
         if(ret == ARM_DRIVER_OK) {
             // Wait for capture
             while (!(g_cb_events & CAM_CB_EVENT_CAPTURE_STOPPED)) {
+                __WFI();
             }
 
             dc1394_bayer_Simple(camera_buffer, image_buffer, CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT, BAYER_FORMAT);
