@@ -22,8 +22,17 @@
 // From color_correction.c
 void white_balance(int ml_width, int ml_height, const uint8_t *sp, uint8_t *dp);
 
-// Disable printf
+// Check if UART trace is disabled
+#if !defined(DISABLE_UART_TRACE)
+#include <stdio.h>
+#include "uart_tracelib.h"
+
+static void uart_callback(uint32_t event)
+{
+}
+#else
 #define printf(fmt, ...) (0)
+#endif
 
 #define BAYER_FORMAT DC1394_COLOR_FILTER_GRBG
 
@@ -206,6 +215,10 @@ void main (void)
 
     clock_init();
 
+#if !defined(DISABLE_UART_TRACE)
+    tracelib_init(NULL, uart_callback);
+#endif
+
     // Init camera
     int ret = camera_init();
     if (ret != ARM_DRIVER_OK) {
@@ -258,14 +271,3 @@ void main (void)
         __WFI();
     }
 }
-
-void SysTick_Handler (void)
-{
-}
-
-// Stubs to suppress missing stdio definitions for nosys
-#define TRAP_RET_ZERO  {__BKPT(0); return 0;}
-int _close(int val) TRAP_RET_ZERO
-int _lseek(int val0, int val1, int val2) TRAP_RET_ZERO
-int _read(int val0, char * val1, int val2) TRAP_RET_ZERO
-int _write(int val0, char * val1, int val2) TRAP_RET_ZERO
