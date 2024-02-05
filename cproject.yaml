@@ -19,12 +19,17 @@ project:
     - group: Board
       files:
         - file: libs/board/devkit_gen2/board_init.c
+        - file: libs/common_app_utils/logging/uart_tracelib.c
+        - file: libs/common_app_utils/logging/retarget.c
+        - file: libs/common_app_utils/fault_handler/fault_handler.c
    #       for-context: .devkit_gen2
    #     - file: libs/board/appkit_gen2/board_init.c
    #       for-context: .appkit_gen2
   add-path:
     - app/
     - libs/board/
+    - libs/common_app_utils/logging
+    - libs/common_app_utils/fault_handler
   components:
     # needed for Alif Ensemble support
     - component: AlifSemiconductor::Device:Startup&C Startup
@@ -58,7 +63,7 @@ project:
     # - component: AlifSemiconductor::Device:SOC Peripherals:RTC
     # - component: AlifSemiconductor::Device:SOC Peripherals:SDMMC
     # - component: AlifSemiconductor::Device:SOC Peripherals:SPI
-    # - component: AlifSemiconductor::Device:SOC Peripherals:USART
+    - component: AlifSemiconductor::Device:SOC Peripherals:USART
     # - component: AlifSemiconductor::Device:SOC Peripherals:UTIMER
     # - component: AlifSemiconductor::Device:SOC Peripherals:WDT
     
