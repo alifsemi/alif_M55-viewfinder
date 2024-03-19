@@ -19,12 +19,10 @@ project:
     - group: Board
       files:
         - file: libs/board/devkit_gen2/board_init.c
+        - file: libs/board/appkit_gen2/board_init.c
         - file: libs/common_app_utils/logging/uart_tracelib.c
         - file: libs/common_app_utils/logging/retarget.c
         - file: libs/common_app_utils/fault_handler/fault_handler.c
-   #       for-context: .devkit_gen2
-   #     - file: libs/board/appkit_gen2/board_init.c
-   #       for-context: .appkit_gen2
   add-path:
     - app/
     - libs/board/
@@ -33,7 +31,7 @@ project:
   components:
     # needed for Alif Ensemble support
     - component: AlifSemiconductor::Device:Startup&C Startup
-    - component: ARM::CMSIS:CORE@5.6.0
+    - component: ARM::CMSIS:CORE
     
     # peripheral drivers & middleware, uncomment as needed
     # - component: AlifSemiconductor::Device:SOC Peripherals:ADC
