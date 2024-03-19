@@ -3,4 +3,4 @@
 	url = https://github.com/alifsemi/alif_boardlib.git
 [submodule "libs/common_app_utils"]
 	path = libs/common_app_utils
-	url = git@github.com:alifsemi/common_app_utils_DEV.git
+	url = https://github.com/alifsemi/alif_common-app-utils.git
