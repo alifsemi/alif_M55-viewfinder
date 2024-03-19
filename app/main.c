@@ -17,11 +17,22 @@
 #include "bayer.h"
 #include "power.h"
 
+#include "se_services_port.h"
+
 // From color_correction.c
 void white_balance(int ml_width, int ml_height, const uint8_t *sp, uint8_t *dp);
 
-// Disable printf
+// Check if UART trace is disabled
+#if !defined(DISABLE_UART_TRACE)
+#include <stdio.h>
+#include "uart_tracelib.h"
+
+static void uart_callback(uint32_t event)
+{
+}
+#else
 #define printf(fmt, ...) (0)
+#endif
 
 #define BAYER_FORMAT DC1394_COLOR_FILTER_GRBG
 
@@ -176,21 +187,37 @@ int display_init()
 
 void clock_init()
 {
-    enable_cgu_clk38p4m();
-    enable_cgu_clk160m();
-    enable_cgu_clk100m();
-    enable_cgu_clk20m();
+    uint32_t service_error_code = 0;
+    /* Enable Clocks */
+    uint32_t error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_CLK_100M, true, &service_error_code);
+    if(error_code || service_error_code){
+        printf("SE: 100MHz clock enable error_code=%u se_error_code=%u\n", error_code, service_error_code);
+        return;
+    }
+
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_HFOSC, true, &service_error_code);
+    if(error_code || service_error_code){
+        printf("SE: HFOSC enable error_code=%u se_error_code=%u\n", error_code, service_error_code);
+        return;
+    }
 }
 
 void main (void)
 {
     BOARD_Pinmux_Init();
 
+    /* Initialize the SE services */
+    se_services_port_init();
+
     /* Enable MIPI power. TODO: To be changed to aiPM call */
     enable_mipi_dphy_power();
     disable_mipi_dphy_isolation();
 
     clock_init();
+
+#if !defined(DISABLE_UART_TRACE)
+    tracelib_init(NULL, uart_callback);
+#endif
 
     // Init camera
     int ret = camera_init();
@@ -217,6 +244,7 @@ void main (void)
         if(ret == ARM_DRIVER_OK) {
             // Wait for capture
             while (!(g_cb_events & CAM_CB_EVENT_CAPTURE_STOPPED)) {
+                __WFI();
             }
 
             dc1394_bayer_Simple(camera_buffer, image_buffer, CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT, BAYER_FORMAT);
@@ -243,14 +271,3 @@ void main (void)
         __WFI();
     }
 }
-
-void SysTick_Handler (void)
-{
-}
-
-// Stubs to suppress missing stdio definitions for nosys
-#define TRAP_RET_ZERO  {__BKPT(0); return 0;}
-int _close(int val) TRAP_RET_ZERO
-int _lseek(int val0, int val1, int val2) TRAP_RET_ZERO
-int _read(int val0, char * val1, int val2) TRAP_RET_ZERO
-int _write(int val0, char * val1, int val2) TRAP_RET_ZERO

@@ -39,7 +39,6 @@
                 "command": [
                 "cbuild cproject+${command:cpptools.activeConfigName}.cprj -c;",
                 "rm -Recurse -Force ./out;",
-                "rm -Recurse -Force ./RTE;",
                 "rm -Recurse -Force ./tmp;",
                 "rm -Recurse -Force *.yml;",
                 "rm -Recurse -Force *.cprj;",         
@@ -49,7 +48,6 @@
                 "command": [
                 "cbuild cproject+${command:cpptools.activeConfigName}.cprj -c;",
                 "rm -rf ./out;",
-                "rm -rf ./RTE;",
                 "rm -rf ./tmp;",
                 "rm -rf *.yml;",
                 "rm -rf *.cprj;",         
