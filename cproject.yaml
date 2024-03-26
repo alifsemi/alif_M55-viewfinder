@@ -1,17 +1,14 @@
 project:
   groups:
     - group: App
+      misc:
+        - C:
+          - -O2
       files:
         - file: app/main.c
         - file: app/bayer2rgb.c
-          misc:
-            - C:
-              - -O2
+        - file: app/image_processing.c
         - file: app/color_correction.c
-          misc:
-            - C:
-              - -O2
-
         - file: app/gcc_M55_HE.ld
           for-context: +HE
         - file: app/gcc_M55_HP.ld
