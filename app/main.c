@@ -244,7 +244,7 @@ void main (void)
     }
 
     // Enable PMU cycle counter for measurements
-    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+    DCB->DEMCR |= DCB_DEMCR_TRCENA_Msk;
     ARM_PMU_Enable();
     ARM_PMU_CNTR_Enable(PMU_CNTENSET_CCNTR_ENABLE_Msk);
 
