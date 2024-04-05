@@ -28,5 +28,5 @@ and press F1 and start choosing from the preset build tasks.
 2. F1 --> Tasks:Run Task --> Generate and Build with csolution + cbuild
 3. F1 --> Tasks:Run Task --> Program with Security Toolkit
 
-## Testing a camera module driver outside of Ensemble CMSIS pack
-[Camera module driver howto](doc/camera_module.md)
+## Testing a custom camera module driver
+[Custom camera module driver howto](doc/camera_module.md)
