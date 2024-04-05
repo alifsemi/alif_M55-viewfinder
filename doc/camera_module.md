@@ -60,6 +60,7 @@ int32_t CAM123_Uninit(void)
 
 Then provide the needed CSI configuration information and register the sensor with the CAMERA_SENSOR macro.
 In the CSI_INFO struct you need to define the used MIPI CSI clock frequency, data type and virtual channel identifier.
+
 Note that it is possible to override the CPI block color mode, how the data is written to the camera_buffer by the CPI when calling CaptureFrame(camera_buffer);
 See table cpi_data_mode_settings in Driver_MIPI_CSI2.c
 For more details see the [datasheets](https://alifsemi.com/support/datasheets/ensemble).
@@ -110,4 +111,5 @@ CAMERA_SENSOR(CAM123_camera_sensor)
 ```
 
 Adjust the sizes of camera_buffer and image_buffer in viewfinder main.c according to camera resolution and format.
+
 Note that viewfinder example does 8-bit Bayer conversion by default and you may need to adapt or skip the routine depending on your camera output format.
