@@ -60,27 +60,8 @@ int32_t CAM123_Uninit(void)
 
 Then provide the needed CSI configuration information and register the sensor with the CAMERA_SENSOR macro.
 In the CSI_INFO struct you need to define the used MIPI CSI clock frequency, data type and virtual channel identifier.
-Note that it is possible to override the CPI block color mode. See table cpi_data_mode_settings in Driver_MIPI_CSI2.c
-
-```
-/* CSI, CPI related Data mode settings table */
-static const CSI_CPI_DATA_MODE_SETTINGS cpi_data_mode_settings[] =
-{
-    {CSI_DT_RAW6, CSI_IPI_COLOR_COM_TYPE_COLOR16, CPI_COLOR_MODE_CONFIG_IPI16_RAW6, CPI_DATA_MODE_BIT_8, 8},
-    {CSI_DT_RAW7, CSI_IPI_COLOR_COM_TYPE_COLOR16, CPI_COLOR_MODE_CONFIG_IPI16_RAW7, CPI_DATA_MODE_BIT_8, 8},
-    {CSI_DT_RAW8, CSI_IPI_COLOR_COM_TYPE_COLOR16, CPI_COLOR_MODE_CONFIG_IPI16_RAW8, CPI_DATA_MODE_BIT_8, 8},
-    {CSI_DT_RAW10, CSI_IPI_COLOR_COM_TYPE_COLOR16, CPI_COLOR_MODE_CONFIG_IPI16_RAW10, CPI_DATA_MODE_BIT_16, 10},
-    {CSI_DT_RAW12, CSI_IPI_COLOR_COM_TYPE_COLOR16, CPI_COLOR_MODE_CONFIG_IPI16_RAW12, CPI_DATA_MODE_BIT_16, 12},
-    {CSI_DT_RAW14, CSI_IPI_COLOR_COM_TYPE_COLOR16, CPI_COLOR_MODE_CONFIG_IPI16_RAW14, CPI_DATA_MODE_BIT_16, 14},
-    {CSI_DT_RAW16, CSI_IPI_COLOR_COM_TYPE_COLOR16, CPI_COLOR_MODE_CONFIG_IPI16_RAW16, CPI_DATA_MODE_BIT_16, 16},
-    {CSI_DT_RGB444, CSI_IPI_COLOR_COM_TYPE_COLOR48, CPI_COLOR_MODE_CONFIG_IPI48_RGB444, CPI_DATA_MODE_BIT_16, 16},
-    {CSI_DT_RGB555, CSI_IPI_COLOR_COM_TYPE_COLOR48, CPI_COLOR_MODE_CONFIG_IPI48_RGB555, CPI_DATA_MODE_BIT_16, 16},
-    {CSI_DT_RGB565, CSI_IPI_COLOR_COM_TYPE_COLOR48, CPI_COLOR_MODE_CONFIG_IPI48_RGB565, CPI_DATA_MODE_BIT_16, 16},
-    {CSI_DT_RGB666, CSI_IPI_COLOR_COM_TYPE_COLOR48, CPI_COLOR_MODE_CONFIG_IPI48_RGB666, CPI_DATA_MODE_BIT_32, 18},
-    {CSI_DT_RGB888, CSI_IPI_COLOR_COM_TYPE_COLOR48, CPI_COLOR_MODE_CONFIG_IPI48_XRGB888, CPI_DATA_MODE_BIT_32, 24},
-};
-```
-
+Note that it is possible to override the CPI block color mode, how the data is written to the camera_buffer by the CPI when calling CaptureFrame(camera_buffer);
+See table cpi_data_mode_settings in Driver_MIPI_CSI2.c
 For more details see the [datasheets](https://alifsemi.com/support/datasheets/ensemble).
 And Camera Interfaces in [Hardware reference manual](https://alifsemi.com/support/reference-manuals).
 
