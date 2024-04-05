@@ -23,7 +23,30 @@ And add it to build in **cproject.yaml**
 - file: app/camera_module.c
 ```
 
-For a new camera module "CAM123" you need to provide the CSI configuration information and implement the Init(), Uninit(), Start(), Stop() and Control() routines and register the sensor with the CAMERA_SENSOR macro.
+For a new camera module "CAM123" you need to implement the Init(), Uninit(), Start(), Stop() and Control() routines
+```
+int32_t CAM123_Init(void)
+{
+}
+
+int32_t CAM123_Start(void)
+{
+}
+
+int32_t CAM123_Stop(void)
+{
+}
+
+int32_t CAM123_Control(uint32_t control, uint32_t arg)
+{
+}
+
+int32_t CAM123_Uninit(void)
+{
+}
+```
+
+Then provide the needed CSI configuration information and register the sensor with the CAMERA_SENSOR macro.
 
 ```
 /**
