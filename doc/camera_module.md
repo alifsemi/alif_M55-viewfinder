@@ -23,7 +23,7 @@ And add it to build in **cproject.yaml**
 - file: app/camera_module.c
 ```
 
-For a new camera module "CAM123" you need to implement the Init(), Uninit(), Start(), Stop() and Control() routines
+For a new camera module "CAM123" you need to implement the **Init()**, **Uninit()**, **Start()**, **Stop()** and **Control()** routines
 ```
 int32_t CAM123_Init(void)
 {
@@ -58,11 +58,12 @@ int32_t CAM123_Uninit(void)
 }
 ```
 
-Then provide the needed CSI configuration information and register the sensor with the CAMERA_SENSOR macro.
-In the CSI_INFO struct you need to define the used MIPI CSI clock frequency, data type and virtual channel identifier.
+Then provide the needed CSI configuration information and register the sensor with the **CAMERA_SENSOR** macro.
+In the **CSI_INFO** struct you need to define the used MIPI CSI clock frequency, data type and virtual channel identifier.
 
-Note that it is possible to override the CPI block color mode, how the data is written to the camera_buffer by the CPI when calling CaptureFrame(camera_buffer);
-See table cpi_data_mode_settings in Driver_MIPI_CSI2.c
+Note that it is possible to override the CPI block color mode, how the data is written to the camera_buffer by the CPI when calling **CaptureFrame(camera_buffer);**
+See table **cpi_data_mode_settings** in **Driver_MIPI_CSI2.c**
+
 For more details see the [datasheets](https://alifsemi.com/support/datasheets/ensemble).
 And Camera Interfaces in [Hardware reference manual](https://alifsemi.com/support/reference-manuals).
 
