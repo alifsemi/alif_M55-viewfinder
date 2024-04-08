@@ -7,7 +7,8 @@
  * contact@alifsemi.com, or visit: https://alifsemi.com/license
  *
  */
-
+// NOTE: This is a modified version of color correction utils (BGR output)
+//       Original code can be found from https://github.com/alifsemi/alif_ml-embedded-evaluation-kit
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -15,8 +16,7 @@
 #include <math.h>
 
 //#include "base_def.h"
-//#include "image_processing.h"
-#define RGB_BYTES (3)
+#include "image_processing.h"
 
 #if __ARM_FEATURE_MVE & 1
 #include <arm_mve.h>
@@ -95,9 +95,9 @@ static void color_correction(const uint8_t sp[static 3], uint8_t dp[static 3], c
 	if (dpixel_data[0] > 255) dpixel_data[0] = 255;
 	if (dpixel_data[1] > 255) dpixel_data[1] = 255;
 	if (dpixel_data[2] > 255) dpixel_data[2] = 255;
-	dp[0] = lut[(uint8_t)dpixel_data[0]]; // 0 = RED
+	dp[0] = lut[(uint8_t)dpixel_data[2]]; // 2 = BLUE
 	dp[1] = lut[(uint8_t)dpixel_data[1]]; // 1 = GREEN
-	dp[2] = lut[(uint8_t)dpixel_data[2]]; // 2 = BLUE
+	dp[2] = lut[(uint8_t)dpixel_data[0]]; // 0 = RED
 #endif // __ARM_FEATURE_MVE & 1
 //	t0 = PMU_GetCounter() - ts;
 }
@@ -119,14 +119,14 @@ static void bulk_color_correction(const uint8_t *sp, uint8_t *dp, ptrdiff_t len,
 		sp += 3 * 8;
 
 		{
-			float16x8_t r_mac = vmulq(r, C_RR);
-			r_mac = vfmaq(r_mac, g, C_GR);
-			r_mac = vfmaq(r_mac, b, C_BR);
+			float16x8_t b_mac = vmulq(r, C_RB);
+			b_mac = vfmaq(b_mac, g, C_GB);
+			b_mac = vfmaq(b_mac, b, C_BB);
 
-			uint16x8_t r_out = vcvtq_u16_f16(r_mac);
-			r_out = vreinterpretq_u16(vqmovnbq(vdupq_n_u8(0), r_out));
-			r_out = vldrbq_gather_offset(lut, r_out);
-			vstrbq_scatter_offset(dp + 0, pixel_offsets, r_out);
+			uint16x8_t b_out = vcvtq_u16_f16(b_mac);
+			b_out = vreinterpretq_u16(vqmovnbq(vdupq_n_u8(0), b_out));
+			b_out = vldrbq_gather_offset(lut, b_out);
+			vstrbq_scatter_offset(dp + 0, pixel_offsets, b_out);
 		}
 
 		{
@@ -141,14 +141,14 @@ static void bulk_color_correction(const uint8_t *sp, uint8_t *dp, ptrdiff_t len,
 		}
 
 		{
-			float16x8_t b_mac = vmulq(r, C_RB);
-			b_mac = vfmaq(b_mac, g, C_GB);
-			b_mac = vfmaq(b_mac, b, C_BB);
+			float16x8_t r_mac = vmulq(r, C_RR);
+			r_mac = vfmaq(r_mac, g, C_GR);
+			r_mac = vfmaq(r_mac, b, C_BR);
 
-			uint16x8_t b_out = vcvtq_u16_f16(b_mac);
-			b_out = vreinterpretq_u16(vqmovnbq(vdupq_n_u8(0), b_out));
-			b_out = vldrbq_gather_offset(lut, b_out);
-			vstrbq_scatter_offset(dp + 2, pixel_offsets, b_out);
+			uint16x8_t r_out = vcvtq_u16_f16(r_mac);
+			r_out = vreinterpretq_u16(vqmovnbq(vdupq_n_u8(0), r_out));
+			r_out = vldrbq_gather_offset(lut, r_out);
+			vstrbq_scatter_offset(dp + 2, pixel_offsets, r_out);
 		}
 
 		dp += 3 * 8;

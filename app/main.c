@@ -1,4 +1,4 @@
-/* Copyright (C) 2023 Alif Semiconductor - All Rights Reserved.
+/* Copyright (C) 2023-2024 Alif Semiconductor - All Rights Reserved.
  * Use, distribution and modification of this code is permitted under the
  * terms stated in the Alif Semiconductor Software License Agreement
  *
@@ -7,6 +7,8 @@
  * contact@alifsemi.com, or visit: https://alifsemi.com/license
  *
  */
+#include <time.h>
+
 #include "RTE_Components.h"
 #include CMSIS_device_header
 
@@ -15,12 +17,14 @@
 #include "Driver_CDC200.h" // Display
 #include "board.h"
 #include "bayer.h"
+#include "image_processing.h"
 #include "power.h"
 
 #include "se_services_port.h"
 
 // From color_correction.c
 void white_balance(int ml_width, int ml_height, const uint8_t *sp, uint8_t *dp);
+extern void clk_init(); // retarget.c
 
 // Check if UART trace is disabled
 #if !defined(DISABLE_UART_TRACE)
@@ -33,6 +37,11 @@ static void uart_callback(uint32_t event)
 #else
 #define printf(fmt, ...) (0)
 #endif
+
+// Print measurements
+#define PRINT_INTERVAL_SEC (1)
+#define PRINT_INTERVAL_CLOCKS (PRINT_INTERVAL_SEC * CLOCKS_PER_SEC)
+extern uint32_t SystemCoreClock;
 
 #define BAYER_FORMAT DC1394_COLOR_FILTER_GRBG
 
@@ -48,6 +57,8 @@ static void uart_callback(uint32_t event)
 #define BYTES_PER_PIXEL        (3)
 
 #define CAM_FRAME_SIZE (CAM_FRAME_WIDTH * CAM_FRAME_HEIGHT)
+#define CAM_MPIX (CAM_FRAME_SIZE / 1000000.0f)
+
 static uint8_t camera_buffer[CAM_FRAME_SIZE] __attribute__((aligned(32), section(".bss.camera_frame_buf")));
 static uint8_t image_buffer[CAM_FRAME_SIZE * BYTES_PER_PIXEL] __attribute__((aligned(32), section(".bss.camera_frame_bayer_to_rgb_buf")));
 
@@ -218,6 +229,7 @@ void main (void)
 #if !defined(DISABLE_UART_TRACE)
     tracelib_init(NULL, uart_callback);
 #endif
+    clk_init(); // for time.h clock()
 
     // Init camera
     int ret = camera_init();
@@ -231,33 +243,68 @@ void main (void)
         }
     }
 
+    // Enable PMU cycle counter for measurements
+    DCB->DEMCR |= DCB_DEMCR_TRCENA_Msk;
+    ARM_PMU_Enable();
+    ARM_PMU_CNTR_Enable(PMU_CNTENSET_CCNTR_ENABLE_Msk);
+
     // Capture frames in loop
     printf("\r\n Let's Start Capturing Camera Frame...\r\n");
+    clock_t print_ts = clock();
     while (ret == ARM_DRIVER_OK &&
            !(g_cb_events & (CAM_CB_EVENT_ERROR | DISP_CB_EVENT_ERROR))) {
 
         // Blink green LED
         BOARD_LED2_Control(BOARD_LED_STATE_TOGGLE);
+        // Reset cycle counter
+        ARM_PMU_CYCCNT_Reset();
 
         g_cb_events = CAM_CB_EVENT_NONE;
+        uint32_t capture_time = ARM_PMU_Get_CCNTR();
         ret = CAMERAdrv->CaptureFrame(camera_buffer);
         if(ret == ARM_DRIVER_OK) {
             // Wait for capture
             while (!(g_cb_events & CAM_CB_EVENT_CAPTURE_STOPPED)) {
                 __WFI();
             }
+            // Invalidate cache before reading the camera_buffer
+            SCB_CleanInvalidateDCache();
+            capture_time = ARM_PMU_Get_CCNTR() - capture_time;
 
+            uint32_t bayer_time = ARM_PMU_Get_CCNTR();
             dc1394_bayer_Simple(camera_buffer, image_buffer, CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT, BAYER_FORMAT);
-            white_balance(CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT, image_buffer, image_buffer);
+            bayer_time = ARM_PMU_Get_CCNTR() - bayer_time;
 
-            const uint8_t (*src)[CAM_FRAME_HEIGHT][BYTES_PER_PIXEL] = (const uint8_t (*)[CAM_FRAME_HEIGHT][BYTES_PER_PIXEL]) image_buffer;            
-            for (int i = 0; i < CAM_FRAME_WIDTH && i < DISPLAY_FRAME_WIDTH; i++) {
-                for (int j = 0; j < CAM_FRAME_HEIGHT && j < DISPLAY_FRAME_HEIGHT; j++)
-                {
-                    lcd_image[i][j][0] = src[i][j][2]; // blue
-                    lcd_image[i][j][1] = src[i][j][1]; // green
-                    lcd_image[i][j][2] = src[i][j][0]; // red
-                }
+            // White balance function does also RGB --> BGR conversion
+            uint32_t wb_time = ARM_PMU_Get_CCNTR();
+            white_balance(CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT, image_buffer, image_buffer);
+            wb_time = ARM_PMU_Get_CCNTR() - wb_time;
+
+            const int rescaleWidth = DISPLAY_FRAME_WIDTH;
+            const int rescaleHeight = CAM_FRAME_HEIGHT * (float)rescaleWidth / CAM_FRAME_WIDTH;
+
+            uint32_t resize_time = ARM_PMU_Get_CCNTR();
+            resize_image_A(image_buffer,
+                           CAM_FRAME_WIDTH,
+                           CAM_FRAME_HEIGHT,
+                           (uint8_t*)lcd_image,
+                           rescaleWidth,
+                           rescaleHeight,
+                           BYTES_PER_PIXEL);
+            resize_time = ARM_PMU_Get_CCNTR() - resize_time;
+
+            if (clock() - print_ts >= PRINT_INTERVAL_CLOCKS) {
+                print_ts = clock();
+                printf("Frame capture took %.3fms\n", capture_time * 1000.0f / SystemCoreClock);
+                float bayer_time_s = (float)bayer_time / SystemCoreClock;
+                printf("Bayer conversion %.3fms (throughput=%.2fMpix/s)\n", bayer_time_s * 1000.0f,
+                                                                            CAM_MPIX / bayer_time_s);
+                float wb_time_s = (float)wb_time / SystemCoreClock;
+                printf("White balance %.3fms (throughput=%.2fMpix/s)\n", wb_time_s * 1000.0f,
+                                                                         CAM_MPIX / wb_time_s);
+                float resize_time_s = (float)resize_time / SystemCoreClock;
+                printf("Resize to display %.3fms (throughput=%.2fMpix/s)\n", resize_time_s * 1000.0f,
+                                                                             CAM_MPIX / resize_time_s);
             }
         } else {
             printf("\r\n Error: CAMERA Capture Frame failed.\r\n");

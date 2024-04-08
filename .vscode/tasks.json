@@ -66,8 +66,8 @@
             "type": "shell",
             "command": [
                 "cpackget init https://www.keil.com/pack/index.pidx;",
-                "cpackget add https://github.com/ARM-software/CMSIS_5/releases/download/5.9.0/ARM.CMSIS.5.9.0.pack;",
-                "cpackget add https://github.com/alifsemi/alif_ensemble-cmsis-dfp/releases/download/v1.0.0/AlifSemiconductor.Ensemble.1.0.0.pack;",
+                "cpackget add https://github.com/ARM-software/CMSIS_6/releases/download/v6.0.0/ARM.CMSIS.6.0.0.pack;",
+                "cpackget add https://github.com/alifsemi/alif_ensemble-cmsis-dfp/releases/download/v1.1.1/AlifSemiconductor.Ensemble.1.1.1.pack;",
                 "cpackget list;",
                 "echo 'Pack installation has been completed'"
             ],
