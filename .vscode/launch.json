@@ -2,20 +2,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Alif Ensemble Debug",
+            "name": "Alif Ensemble Debug (Cortex-Debug)",
             "cwd": "${workspaceFolder}",
-            "executable": "./out/cproject/${command:cpptools.activeConfigName}/cproject.elf",
+            "executable": "${command:cmsis-csolution.getBinaryFile}",
             "request": "launch",
             "type": "cortex-debug",
             "runToEntryPoint": "main",
             "servertype": "jlink",
             "showDevDebugOutput": "parsed",
-            "device": "AE722F80F55D5_${command:cpptools.activeConfigName}",
+            "device": "${command:cmsis-csolution.getDeviceName}_${command:cmsis-csolution.getProcessorName}",
             "interface": "jtag",
-            "preLaunchCommands": [
-                "monitor speed 15000"
+            "serverArgs": ["-JLinkDevicesXmlPath" ".alif/JLinkDevices.xml"],
+            "postLaunchCommands": [
+                "set $sp = __Vectors[0]",
+                "set $pc = __Vectors[1]",
+                "set *0xe000ed08 = __Vectors"
             ],
-            "jlinkscript": ".alif/m55-${command:cpptools.activeConfigName}_setup.jlinkscript"
         }
     ]
 }
