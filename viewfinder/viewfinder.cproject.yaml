@@ -1,30 +1,40 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Open-CMSIS-Pack/devtools/tools/projmgr/2.3.0/tools/projmgr/schemas/cproject.schema.json
 project:
   groups:
     - group: App
-      misc:
-        - C:
-          - -O2
       files:
-        - file: app/main.c
-        - file: app/bayer2rgb.c
-        - file: app/image_processing.c
-        - file: app/color_correction.c
-        - file: app/gcc_M55_HE.ld
-          for-context: +HE
-        - file: app/gcc_M55_HP.ld
-          for-context: +HP
+        - file: main.c
+        - file: bayer2rgb.c
+        - file: image_processing.c
+        - file: color_correction.c
     - group: Board
       files:
-        - file: libs/board/devkit_gen2/board_init.c
-        - file: libs/board/appkit_gen2/board_init.c
-        - file: libs/common_app_utils/logging/uart_tracelib.c
-        - file: libs/common_app_utils/logging/retarget.c
-        - file: libs/common_app_utils/fault_handler/fault_handler.c
+        - file: ../libs/board/devkit_gen2/board_init.c
+        - file: ../libs/board/appkit_gen2/board_init.c
+        - file: ../libs/common_app_utils/logging/uart_tracelib.c
+        - file: ../libs/common_app_utils/logging/retarget.c
+        - file: ../libs/common_app_utils/fault_handler/fault_handler.c
+
+  linker:
+    - script: gcc_M55_HE.ld
+      for-compiler: GCC
+      for-context: +HE
+    - script: gcc_M55_HP.ld
+      for-compiler: GCC
+      for-context: +HP
+
+  output:
+    base-name: $Project$
+    type:
+      - elf
+      - bin
+
   add-path:
-    - app/
-    - libs/board/
-    - libs/common_app_utils/logging
-    - libs/common_app_utils/fault_handler
+    - .
+    - ../board/
+    - ../libs/board/
+    - ../libs/common_app_utils/logging
+    - ../libs/common_app_utils/fault_handler
   components:
     # needed for Alif Ensemble support
     - component: AlifSemiconductor::Device:Startup&C Startup
@@ -62,14 +72,21 @@ project:
     # - component: AlifSemiconductor::Device:SOC Peripherals:UTIMER
     # - component: AlifSemiconductor::Device:SOC Peripherals:WDT
     
-    # - component: AlifSemiconductor::Device:OSPI XIP:core
-    # - component: AlifSemiconductor::Device:OSPI XIP:utility
+    # - component: AlifSemiconductor::Device:OSPI FLASH XIP:core
+    # - component: AlifSemiconductor::Device:OSPI FLASH XIP:utility
+    # - component: AlifSemiconductor::Device:OSPI HYPERRAM XIP
     - component: AlifSemiconductor::Device:SE runtime Services:core
     - component: AlifSemiconductor::Device:SE runtime Services:Initialization Helper
 
     # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
     - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
+    # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor AR0144
     # - component: AlifSemiconductor::BSP:External peripherals:Ethernet PHY
     # - component: AlifSemiconductor::BSP:External peripherals:GT911 Touch Controller
     - component: AlifSemiconductor::BSP:External peripherals:ILI9806E LCD panel
     # - component: AlifSemiconductor::BSP:External peripherals:OSPI Flash ISSI
+    # - component: AlifSemiconductor::Device:Conductor Tool support
+    # - component: AlifSemiconductor::Device:Power Management
+    # - component: AlifSemiconductor::Device:Retarget IO:STDERR
+    # - component: AlifSemiconductor::Device:Retarget IO:STDIN
+    # - component: AlifSemiconductor::Device:Retarget IO:STDOUT

@@ -1,30 +1,11 @@
 {
     "configurations": [
         {
-            "name": "HE",
+            "name": "",
             "includePath": [
                 "${workspaceFolder}/**"
             ],
-            "defines": [
-                "_DEBUG",
-                "UNICODE",
-                "_UNICODE"
-            ],
-
-            "compileCommands": "${workspaceFolder}/tmp/cproject/HE/compile_commands.json"
-        },
-        {
-            "name": "HP",
-            "includePath": [
-                "${workspaceFolder}/**"
-            ],
-            "defines": [
-                "_DEBUG",
-                "UNICODE",
-                "_UNICODE"
-            ],
-
-            "compileCommands": "${workspaceFolder}/tmp/cproject/HP/compile_commands.json"
+            "configurationProvider": "cmsis-csolution"
         }
     ],
     "version": 4

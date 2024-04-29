@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Open-CMSIS-Pack/devtools/tools/projmgr/2.3.0/tools/projmgr/schemas/csolution.schema.json
+solution:
+  created-for: cmsis-toolbox@2.3.0
+  cdefault:
+
+  packs:
+    - pack: AlifSemiconductor::Ensemble@1.1.1
+    - pack: ARM::CMSIS@6.0.0
+ 
+  target-types:
+    - type: HE
+      device: Alif Semiconductor::AE722F80F55D5LS:M55_HE
+      define:
+        - "CORE_M55_HE"
+    - type: HP
+      device: Alif Semiconductor::AE722F80F55D5LS:M55_HP
+      define:
+        - "CORE_M55_HP"
+
+  build-types:
+    - type: debug
+      optimize: none
+      debug: on
+      define:
+        - _DEBUG
+    - type: release
+      optimize: speed
+      debug: off
+    - type: IAR_release
+      optimize: speed
+      debug: off
+      compiler: IAR
+    - type: AC6_release
+      optimize: speed
+      debug: off
+      compiler: AC6
+
+  define:
+    - UNICODE
+    - _UNICODE
+
+  projects:
+    - project: viewfinder/viewfinder.cproject.yaml
