@@ -18,6 +18,8 @@
 #ifndef __BOARD_LIB_H
 #define __BOARD_LIB_H
 
+#include <stdint.h>
+
 // <o> Alif Development Kit variant
 //     <0=> Alif Development Kit (Generation 1 Silicon Rev A / Board Rev B and Rev C)
 //     <1=> Alif AI/ML Application Kit (Generation 1 Silicon Rev A / Board Rev A)
@@ -59,7 +61,7 @@ void BOARD_Pinmux_Init();
 void BOARD_Clock_Init();
 void BOARD_Power_Init();
 
-typedef void (*BOARD_Callback_t) (long unsigned int event);
+typedef void (*BOARD_Callback_t) (uint32_t event);
 
 typedef enum {
 	BOARD_BUTTON_ENABLE_INTERRUPT = 1,  /**<BUTTON interrupt enable>*/
