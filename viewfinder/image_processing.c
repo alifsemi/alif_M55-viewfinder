@@ -101,11 +101,19 @@ int resize_image_A(
     uint8_t *dstImage,
     int dstWidth,
     int dstHeight,
-    int pixel_size_B)
+    int pixel_size_B,
+    bool swapRB)
 {
     if (pixel_size_B != 3) {
         abort();
     }
+
+#if __ARM_FEATURE_MVE & 1
+    const uint32x4_t rgb_offset = {0,1,2,3};
+    const uint32x4_t bgr_offset = {2,1,0,3};
+    const uint32x4_t output_offset = swapRB ? bgr_offset : rgb_offset;
+#endif
+
 // Copied from ei_camera.cpp in firmware-eta-compute
 // Modified for RGB888
 // This needs to be < 16 or it won't fit. Cortex-M4 only has SIMD for signed multiplies
@@ -170,24 +178,44 @@ int resize_image_A(
             p00 = vmulq(p00, ny_frac);
             p00 = vmlaq(p00, p01, y_frac);
             p00 = vrshrq(p00, FRAC_BITS);
-            vstrbq_p_u32(d, p00, vctp32q(pixel_size_B));
+            vstrbq_scatter_offset_p_u32(d, output_offset, p00, vctp32q(pixel_size_B));
+
             d += pixel_size_B;
 #else
             //interpolate and write out
-            for (int color = 0; color < pixel_size_B;
-                 color++) // do pixel_size_B times for pixel_size_B colors
-            {
-                uint32_t p00, p01, p10, p11;
-                p00 = s[tx];
-                p10 = s[tx + pixel_size_B];
-                p01 = s[tx + srcWidth];
-                p11 = s[tx + srcWidth + pixel_size_B];
-                p00 = ((p00 * nx_frac) + (p10 * x_frac) + FRAC_VAL / 2) >> FRAC_BITS; // top line
-                p01 = ((p01 * nx_frac) + (p11 * x_frac) + FRAC_VAL / 2) >> FRAC_BITS; // bottom line
-                p00 = ((p00 * ny_frac) + (p01 * y_frac) + FRAC_VAL / 2) >> FRAC_BITS; //top + bottom
-                *d++ = (uint8_t)p00; // store new pixel
-                //ready next loop
-                tx++;
+            if (swapRB) {
+                for (int color = 0; color < pixel_size_B;
+                    color++) // do pixel_size_B times for pixel_size_B colors
+                {
+                    uint32_t p00, p01, p10, p11;
+                    p00 = s[tx];
+                    p10 = s[tx + pixel_size_B];
+                    p01 = s[tx + srcWidth];
+                    p11 = s[tx + srcWidth + pixel_size_B];
+                    p00 = ((p00 * nx_frac) + (p10 * x_frac) + FRAC_VAL / 2) >> FRAC_BITS; // top line
+                    p01 = ((p01 * nx_frac) + (p11 * x_frac) + FRAC_VAL / 2) >> FRAC_BITS; // bottom line
+                    p00 = ((p00 * ny_frac) + (p01 * y_frac) + FRAC_VAL / 2) >> FRAC_BITS; //top + bottom
+                    d[pixel_size_B - color -1] = (uint8_t)p00; // store new pixel
+                    //ready next loop
+                    tx++;
+                }
+                d += 3;
+            } else {
+                for (int color = 0; color < pixel_size_B;
+                    color++) // do pixel_size_B times for pixel_size_B colors
+                {
+                    uint32_t p00, p01, p10, p11;
+                    p00 = s[tx];
+                    p10 = s[tx + pixel_size_B];
+                    p01 = s[tx + srcWidth];
+                    p11 = s[tx + srcWidth + pixel_size_B];
+                    p00 = ((p00 * nx_frac) + (p10 * x_frac) + FRAC_VAL / 2) >> FRAC_BITS; // top line
+                    p01 = ((p01 * nx_frac) + (p11 * x_frac) + FRAC_VAL / 2) >> FRAC_BITS; // bottom line
+                    p00 = ((p00 * ny_frac) + (p01 * y_frac) + FRAC_VAL / 2) >> FRAC_BITS; //top + bottom
+                    *d++ = (uint8_t)p00; // store new pixel
+                    //ready next loop
+                    tx++;
+                }
             }
 #endif
         } // for x
@@ -248,7 +276,7 @@ int crop_and_interpolate( uint8_t *image,
 
     //tprof3 = Get_SysTick_Cycle_Count32();
     // Finally, interpolate down to desired dimensions, in place
-    int result = resize_image_A(image, cropWidth, cropHeight, image, dstWidth, dstHeight, bpp/8);
+    int result = resize_image_A(image, cropWidth, cropHeight, image, dstWidth, dstHeight, bpp/8, false);
     //tprof3 = Get_SysTick_Cycle_Count32() - tprof3;
     return result;
 }

@@ -12,6 +12,7 @@
 #define IMAGE_PROCESSING_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #define RGB_BYTES 		3
 #define RGBA_BYTES 		4
@@ -41,7 +42,7 @@ int resize_image_A(
     uint8_t *dstImage,
     int dstWidth,
     int dstHeight,
-    int pixel_size_B);
-
+    int pixel_size_B,
+    bool swapRB);
 
 #endif /* IMAGE_PROCESSING_H_ */

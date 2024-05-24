@@ -109,7 +109,7 @@ SECTIONS
 
   .bss.at_sram0 (NOLOAD) : ALIGN(8)
   {
-    * (.bss.lcd_crop_and_interpolate_buf)  /* LCD crop and intrepolate image processing buffer. */
+    * (.bss.camera_frame_bayer_to_rgb_buf_at_sram0) /*  Bayer to RGB buffer for bigger resolution MT9M119 */
     * (.bss.lcd_frame_buf)                 /* LCD frame Buffer. */
   } > SRAM0
 
