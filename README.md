@@ -3,16 +3,33 @@
 This application is built on VSCode Getting Started Template (alif_vscode-template)
 The default hardware is Gen 2 Ensemble DevKit with camera module and display.
 
-**NOTE:** Ensemble DevKits do not ship with a camera and display by default. Please contact Alif to request. Eventually this application is targeted for the Gen2 ML/AI Application Kit when it is available.
-
 **NOTE:** To change the target board set BOARD_ALIF_DEVKIT_VARIANT in board/board.h
 For example AppKit gen2
 #define BOARD_ALIF_DEVKIT_VARIANT       5
 
-Demo application initializes camera and display modules and starts capturing frames
+**NOTE:** Ensemble DevKits do not ship with a camera and display by default. Please contact Alif to request.
+
+Camera modules supported by the demo application are:
+- MT9M114 **This is the default camera**
+- ARX3A0 **This camera module has also been shipped with Alif Semiconductor kits**
+
+You can change the camera module in the project by commenting|uncommenting camera component in `viewfinder.cproject.yaml`
+```
+    - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
+    # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
+```
+
+Choosing the camera module can be done using the csolution GUI by clicking "Manage Software Components" and searching with CAMERA.
+Remember to click "ALL" to see the unselected camera modules.
+![Software components](doc/images/software_components.png)
+
+
+## Demo application
+The application initializes the camera and display modules and starts capturing frames
 in a single-frame mode. Each captured frame is processed through bayer-to-RGB and
 white balance before rescaling the captured frame to display buffer.
-While running, the green LED blinks (on DevKit). In error case the red LED is set.
+While running, the green LED blinks (on DevKit). Profiling information is printed to UART.
+In error case the red LED is set.
 
 ## Quick start
 First clone the project repository

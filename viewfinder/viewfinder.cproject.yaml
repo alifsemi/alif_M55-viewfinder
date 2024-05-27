@@ -78,8 +78,8 @@ project:
     - component: AlifSemiconductor::Device:SE runtime Services:core
     - component: AlifSemiconductor::Device:SE runtime Services:Initialization Helper
 
-    # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
-    - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
+    - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
+    # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
     # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor AR0144
     # - component: AlifSemiconductor::BSP:External peripherals:Ethernet PHY
     # - component: AlifSemiconductor::BSP:External peripherals:GT911 Touch Controller
