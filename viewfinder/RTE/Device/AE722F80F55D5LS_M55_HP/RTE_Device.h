@@ -8413,7 +8413,7 @@
 // <i> Defines Interrupt priority for GPIO5_PIN7.
 // <i> Default: 0
 #define RTE_GPIO5_PIN7_IRQ_PRIORITY     0
-#endif /* RTE_GPIO5 */
+#endif 
 // </e> GPIO5
 
 // <e> GPIO6
@@ -8466,7 +8466,7 @@
 // <i> Defines Interrupt priority for GPIO6_PIN7.
 // <i> Default: 0
 #define RTE_GPIO6_PIN7_IRQ_PRIORITY     0
-#endif /* RTE_GPIO6 */
+#endif
 // </e> GPIO6
 
 // <e> GPIO7
@@ -8575,7 +8575,7 @@
 // <i> Defines Enable Glitch Filter
 // <i> Default: DISABLE
 #define RTE_GPIO7_PIN7_DMA_GLITCH_FILTER_ENABLE  0
-#endif /* RTE_GPIO7 */
+#endif
 // </e> GPIO7
 
 // <e> GPIO8
@@ -8684,7 +8684,7 @@
 // <i> Defines Enable Glitch Filter
 // <i> Default: DISABLE
 #define RTE_GPIO8_PIN7_DMA_GLITCH_FILTER_ENABLE  0
-#endif /* RTE_GPIO8 */
+#endif
 // </e> GPIO8
 
 // <e> GPIO9
@@ -8793,7 +8793,7 @@
 // <i> Defines Enable Glitch Filter
 // <i> Default: DISABLE
 #define RTE_GPIO9_PIN7_DMA_GLITCH_FILTER_ENABLE  0
-#endif /* RTE_GPIO9 */
+#endif
 // </e> GPIO9
 
 // <e> GPIO10
@@ -8846,7 +8846,7 @@
 // <i> Defines Interrupt priority for GPIO10_PIN7.
 // <i> Default: 0
 #define RTE_GPIO10_PIN7_IRQ_PRIORITY     0
-#endif /* RTE_GPIO10 */
+#endif
 // </e> GPIO10
 
 // <e> GPIO11
@@ -8899,7 +8899,7 @@
 // <i> Defines Interrupt priority for GPIO11_PIN7.
 // <i> Default: 0
 #define RTE_GPIO11_PIN7_IRQ_PRIORITY     0
-#endif /* RTE_GPIO11 */
+#endif 
 // </e> GPIO11
 
 // <e> GPIO12
@@ -8952,7 +8952,7 @@
 // <i> Defines Interrupt priority for GPIO12_PIN7.
 // <i> Default: 0
 #define RTE_GPIO12_PIN7_IRQ_PRIORITY     0
-#endif /* RTE_GPIO12 */
+#endif
 // </e> GPIO12
 
 // <e> GPIO13
@@ -9005,7 +9005,7 @@
 // <i> Defines Interrupt priority for GPIO13_PIN7.
 // <i> Default: 0
 #define RTE_GPIO13_PIN7_IRQ_PRIORITY     0
-#endif /* RTE_GPIO13 */
+#endif
 // </e> GPIO13
 
 // <e> GPIO14
@@ -9058,7 +9058,7 @@
 // <i> Defines Interrupt priority for GPIO14_PIN7.
 // <i> Default: 0
 #define RTE_GPIO14_PIN7_IRQ_PRIORITY     0
-#endif /* RTE_GPIO14 */
+#endif
 // </e> GPIO14
 
 // <e> LPGPIO
@@ -9163,7 +9163,7 @@
 // <i> Default: DISABLE
 #define RTE_LPGPIO_PIN7_DMA_GLITCH_FILTER_ENABLE  0
 
-#endif /* RTE_LPGPIO */
+#endif
 // </e> LPGPIO
 
 // </h> GPIO (general purpose input and output)
@@ -9270,6 +9270,13 @@
 // <i> Default: 20MHz
 #define RTE_CANFD_CLK_SPEED                 20000000
 
+// <o> CANFD blocking mode enable
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines Blocking mode support for CANFD
+// <i> Default: DISABLE
+#define RTE_CANFD_BLOCKING_MODE_ENABLE      0
+
 #endif
 // </e> CANFD (Controller Area Network - Fast Mode Interface) [Driver_CANFD]
 // </h> CANFD (Controller Area Network - Fast Mode)
@@ -9286,7 +9293,15 @@
 //    <1=> BUS_WIDTH_4BIT
 // <i> Defines SDC0 size of bus width
 // <i> Default: BUS_WIDTH_4BIT
-#define RTE_SDC_BUS_WIDTH 0
+#define RTE_SDC_BUS_WIDTH 1
+
+//    <o> SDC CLOCK SELECT
+//    <0=> SDC_12_5MHz
+//    <1=> SDC_25MHz
+//    <2=> SDC_50MHz
+// <i> Defines SDC0 Clock select
+// <i> Default: 25MHz
+#define RTE_SDC_CLOCK_SELECT 1
 
 //    <o> SDC DMA SELECT
 //    <0=> SDMA
@@ -9294,6 +9309,16 @@
 // <i> Defines SDC0 DMA select
 // <i> Default: ADMA2
 #define RTE_SDC_DMA_SELECT 1
+
+// <o> SDC IRQ priority <0-255>
+// <i> Defines SDC Interrupt priority
+// <i> Default: 0
+#define RTE_SDC_IRQ_PRI                    0
+
+// <o> SDC WAKEUP IRQ priority <0-255>
+// <i> Defines SDC Wakeup Interrupt priority
+// <i> Default: 0
+#define RTE_SDC_WAKEUP_IRQ_PRI                    0
 
 #endif
 // </e> SDC0 (Secure Digital Controller 0) [Driver_SDC0]
