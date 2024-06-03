@@ -50,21 +50,30 @@ extern uint32_t SystemCoreClock;
 #define CAM_FRAME_WIDTH        (RTE_MT9M114_CAMERA_SENSOR_MIPI_FRAME_WIDTH)
 #define CAM_FRAME_HEIGHT       (RTE_MT9M114_CAMERA_SENSOR_MIPI_FRAME_HEIGHT)
 #define CAM_COLOR_CORRECTION   (0)
+#define CAM_USE_RGB565         (RTE_MT9M114_CAMERA_SENSOR_MIPI_CSI_DATA_TYPE == 0x22)
 #define RGB_BUFFER_SECTION     ".bss.camera_frame_bayer_to_rgb_buf_at_sram0"
 #elif RTE_Drivers_CAMERA_SENSOR_ARX3A0
 #define CAM_FRAME_WIDTH        (RTE_ARX3A0_CAMERA_SENSOR_FRAME_WIDTH)
 #define CAM_FRAME_HEIGHT       (RTE_ARX3A0_CAMERA_SENSOR_FRAME_HEIGHT)
 #define CAM_COLOR_CORRECTION   (1)
+#define CAM_USE_RGB565         (0)
 #define RGB_BUFFER_SECTION     ".bss.camera_frame_bayer_to_rgb_buf"
 #endif
 
-#define BYTES_PER_PIXEL        (3)
+#define CAM_BYTES_PER_PIXEL 
 #define CAM_FRAME_SIZE (CAM_FRAME_WIDTH * CAM_FRAME_HEIGHT)
 #define CAM_MPIX (CAM_FRAME_SIZE / 1000000.0f)
+#define CAM_FRAME_SIZE_BYTES (CAM_FRAME_SIZE + CAM_USE_RGB565 * CAM_FRAME_SIZE)
 
-static uint8_t camera_buffer[CAM_FRAME_SIZE] __attribute__((aligned(32), section(".bss.camera_frame_buf")));
+static uint8_t camera_buffer[CAM_FRAME_SIZE_BYTES] __attribute__((aligned(32), section(".bss.camera_frame_buf")));
 
-static uint8_t image_buffer[CAM_FRAME_SIZE * BYTES_PER_PIXEL] __attribute__((aligned(32), section(RGB_BUFFER_SECTION)));
+// Buffer for bayer conversion to RGB is not needed when camera outputs RGB565
+#if CAM_USE_RGB565
+static const uint8_t *get_resize_source_buffer() { return camera_buffer; }
+#else
+static uint8_t image_buffer[CAM_FRAME_SIZE * RGB_BYTES] __attribute__((aligned(32), section(RGB_BUFFER_SECTION)));
+static const uint8_t *get_resize_source_buffer() { return image_buffer; }
+#endif
 
 /* Camera  Driver instance 0 */
 extern ARM_DRIVER_CPI Driver_CPI;
@@ -73,7 +82,7 @@ static ARM_DRIVER_CPI *CAMERAdrv = &Driver_CPI;
 /* LCD */
 #define DISPLAY_FRAME_WIDTH       (RTE_PANEL_HACTIVE_TIME)
 #define DISPLAY_FRAME_HEIGHT      (RTE_PANEL_VACTIVE_LINE)
-static uint8_t lcd_image[DISPLAY_FRAME_HEIGHT][DISPLAY_FRAME_WIDTH][BYTES_PER_PIXEL] __attribute__((section(".bss.lcd_frame_buf"))) = {0};
+static uint8_t lcd_image[DISPLAY_FRAME_HEIGHT][DISPLAY_FRAME_WIDTH][RGB_BYTES] __attribute__((section(".bss.lcd_frame_buf"))) = {0};
 extern ARM_DRIVER_CDC200 Driver_CDC200;
 static ARM_DRIVER_CDC200 *CDCdrv = &Driver_CDC200;
 
@@ -275,10 +284,13 @@ void main (void)
             SCB_CleanInvalidateDCache();
             capture_time = ARM_PMU_Get_CCNTR() - capture_time;
 
-
+// ARX3A0 camera uses bayer output
+// MT9M114 can use bayer or RGB565 depending on RTE config
+#if !CAM_USE_RGB565
             uint32_t bayer_time = ARM_PMU_Get_CCNTR();
             dc1394_bayer_Simple(camera_buffer, image_buffer, CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT, BAYER_FORMAT);
             bayer_time = ARM_PMU_Get_CCNTR() - bayer_time;
+#endif
 
 // Do color correction for the ARX3A0 camera
 // White balance function does also RGB --> BGR conversion so when skipping color correction
@@ -293,23 +305,26 @@ void main (void)
             const int rescaleHeight = (int)(CAM_FRAME_HEIGHT * (float)rescaleWidth / CAM_FRAME_WIDTH);
 
             uint32_t resize_time = ARM_PMU_Get_CCNTR();
-            resize_image_A(image_buffer,
-                           CAM_FRAME_WIDTH,
-                           CAM_FRAME_HEIGHT,
-                           (uint8_t*)lcd_image,
-                           rescaleWidth,
-                           rescaleHeight,
-                           BYTES_PER_PIXEL,
-                           CAM_COLOR_CORRECTION == 0); // Swap to BGR in resize phase when using MT9M114
+            resize_image(get_resize_source_buffer(),
+                         CAM_FRAME_WIDTH,
+                         CAM_FRAME_HEIGHT,
+                         (uint8_t*)lcd_image,
+                         rescaleWidth,
+                         rescaleHeight,
+                         CAM_USE_RGB565 ? RGB565_BYTES : RGB_BYTES,
+                         CAM_COLOR_CORRECTION == 0); // Swap to BGR in resize phase when using MT9M114
 
             resize_time = ARM_PMU_Get_CCNTR() - resize_time;
 
             if (clock() - print_ts >= PRINT_INTERVAL_CLOCKS) {
                 print_ts = clock();
                 printf("Frame capture took %.3fms\n", capture_time * 1000.0f / SystemCoreClock);
+
+#if !CAM_USE_RGB565
                 float bayer_time_s = (float)bayer_time / SystemCoreClock;
                 printf("Bayer conversion %.3fms (throughput=%.2fMpix/s)\n", bayer_time_s * 1000.0f,
                                                                             CAM_MPIX / bayer_time_s);
+#endif
 #if CAM_COLOR_CORRECTION
                 float wb_time_s = (float)wb_time / SystemCoreClock;
                 printf("White balance %.3fms (throughput=%.2fMpix/s)\n", wb_time_s * 1000.0f,

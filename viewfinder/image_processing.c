@@ -223,7 +223,156 @@ int resize_image_A(
     return 0;
 } // resizeImage()
 
+int resize_image_RGB565(
+    const uint8_t *srcImage,
+    int srcWidth,
+    int srcHeight,
+    uint8_t *dstImage,
+    int dstWidth,
+    int dstHeight,
+    bool swapRB)
+{
+    const int FRAC_VAL = (1 << FRAC_BITS);
+    const int FRAC_MASK = (FRAC_VAL - 1);
+
+    uint32_t src_x_accum, src_y_accum; // accumulators and fractions for scaling the image
+    uint32_t x_frac, nx_frac, y_frac, ny_frac;
+    int x, y, ty;
+
+    if (srcHeight < 2) {
+        return FRAME_OUT_OF_RANGE;
+    }
+
+    // start at 1/2 pixel in to account for integer downsampling which might miss pixels
+    src_y_accum = FRAC_VAL / 2;
+    const uint32_t src_x_frac = (srcWidth * FRAC_VAL) / dstWidth;
+    const uint32_t src_y_frac = (srcHeight * FRAC_VAL) / dstHeight;
+
+    srcWidth *= RGB565_BYTES;
+    //srcHeight not used for indexing
+    //dstWidth still needed as is
+    //dstHeight shouldn't be scaled
+
+    const uint8_t *s;
+    uint8_t *d;
+
+    for (y = 0; y < dstHeight; y++) {
+        // do indexing computations
+        ty = src_y_accum >> FRAC_BITS; // src y
+        y_frac = src_y_accum & FRAC_MASK;
+        src_y_accum += src_y_frac;
+        ny_frac = FRAC_VAL - y_frac; // y fraction and 1.0 - y fraction
+
+        s = &srcImage[ty * srcWidth];
+        d = &dstImage[y * dstWidth * RGB_BYTES]; //not scaled above
+        // start at 1/2 pixel in to account for integer downsampling which might miss pixels
+        src_x_accum = FRAC_VAL / 2;
+        for (x = 0; x < dstWidth; x++) {
+            uint32_t tx;
+            // do indexing computations
+            tx = (src_x_accum >> FRAC_BITS) * RGB565_BYTES;
+            x_frac = src_x_accum & FRAC_MASK;
+            nx_frac = FRAC_VAL - x_frac; // x fraction and 1.0 - x fraction
+            src_x_accum += src_x_frac;
+            __builtin_prefetch(&s[tx + 64]);
+            __builtin_prefetch(&s[tx + srcWidth + 64]);
+
+            //interpolate and write out
+            uint16_t rgb565_p00 = *((uint16_t*)&s[tx]);
+            uint16_t rgb565_p10 = *((uint16_t*)&s[tx + RGB565_BYTES]);
+            uint16_t rgb565_p01 = *((uint16_t*)&s[tx + srcWidth]);
+            uint16_t rgb565_p11 = *((uint16_t*)&s[tx + srcWidth + RGB565_BYTES]);
+
+            uint8_t rgb_p00[RGB_BYTES];
+            uint8_t rgb_p10[RGB_BYTES];
+            uint8_t rgb_p01[RGB_BYTES];
+            uint8_t rgb_p11[RGB_BYTES];
+
+            // blue
+            rgb_p00[2] = (rgb565_p00 & 0x1F) << 3;
+            rgb_p10[2] = (rgb565_p10 & 0x1F) << 3;
+            rgb_p01[2] = (rgb565_p01 & 0x1F) << 3;
+            rgb_p11[2] = (rgb565_p11 & 0x1F) << 3;
+            rgb565_p00 >>= 3;
+            rgb565_p10 >>= 3;
+            rgb565_p01 >>= 3;
+            rgb565_p11 >>= 3;
+            // green
+            rgb_p00[1] = rgb565_p00 & 0xFC;
+            rgb_p10[1] = rgb565_p10 & 0xFC;
+            rgb_p01[1] = rgb565_p01 & 0xFC;
+            rgb_p11[1] = rgb565_p11 & 0xFC;
+            rgb565_p00 >>= 5;
+            rgb565_p10 >>= 5;
+            rgb565_p01 >>= 5;
+            rgb565_p11 >>= 5;
+            // red
+            rgb_p00[0] = rgb565_p00 & 0xF8;
+            rgb_p10[0] = rgb565_p10 & 0xF8;
+            rgb_p01[0] = rgb565_p01 & 0xF8;
+            rgb_p11[0] = rgb565_p11 & 0xF8;
+
+            tx += RGB565_BYTES;
+            if (swapRB) {
+                for (int color = RGB_BYTES -1; color >= 0; color--)
+                {
+                    uint32_t p00, p01, p10, p11;
+                    p00 = rgb_p00[color];
+                    p10 = rgb_p10[color];
+                    p01 = rgb_p01[color];
+                    p11 = rgb_p11[color];
+
+                    p00 = ((p00 * nx_frac) + (p10 * x_frac) + FRAC_VAL / 2) >> FRAC_BITS; // top line
+                    p01 = ((p01 * nx_frac) + (p11 * x_frac) + FRAC_VAL / 2) >> FRAC_BITS; // bottom line
+                    p00 = ((p00 * ny_frac) + (p01 * y_frac) + FRAC_VAL / 2) >> FRAC_BITS; //top + bottom
+                    *d++ = (uint8_t)p00; // store new pixel
+                }
+            } else {
+                for (int color = 0; color < RGB_BYTES; color++)
+                {
+                    uint32_t p00, p01, p10, p11;
+                    p00 = rgb_p00[color];
+                    p10 = rgb_p10[color];
+                    p01 = rgb_p01[color];
+                    p11 = rgb_p11[color];
+
+                    p00 = ((p00 * nx_frac) + (p10 * x_frac) + FRAC_VAL / 2) >> FRAC_BITS; // top line
+                    p01 = ((p01 * nx_frac) + (p11 * x_frac) + FRAC_VAL / 2) >> FRAC_BITS; // bottom line
+                    p00 = ((p00 * ny_frac) + (p01 * y_frac) + FRAC_VAL / 2) >> FRAC_BITS; //top + bottom
+                    *d++ = (uint8_t)p00; // store new pixel
+                }
+            }
+        } // for x
+    } // for y
+    return 0;
+} // resizeImage()
+
 #undef FRAC_BITS
+
+int resize_image(
+    const uint8_t *srcImage,
+    int srcWidth,
+    int srcHeight,
+    uint8_t *dstImage,
+    int dstWidth,
+    int dstHeight,
+    int pixel_size_src_B,
+    bool swapRB)
+{
+    if (pixel_size_src_B == 3) {
+        return resize_image_A(srcImage, srcWidth, srcHeight,
+                              dstImage, dstWidth, dstHeight,
+                              pixel_size_src_B,
+                              swapRB);
+    }
+    if (pixel_size_src_B == 2) {
+        return resize_image_RGB565(srcImage, srcWidth, srcHeight,
+                                   dstImage, dstWidth, dstHeight,
+                                   swapRB);
+    }
+
+    abort();
+}
 
 void calculate_crop_dims(uint32_t srcWidth,
 						 uint32_t srcHeight,

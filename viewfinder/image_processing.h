@@ -35,7 +35,7 @@ int crop_and_interpolate(uint8_t *image, uint32_t srcWidth, uint32_t srcHeight, 
 void white_balance(int width, int height, const uint8_t *sp, uint8_t *dp);
 int bayer_to_RGB(uint8_t *src, uint8_t *dest);
 
-int resize_image_A(
+int resize_image(
     const uint8_t *srcImage,
     int srcWidth,
     int srcHeight,
