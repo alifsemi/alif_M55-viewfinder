@@ -645,7 +645,7 @@
 //     <0x22=>   RGB565
 // <i> defines select CSI2 Data type
 // <i> default: 0x2A(RAW8)
-#define RTE_MT9M114_CAMERA_SENSOR_MIPI_CSI_DATA_TYPE               0x2A
+#define RTE_MT9M114_CAMERA_SENSOR_MIPI_CSI_DATA_TYPE               0x22
 
 // <o> select MT9M114 MIPI number of lanes in DPHY
 // <i> defines select MT9M114 MIPI number of lanes in DPHY.
@@ -696,7 +696,7 @@
 // <o> Select camera sensor MT9M114 MIPI CSI clock source division [Divisor] <2-511>
 // <i> Defines camera sensor MT9M114 MIPI CSI clock source division
 // <i> Default: 20
-#define RTE_MT9M114_CAMERA_SENSOR_MIPI_CSI_CLK_SCR_DIV             20
+#define RTE_MT9M114_CAMERA_SENSOR_MIPI_CSI_CLK_SCR_DIV             19
 
 // <o> Select camera sensor MT9M114 MIPI reset pin number
 // <i> Defines camera sensor MT9M114 MIPI reset pin number
