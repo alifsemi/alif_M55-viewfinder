@@ -289,28 +289,28 @@ int resize_image_RGB565(
             uint8_t rgb_p11[RGB_BYTES];
 
             // blue
-            rgb_p00[2] = (rgb565_p00 & 0x1F) << 3;
-            rgb_p10[2] = (rgb565_p10 & 0x1F) << 3;
-            rgb_p01[2] = (rgb565_p01 & 0x1F) << 3;
-            rgb_p11[2] = (rgb565_p11 & 0x1F) << 3;
+            rgb_p00[2] = ((rgb565_p00 & 0x1F) << 3) | ((rgb565_p00 & 0x1C) >> 2);
+            rgb_p10[2] = ((rgb565_p10 & 0x1F) << 3) | ((rgb565_p10 & 0x1C) >> 2);
+            rgb_p01[2] = ((rgb565_p01 & 0x1F) << 3) | ((rgb565_p01 & 0x1C) >> 2);
+            rgb_p11[2] = ((rgb565_p11 & 0x1F) << 3) | ((rgb565_p11 & 0x1C) >> 2);
             rgb565_p00 >>= 3;
             rgb565_p10 >>= 3;
             rgb565_p01 >>= 3;
             rgb565_p11 >>= 3;
             // green
-            rgb_p00[1] = rgb565_p00 & 0xFC;
-            rgb_p10[1] = rgb565_p10 & 0xFC;
-            rgb_p01[1] = rgb565_p01 & 0xFC;
-            rgb_p11[1] = rgb565_p11 & 0xFC;
+            rgb_p00[1] = (rgb565_p00 & 0xFC) | ((rgb565_p00 & 0xC0) >> 6);
+            rgb_p10[1] = (rgb565_p10 & 0xFC) | ((rgb565_p10 & 0xC0) >> 6);
+            rgb_p01[1] = (rgb565_p01 & 0xFC) | ((rgb565_p01 & 0xC0) >> 6);
+            rgb_p11[1] = (rgb565_p11 & 0xFC) | ((rgb565_p11 & 0xC0) >> 6);
             rgb565_p00 >>= 5;
             rgb565_p10 >>= 5;
             rgb565_p01 >>= 5;
             rgb565_p11 >>= 5;
             // red
-            rgb_p00[0] = rgb565_p00 & 0xF8;
-            rgb_p10[0] = rgb565_p10 & 0xF8;
-            rgb_p01[0] = rgb565_p01 & 0xF8;
-            rgb_p11[0] = rgb565_p11 & 0xF8;
+            rgb_p00[0] = (rgb565_p00 & 0xF8) | ((rgb565_p00 & 0xE0) >> 5);
+            rgb_p10[0] = (rgb565_p10 & 0xF8) | ((rgb565_p10 & 0xE0) >> 5);
+            rgb_p01[0] = (rgb565_p01 & 0xF8) | ((rgb565_p01 & 0xE0) >> 5);
+            rgb_p11[0] = (rgb565_p11 & 0xF8) | ((rgb565_p11 & 0xE0) >> 5);
 
             tx += RGB565_BYTES;
             if (swapRB) {
