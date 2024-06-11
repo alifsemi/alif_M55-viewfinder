@@ -253,6 +253,14 @@ int resize_image_RGB565(
     //dstWidth still needed as is
     //dstHeight shouldn't be scaled
 
+#if __ARM_FEATURE_MVE & 1
+    const uint32x4_t rgb_offset = {0,1,2,3};
+    const uint32x4_t bgr_offset = {2,1,0,3};
+    const uint32x4_t output_offset = swapRB ? bgr_offset : rgb_offset;
+    const uint32_t corner_offset_vals[4] = { 0, RGB565_BYTES, srcWidth, srcWidth + RGB565_BYTES };
+    const uint32x4_t corner_offsets = vldrwq_u32((uint32_t*)corner_offset_vals);
+#endif
+
     const uint8_t *s;
     uint8_t *d;
 
@@ -268,15 +276,53 @@ int resize_image_RGB565(
         // start at 1/2 pixel in to account for integer downsampling which might miss pixels
         src_x_accum = FRAC_VAL / 2;
         for (x = 0; x < dstWidth; x++) {
-            uint32_t tx;
             // do indexing computations
-            tx = (src_x_accum >> FRAC_BITS) * RGB565_BYTES;
+            const uint32_t tx = (src_x_accum >> FRAC_BITS) * RGB565_BYTES;
             x_frac = src_x_accum & FRAC_MASK;
             nx_frac = FRAC_VAL - x_frac; // x fraction and 1.0 - x fraction
             src_x_accum += src_x_frac;
             __builtin_prefetch(&s[tx + 64]);
             __builtin_prefetch(&s[tx + srcWidth + 64]);
 
+#if __ARM_FEATURE_MVE & 1
+            uint32x4_t corners = vldrhq_gather_offset_u32((const uint16_t *) (s + tx), corner_offsets);
+
+            // Reinterpret to uint8 and fill LSB bits
+            uint8x16_t blue = vreinterpretq_u8(corners);
+            blue = vshlq_n(blue, 3);
+            blue = vsriq(blue, blue, 5);
+
+            corners = vshrq_n_u32(corners, 3);
+            uint8x16_t green = vreinterpretq_u8(corners);
+            green = vsriq(green, green, 6);
+
+            corners = vshrq_n_u32(corners, 5);
+            uint8x16_t red = vreinterpretq_u8(corners);
+            red = vsriq(red, red, 5);
+
+            // We now have 4 corners packed in separate red, green blue registers
+            // Permute so we have red green blue packed in separate corner registers
+            uint8x16x4_t rgbx = { red, green, blue, vuninitializedq_u8() };
+            uint8_t swapbuf[64];
+            vst4q_u8(swapbuf, rgbx);
+            uint32x4_t p00 = vldrbq_u32(swapbuf + 0);
+            uint32x4_t p10 = vldrbq_u32(swapbuf + 16);
+            uint32x4_t p01 = vldrbq_u32(swapbuf + 32);
+            uint32x4_t p11 = vldrbq_u32(swapbuf + 48);
+
+            p00 = vmulq(p00, nx_frac);
+            p00 = vmlaq(p00, p10, x_frac);
+            p00 = vrshrq(p00, FRAC_BITS);
+            p01 = vmulq(p01, nx_frac);
+            p01 = vmlaq(p01, p11, x_frac);
+            p01 = vrshrq(p01, FRAC_BITS);
+            p00 = vmulq(p00, ny_frac);
+            p00 = vmlaq(p00, p01, y_frac);
+            p00 = vrshrq(p00, FRAC_BITS);
+            vstrbq_scatter_offset_p_u32(d, output_offset, p00, vctp32q(RGB_BYTES));
+
+            d += RGB_BYTES;
+#else
             //interpolate and write out
             uint16_t rgb565_p00 = *((uint16_t*)&s[tx]);
             uint16_t rgb565_p10 = *((uint16_t*)&s[tx + RGB565_BYTES]);
@@ -312,7 +358,6 @@ int resize_image_RGB565(
             rgb_p01[0] = (rgb565_p01 & 0xF8) | ((rgb565_p01 & 0xE0) >> 5);
             rgb_p11[0] = (rgb565_p11 & 0xF8) | ((rgb565_p11 & 0xE0) >> 5);
 
-            tx += RGB565_BYTES;
             if (swapRB) {
                 for (int color = RGB_BYTES -1; color >= 0; color--)
                 {
@@ -342,6 +387,7 @@ int resize_image_RGB565(
                     *d++ = (uint8_t)p00; // store new pixel
                 }
             }
+#endif
         } // for x
     } // for y
     return 0;
