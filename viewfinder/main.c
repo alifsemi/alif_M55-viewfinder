@@ -126,7 +126,7 @@ static void display_callback(uint32_t event)
     }
 }
 
-int camera_init()
+int camera_init(void)
 {
     int ret = CAMERAdrv->Initialize(camera_callback);
     if(ret != ARM_DRIVER_OK)
@@ -174,7 +174,7 @@ int camera_init()
     return ret;
 }
 
-int display_init()
+int display_init(void)
 {
     /* Initialize CDC driver */
     int ret = CDCdrv->Initialize(display_callback);
@@ -209,7 +209,7 @@ int display_init()
     return ret;
 }
 
-void clock_init()
+void clock_init(void)
 {
     uint32_t service_error_code = 0;
     /* Enable Clocks */
@@ -226,7 +226,7 @@ void clock_init()
     }
 }
 
-void main (void)
+int main(void)
 {
     BOARD_Pinmux_Init();
 
