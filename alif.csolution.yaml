@@ -4,9 +4,9 @@ solution:
   cdefault:
 
   packs:
-    - pack: AlifSemiconductor::Ensemble@1.1.1
+    - pack: AlifSemiconductor::Ensemble@1.2.0
     - pack: ARM::CMSIS@6.0.0
- 
+
   target-types:
     - type: HE
       device: Alif Semiconductor::AE722F80F55D5LS:M55_HE
