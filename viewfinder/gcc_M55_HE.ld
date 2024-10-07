@@ -54,6 +54,7 @@ SECTIONS
     *system_M55.c.obj(.text .rodata*)
     *mpu_M55.c.obj(.text .rodata*)
     *system_utils.c.obj(.text .rodata*)
+    *tcm_partition.c.obj(.text* .rodata*)
 
     *lv_*.c.obj(.text .rodata*)
 
