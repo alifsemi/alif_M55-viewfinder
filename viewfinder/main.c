@@ -47,11 +47,15 @@ extern uint32_t SystemCoreClock;
 
 /* Camera Controller Resolution. */
 #if RTE_Drivers_CAMERA_SENSOR_MT9M114
-#define CAM_FRAME_WIDTH        (RTE_MT9M114_CAMERA_SENSOR_MIPI_FRAME_WIDTH)
-#define CAM_FRAME_HEIGHT       (RTE_MT9M114_CAMERA_SENSOR_MIPI_FRAME_HEIGHT)
-#define CAM_COLOR_CORRECTION   (0)
-#define CAM_USE_RGB565         (RTE_MT9M114_CAMERA_SENSOR_MIPI_CSI_DATA_TYPE == 0x22)
-#define RGB_BUFFER_SECTION     ".bss.camera_frame_bayer_to_rgb_buf_at_sram0"
+#if (RTE_MT9M114_CAMERA_SENSOR_MIPI_IMAGE_CONFIG == 2)
+    #define CAM_FRAME_WIDTH        (1280)
+    #define CAM_FRAME_HEIGHT       (720)
+    #define CAM_COLOR_CORRECTION   (0)
+    #define CAM_USE_RGB565         (1)
+    #define RGB_BUFFER_SECTION     ".bss.camera_frame_bayer_to_rgb_buf_at_sram0"
+#else
+    #error "Unsupported MT9M114 configuration"
+#endif
 #elif RTE_Drivers_CAMERA_SENSOR_ARX3A0
 #define CAM_FRAME_WIDTH        (RTE_ARX3A0_CAMERA_SENSOR_FRAME_WIDTH)
 #define CAM_FRAME_HEIGHT       (RTE_ARX3A0_CAMERA_SENSOR_FRAME_HEIGHT)
@@ -60,7 +64,7 @@ extern uint32_t SystemCoreClock;
 #define RGB_BUFFER_SECTION     ".bss.camera_frame_bayer_to_rgb_buf"
 #endif
 
-#define CAM_BYTES_PER_PIXEL 
+#define CAM_BYTES_PER_PIXEL
 #define CAM_FRAME_SIZE (CAM_FRAME_WIDTH * CAM_FRAME_HEIGHT)
 #define CAM_MPIX (CAM_FRAME_SIZE / 1000000.0f)
 #define CAM_FRAME_SIZE_BYTES (CAM_FRAME_SIZE + CAM_USE_RGB565 * CAM_FRAME_SIZE)
@@ -337,7 +341,7 @@ int main(void)
         } else {
             printf("\r\n Error: CAMERA Capture Frame failed.\r\n");
         }
-    } 
+    }
 
     // Set RED LED in error case
     BOARD_LED1_Control(BOARD_LED_STATE_HIGH);
