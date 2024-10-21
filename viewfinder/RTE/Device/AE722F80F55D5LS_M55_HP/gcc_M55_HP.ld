@@ -1,6 +1,6 @@
 /* This file was ported to work on Alif Semiconductor Ensemble family of devices. */
 
-/* Copyright (C) 2022 Alif Semiconductor - All Rights Reserved.
+/* Copyright (C) 2023 Alif Semiconductor - All Rights Reserved.
  * Use, distribution and modification of this code is permitted under the
  * terms stated in the Alif Semiconductor Software License Agreement
  *
@@ -30,13 +30,22 @@
 __STACK_SIZE    = 0x00002000;
 __HEAP_SIZE     = 0x00004000;
 __APP_HEAP_SIZE = 0x00004000;
-__ROM_BASE      = 0x80000000;
-__ROM_SIZE      = 0x0057F000;
+__ROM_BASE      = 0x80200000;
+__ROM_SIZE      = 0x00200000;
+
+TGU_BLOCK_SIZE   = 16384;
+
+/*
+ * Note:
+ * The empty regions(eg SRAM1) are ON by default, but may have been released
+ * by some example applications. So make sure your application requests
+ * power for these regions before adding contents.
+ */
 
 MEMORY
 {
   ITCM  (rwx) : ORIGIN = 0x00000000, LENGTH = 0x00040000
-  DTCM  (rwx) : ORIGIN = 0x20000000, LENGTH = 0x00040000
+  DTCM  (rwx) : ORIGIN = 0x20000000, LENGTH = 0x00100000
   SRAM0 (rwx) : ORIGIN = 0x02000000, LENGTH = 0x00400000
   SRAM1 (rwx) : ORIGIN = 0x08000000, LENGTH = 0x00280000
   MRAM  (rx)  : ORIGIN = __ROM_BASE, LENGTH = __ROM_SIZE
@@ -50,15 +59,18 @@ SECTIONS
   {
     KEEP(*(.vectors))
 
-    *startup_M55_*.c.obj(.text .rodata*)
-    *system_M55.c.obj(.text .rodata*)
-    *mpu_M55.c.obj(.text .rodata*)
-    *system_utils.c.obj(.text .rodata*)
-    *tcm_partition.c.obj(.text* .rodata*)
+    *startup_*(.text .rodata*)
+    *system_*(.text .rodata*)
+    *system_utils*(.text .rodata*)
+    *pm*(.text .rodata*)
+    *tgu_*(.text .rodata*)
+    *mpu_*(.text .rodata*)
+    *tcm_partition*(.text .rodata*)
 
-    *lv_*.c.obj(.text .rodata*)
+    *lv_*(.text .rodata*)
 
     *(startup_ro_data)
+    . = ALIGN(16);
   } > MRAM
 
   .copy.table : ALIGN(4)
@@ -71,6 +83,7 @@ SECTIONS
     LONG ( ADDR(.code.at_itcm) )
     LONG ( SIZEOF(.code.at_itcm)/4 )
     __copy_table_end__ = .;
+    . = ALIGN(16);
   } > MRAM
 
   .zero.table : ALIGN(4)
@@ -80,14 +93,14 @@ SECTIONS
     LONG (SIZEOF(.bss)/4)
     LONG (ADDR(.bss.at_sram0))
     LONG (SIZEOF(.bss.at_sram0)/4)
-    LONG (ADDR(.bss.at_sram1))
-    LONG (SIZEOF(.bss.at_sram1)/4)
     __zero_table_end__ = .;
+    . = ALIGN(16);
   } > MRAM
 
   .code.at_itcm : ALIGN(8)
   {
-    *(.text*)    
+    *(.text*)
+    . = ALIGN(16);
   } > ITCM AT > MRAM
 
   .data.at_dtcm : ALIGN(8)
@@ -95,7 +108,7 @@ SECTIONS
     *(vtable)
     *(.data)
     *(.data*)
-    *arm_common_tables.c.obj(.data* .rodata*)
+    *arm_common_tables*(.data* .rodata*)
 
     KEEP(*(.jcr*))
 
@@ -105,8 +118,8 @@ SECTIONS
     __exidx_start = .;
     *(.ARM.exidx* .gnu.linkonce.armexidx.*)
     __exidx_end = .;
-
-  } > DTCM AT> MRAM
+    . = ALIGN(16);
+  } > DTCM AT > MRAM
 
   .bss.at_sram0 (NOLOAD) : ALIGN(8)
   {
@@ -131,7 +144,18 @@ SECTIONS
     __bss_end__ = .;
   } > DTCM
 
-  .__app_heap :
+  .nonsecure0_region (NOLOAD) :
+  {
+    . = ALIGN(TGU_BLOCK_SIZE);
+    __ns_region_0_start = .;
+    * (eth_buf)
+    * (usb_dma_buf)
+    * (sd_dma_buf)
+    . = ALIGN(TGU_BLOCK_SIZE);
+    __ns_region_0_end = .;
+  } > DTCM
+
+  .__app_heap (NOLOAD) : ALIGN(8)
   {
      . = ALIGN(8);
      __RAM_segment_used_end__ = .;
@@ -159,7 +183,7 @@ SECTIONS
 
   .readonly.at_mram : ALIGN(8)
   {
-    /* Use wildcards to mop up any read-only not directed to TCM */ 
+    /* Use wildcards to mop up any read-only not directed to TCM */
     KEEP(*(.init))
     KEEP(*(.fini))
 
@@ -200,6 +224,7 @@ SECTIONS
     *(.rodata*)
 
     KEEP(*(.eh_frame*))
+    . = ALIGN(16);
   } > MRAM
 
   /* Check if data + heap + stack exceeds RAM limit */

@@ -541,7 +541,7 @@
 //     <1=> enable
 // <i> define if to enable or disable AR0144 camera sensor
 // <i> default: enable
-#define RTE_AR0144_CAMERA_SENSOR_CSI_ENABLE                   0
+#define RTE_AR0144_CAMERA_SENSOR_CSI_ENABLE                   1
 
 #if (RTE_AR0144_CAMERA_SENSOR_CSI_ENABLE)
 
