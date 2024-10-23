@@ -1,13 +1,12 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Open-CMSIS-Pack/devtools/tools/projmgr/2.3.0/tools/projmgr/schemas/cdefault.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Open-CMSIS-Pack/devtools/tools/projmgr/2.6.0/tools/projmgr/schemas/cdefault.schema.json
 default:
-  compiler: GCC
   misc:
     - for-compiler: GCC
       C:
         - -std=c99
         - -fdata-sections
 
-      Link:       
+      Link:
         - --specs=nosys.specs
         - --entry=Reset_Handler
         - -Wl,-Map=linker.map,--cref,-print-memory-usage,--gc-sections,--no-warn-rwx-segments

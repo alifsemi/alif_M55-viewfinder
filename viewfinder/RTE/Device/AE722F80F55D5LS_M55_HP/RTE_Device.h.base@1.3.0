@@ -455,7 +455,7 @@
 //     <90=> 90 FPS
 // <i> Defines camera ARX3A0 frame per second
 // <i> Default: 90 FPS
-#define RTE_ARX3A0_CAMERA_SENSOR_CSI_CFG_FPS                 40
+#define RTE_ARX3A0_CAMERA_SENSOR_CSI_CFG_FPS                 90
 
 // <o> Select camera ARX3A0 frequency
 // <i> Defines camera ARX3A0 frequency
@@ -1065,7 +1065,7 @@
 //     <5=> 24bit
 // <i> Defines Color mode for display panel
 // <i> Default: 24bit
-#define RTE_ILI9806E_PANEL_DSI_COLOR_MODE            5
+#define RTE_ILI9806E_PANEL_DSI_COLOR_MODE            1
 
 // <o> Number of data lanes
 //     <1=> ONE
@@ -1392,7 +1392,7 @@
 //     <7=> ARGB4444
 // <i> Defines CDC200 pixel format
 // <i> Default: RGB888
-#define RTE_CDC200_PIXEL_FORMAT              1
+#define RTE_CDC200_PIXEL_FORMAT              2
 
 // <o> CDC200 Constant alpha <0-255>
 // <i> Defines CDC200 constant alpha range from 0 (fully transparent) to 255 or 1.0 (fully opaque).
@@ -8658,7 +8658,7 @@
 // <i> Defines Interrupt priority for GPIO5_PIN7.
 // <i> Default: 0
 #define RTE_GPIO5_PIN7_IRQ_PRIORITY     0
-#endif
+#endif 
 // </e> GPIO5
 
 // <e> GPIO6
@@ -9144,7 +9144,7 @@
 // <i> Defines Interrupt priority for GPIO11_PIN7.
 // <i> Default: 0
 #define RTE_GPIO11_PIN7_IRQ_PRIORITY     0
-#endif
+#endif 
 // </e> GPIO11
 
 // <e> GPIO12
@@ -9602,3 +9602,4 @@
 // </h> Power Management (PM)
 
 #endif  /* __RTE_DEVICE_H */
+

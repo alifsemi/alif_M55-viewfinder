@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Open-CMSIS-Pack/devtools/tools/projmgr/2.3.0/tools/projmgr/schemas/cproject.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Open-CMSIS-Pack/devtools/tools/projmgr/2.6.0/tools/projmgr/schemas/cproject.schema.json
 project:
   groups:
     - group: App
@@ -14,14 +14,6 @@ project:
         - file: ../libs/common_app_utils/logging/uart_tracelib.c
         - file: ../libs/common_app_utils/logging/retarget.c
         - file: ../libs/common_app_utils/fault_handler/fault_handler.c
-
-  linker:
-    - script: gcc_M55_HE.ld
-      for-compiler: GCC
-      for-context: +HE
-    - script: gcc_M55_HP.ld
-      for-compiler: GCC
-      for-context: +HP
 
   output:
     base-name: $Project$

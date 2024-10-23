@@ -1,4 +1,10 @@
 {
+  "DEVICE": {
+    "disabled" : false,
+    "binary": "app-device-config.json",
+    "version" : "0.5.00",
+    "signed": true
+  },
   "USER_APP": {
     "binary": "alif-img.bin",
     "mramAddress": "0x80000000",
