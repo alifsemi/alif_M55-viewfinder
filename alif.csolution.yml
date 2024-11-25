@@ -39,4 +39,4 @@ solution:
     - _UNICODE
 
   projects:
-    - project: viewfinder/viewfinder.cproject.yaml
+    - project: viewfinder/viewfinder.cproject.yml
