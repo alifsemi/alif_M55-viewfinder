@@ -7,6 +7,8 @@ project:
         - file: bayer2rgb.c
         - file: image_processing.c
         - file: color_correction.c
+        - file: power_management.c
+
     - group: Board
       files:
         - file: ../libs/board/devkit_gen2/board_init.c

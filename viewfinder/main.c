@@ -18,7 +18,7 @@
 #include "board.h"
 #include "bayer.h"
 #include "image_processing.h"
-#include "power.h"
+#include "power_management.h"
 
 #include "se_services_port.h"
 
@@ -237,9 +237,7 @@ int main(void)
     /* Initialize the SE services */
     se_services_port_init();
 
-    /* Enable MIPI power. TODO: To be changed to aiPM call */
-    enable_mipi_dphy_power();
-    disable_mipi_dphy_isolation();
+    bool pm_ok = init_power_management();
 
     clock_init();
 
@@ -247,6 +245,11 @@ int main(void)
     tracelib_init(NULL, uart_callback);
 #endif
     clk_init(); // for time.h clock()
+
+    if (!pm_ok) {
+        printf("\r\nError: power management init failed.\r\n");
+        __BKPT(0);
+    }
 
     // Init camera
     int ret = camera_init();
