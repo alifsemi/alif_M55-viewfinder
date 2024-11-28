@@ -7,16 +7,10 @@
  * contact@alifsemi.com, or visit: https://alifsemi.com/license
  *
  */
+#ifndef ALIF_LOGO_H
+#define ALIF_LOGO_H
+#include "aipl_image.h"
 
-#ifndef POWER_MANAGEMENT_H_
-#define POWER_MANAGEMENT_H_
-
-#include <stdint.h>
-#include <stdbool.h>
-
-#include "aipm.h"
-
-void print_runprofile(const run_profile_t *runprof);
-bool init_power_management(void);
+aipl_image_t create_alif_logo(void);
 
 #endif

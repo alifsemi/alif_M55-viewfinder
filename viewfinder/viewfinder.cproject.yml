@@ -1,13 +1,40 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Open-CMSIS-Pack/devtools/tools/projmgr/2.6.0/tools/projmgr/schemas/cproject.schema.json
 project:
+  # Select development board variant
+  #   <4=> Alif Development Kit (Generation 2)
+  #   <5=> Alif AI/ML Application Kit (Generation 2)
+  define:
+    - BOARD_ALIF_DEVKIT_VARIANT: 4
+
   groups:
     - group: App
       files:
         - file: main.c
         - file: bayer2rgb.c
-        - file: image_processing.c
-        - file: color_correction.c
-        - file: power_management.c
+        - file: power_management/power_management.c
+        - file: camera/camera.c
+        - file: logo/alif_logo.c
+
+    - group: ImageProcessingLibraryIntegration
+      files:
+        - file: aipl/video_alloc.c
+        - file: graphics/image.c
+        - file: display/disp.c
+
+    - group: ImageProcessingLibrary
+      files:
+        - file: ../libs/alif_image-processing/source/aipl_color_formats.c
+        - file: ../libs/alif_image-processing/source/aipl_image.c
+        - file: ../libs/alif_image-processing/source/aipl_video_alloc.c
+        - file: ../libs/alif_image-processing/source/aipl_color_conversion.c
+        - file: ../libs/alif_image-processing/source/aipl_color_correction.c
+        - file: ../libs/alif_image-processing/source/aipl_white_balance.c
+        - file: ../libs/alif_image-processing/source/aipl_lut_transform.c
+        - file: ../libs/alif_image-processing/source/aipl_crop.c
+        - file: ../libs/alif_image-processing/source/aipl_resize.c
+        - file: ../libs/alif_image-processing/source/aipl_rotate.c
+        - file: ../libs/alif_image-processing/source/aipl_flip.c
+        - file: ../libs/alif_image-processing/source/aipl_dave2d.c
 
     - group: Board
       files:
@@ -29,6 +56,13 @@ project:
     - ../libs/board/
     - ../libs/common_app_utils/logging
     - ../libs/common_app_utils/fault_handler
+    - ../libs/alif_image-processing/include
+    - power_management
+    - camera
+    - graphics
+    - display
+    - logo
+
   components:
     # needed for Alif Ensemble support
     - component: AlifSemiconductor::Device:Startup&C Startup
@@ -74,7 +108,7 @@ project:
     - component: AlifSemiconductor::Device:SE runtime Services:Initialization Helper
 
     - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
-    # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
+    #- component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
     # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor AR0144
     # - component: AlifSemiconductor::BSP:External peripherals:Ethernet PHY
     # - component: AlifSemiconductor::BSP:External peripherals:GT911 Touch Controller
@@ -85,3 +119,8 @@ project:
     # - component: AlifSemiconductor::Device:Retarget IO:STDERR
     # - component: AlifSemiconductor::Device:Retarget IO:STDIN
     # - component: AlifSemiconductor::Device:Retarget IO:STDOUT
+
+    # D/AVE2D driver
+    - component: AlifSemiconductor::Graphics:DAVE2D:Layer2
+    - component: AlifSemiconductor::Graphics:DAVE2D:Layer1
+    - component: AlifSemiconductor::Graphics:DAVE2D:Layer0Lib
