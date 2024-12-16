@@ -19,6 +19,8 @@
 #include "bayer.h"
 #include "image_processing.h"
 #include "power.h"
+#include "dave_d0lib.h"
+#include "aipl_image.h"
 
 #include "se_services_port.h"
 
@@ -52,7 +54,6 @@ extern uint32_t SystemCoreClock;
     #define CAM_FRAME_HEIGHT       (720)
     #define CAM_COLOR_CORRECTION   (0)
     #define CAM_USE_RGB565         (1)
-    #define RGB_BUFFER_SECTION     ".bss.camera_frame_bayer_to_rgb_buf_at_sram0"
 #else
     #error "Unsupported MT9M114 configuration"
 #endif
@@ -61,7 +62,6 @@ extern uint32_t SystemCoreClock;
 #define CAM_FRAME_HEIGHT       (RTE_ARX3A0_CAMERA_SENSOR_FRAME_HEIGHT)
 #define CAM_COLOR_CORRECTION   (1)
 #define CAM_USE_RGB565         (0)
-#define RGB_BUFFER_SECTION     ".bss.camera_frame_bayer_to_rgb_buf"
 #endif
 
 #define CAM_BYTES_PER_PIXEL
@@ -71,13 +71,8 @@ extern uint32_t SystemCoreClock;
 
 static uint8_t camera_buffer[CAM_FRAME_SIZE_BYTES] __attribute__((aligned(32), section(".bss.camera_frame_buf")));
 
-// Buffer for bayer conversion to RGB is not needed when camera outputs RGB565
-#if CAM_USE_RGB565
-static const uint8_t *get_resize_source_buffer() { return camera_buffer; }
-#else
-static uint8_t image_buffer[CAM_FRAME_SIZE * RGB_BYTES] __attribute__((aligned(32), section(RGB_BUFFER_SECTION)));
-static const uint8_t *get_resize_source_buffer() { return image_buffer; }
-#endif
+#define D1_HEAP_SIZE 0x2c0000
+static uint8_t d0_heap[D1_HEAP_SIZE] __attribute__((section(".bss.video_mem_heap")));
 
 /* Camera  Driver instance 0 */
 extern ARM_DRIVER_CPI Driver_CPI;
@@ -248,6 +243,19 @@ int main(void)
 #endif
     clk_init(); // for time.h clock()
 
+#if (D1_MEM_ALLOC == D1_MALLOC_D0LIB)
+    /*-------------------------
+     * Initialize D/AVE D0 heap
+     * -----------------------*/
+    if (!d0_initheapmanager(d0_heap, sizeof(d0_heap), d0_mm_fixed_range,
+                            NULL, 0, 0, 0, d0_ma_unified))
+    {
+        printf("\r\nError: Heap manager initialization failed\n");
+        __BKPT(0);
+    }
+#endif
+
+
     // Init camera
     int ret = camera_init();
     if (ret != ARM_DRIVER_OK) {
@@ -264,6 +272,26 @@ int main(void)
     DCB->DEMCR |= DCB_DEMCR_TRCENA_Msk;
     ARM_PMU_Enable();
     ARM_PMU_CNTR_Enable(PMU_CNTENSET_CCNTR_ENABLE_Msk);
+
+    // Prepare buffers
+#if CAM_USE_RGB565
+    aipl_image_t image = {
+        .data = camera_buffer,
+        .pitch = CAM_FRAME_WIDTH,
+        .width = CAM_FRAME_WIDTH,
+        .height = CAM_FRAME_HEIGHT,
+        .format = AIPL_COLOR_RGB565
+    };
+#else
+    aipl_image_t image;
+    if (aipl_image_create(&image, CAM_FRAME_WIDTH,
+                          CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT,
+                          AIPL_COLOR_RGB888) != AIPL_ERR_OK)
+    {
+        printf("\r\nNot enough memory to allocate input image buffer\r\n");
+        __BKPT(0);
+    }
+#endif
 
     // Capture frames in loop
     printf("\r\n Let's Start Capturing Camera Frame...\r\n");
@@ -292,7 +320,7 @@ int main(void)
 // MT9M114 can use bayer or RGB565 depending on RTE config
 #if !CAM_USE_RGB565
             uint32_t bayer_time = ARM_PMU_Get_CCNTR();
-            dc1394_bayer_Simple(camera_buffer, image_buffer, CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT, BAYER_FORMAT);
+            dc1394_bayer_Simple(camera_buffer, image.data, CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT, BAYER_FORMAT);
             bayer_time = ARM_PMU_Get_CCNTR() - bayer_time;
 #endif
 
@@ -301,7 +329,7 @@ int main(void)
 // the RGB --> BGR is done in the resize phase
 #if CAM_COLOR_CORRECTION
             uint32_t wb_time = ARM_PMU_Get_CCNTR();
-            white_balance(CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT, image_buffer, image_buffer);
+            white_balance(CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT, image.data, image.data);
             wb_time = ARM_PMU_Get_CCNTR() - wb_time;
 #endif
 
@@ -309,7 +337,7 @@ int main(void)
             const int rescaleHeight = (int)(CAM_FRAME_HEIGHT * (float)rescaleWidth / CAM_FRAME_WIDTH);
 
             uint32_t resize_time = ARM_PMU_Get_CCNTR();
-            resize_image(get_resize_source_buffer(),
+            resize_image(image.data,
                          CAM_FRAME_WIDTH,
                          CAM_FRAME_HEIGHT,
                          (uint8_t*)lcd_image,
@@ -322,26 +350,30 @@ int main(void)
 
             if (clock() - print_ts >= PRINT_INTERVAL_CLOCKS) {
                 print_ts = clock();
-                printf("Frame capture took %.3fms\n", capture_time * 1000.0f / SystemCoreClock);
+                printf("Frame capture took %.3fms\r\n", capture_time * 1000.0f / SystemCoreClock);
 
 #if !CAM_USE_RGB565
                 float bayer_time_s = (float)bayer_time / SystemCoreClock;
-                printf("Bayer conversion %.3fms (throughput=%.2fMpix/s)\n", bayer_time_s * 1000.0f,
+                printf("Bayer conversion %.3fms (throughput=%.2fMpix/s)\r\n", bayer_time_s * 1000.0f,
                                                                             CAM_MPIX / bayer_time_s);
 #endif
 #if CAM_COLOR_CORRECTION
                 float wb_time_s = (float)wb_time / SystemCoreClock;
-                printf("White balance %.3fms (throughput=%.2fMpix/s)\n", wb_time_s * 1000.0f,
+                printf("White balance %.3fms (throughput=%.2fMpix/s)\r\n", wb_time_s * 1000.0f,
                                                                          CAM_MPIX / wb_time_s);
 #endif
                 float resize_time_s = (float)resize_time / SystemCoreClock;
-                printf("Resize to display %.3fms (throughput=%.2fMpix/s)\n", resize_time_s * 1000.0f,
+                printf("Resize to display %.3fms (throughput=%.2fMpix/s)\r\n", resize_time_s * 1000.0f,
                                                                              CAM_MPIX / resize_time_s);
             }
         } else {
             printf("\r\n Error: CAMERA Capture Frame failed.\r\n");
         }
     }
+
+#if !CAM_USE_RGB565
+    aipl_image_destroy(&image);
+#endif
 
     // Set RED LED in error case
     BOARD_LED1_Control(BOARD_LED_STATE_HIGH);

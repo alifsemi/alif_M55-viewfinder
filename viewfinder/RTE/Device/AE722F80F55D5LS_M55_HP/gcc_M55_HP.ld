@@ -123,14 +123,13 @@ SECTIONS
 
   .bss.at_sram0 (NOLOAD) : ALIGN(8)
   {
-    * (.bss.camera_frame_bayer_to_rgb_buf_at_sram0) /*  Bayer to RGB buffer for bigger resolution MT9M119 */
+    * (.bss.video_mem_heap)                /* Heap buffer for video memory */
     * (.bss.lcd_frame_buf)                 /* LCD frame Buffer. */
   } > SRAM0
 
   .bss.at_sram1 (NOLOAD) :
   {
-    * (.bss.camera_frame_buf)              /* Camer Frame Buffer */
-    * (.bss.camera_frame_bayer_to_rgb_buf) /* (Optional) Camera Frame Buffer for Bayer to RGB Conversion. */
+    * (.bss.camera_frame_buf)              /* Camera Frame Buffer */
   } > SRAM1
 
   .bss (NOLOAD) : ALIGN(8)

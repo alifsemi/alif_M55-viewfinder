@@ -7,6 +7,8 @@ project:
         - file: bayer2rgb.c
         - file: image_processing.c
         - file: color_correction.c
+        - file: video_alloc.c
+        - file: cpu_cache.c
     - group: Board
       files:
         - file: ../libs/board/devkit_gen2/board_init.c
@@ -31,7 +33,7 @@ project:
     # needed for Alif Ensemble support
     - component: AlifSemiconductor::Device:Startup&C Startup
     - component: ARM::CMSIS:CORE
-    
+
     # peripheral drivers & middleware, uncomment as needed
     # - component: AlifSemiconductor::Device:SOC Peripherals:ADC
     # - component: AlifSemiconductor::Device:SOC Peripherals:CAN-FD
@@ -64,7 +66,7 @@ project:
     - component: AlifSemiconductor::Device:SOC Peripherals:USART
     # - component: AlifSemiconductor::Device:SOC Peripherals:UTIMER
     # - component: AlifSemiconductor::Device:SOC Peripherals:WDT
-    
+
     # - component: AlifSemiconductor::Device:OSPI FLASH XIP:core
     # - component: AlifSemiconductor::Device:OSPI FLASH XIP:utility
     # - component: AlifSemiconductor::Device:OSPI HYPERRAM XIP
@@ -83,3 +85,16 @@ project:
     # - component: AlifSemiconductor::Device:Retarget IO:STDERR
     # - component: AlifSemiconductor::Device:Retarget IO:STDIN
     # - component: AlifSemiconductor::Device:Retarget IO:STDOUT
+
+    # D/AVE2D driver
+    - component: AlifSemiconductor::Graphics:DAVE2D:Layer2
+    - component: AlifSemiconductor::Graphics:DAVE2D:Layer1
+    - component: AlifSemiconductor::Graphics:DAVE2D:Layer0Lib
+
+    # AIPL
+    - component: AlifSemiconductor::Graphics:AIPL:Essential
+    - component: AlifSemiconductor::Graphics:AIPL:Basic
+    - component: AlifSemiconductor::Graphics:Acceleration:Dave2d
+    - component: AlifSemiconductor::Graphics:Acceleration:Helium
+    - component: AlifSemiconductor::Graphics:AIPL:Color correction
+    # - component: AlifSemiconductor::Graphics:AIPL:Color conversion
