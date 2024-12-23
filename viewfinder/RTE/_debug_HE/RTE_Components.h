@@ -44,6 +44,12 @@
 #define RTE_Drivers_USART5   1           /* Driver UART5 */
 #define RTE_Drivers_USART6   1           /* Driver UART6 */
 #define RTE_Drivers_USART7   1           /* Driver UART7 */
+/* AlifSemiconductor::Graphics:Acceleration:Dave2d@1.0.0 */
+/*! \brief enable Dave2D acceleration */
+#define AIPL_DAVE2D_ACCELERATION
+/* AlifSemiconductor::Graphics:Acceleration:Helium@1.0.0 */
+/*! \brief enable Helium */
+#define AIPL_HELIUM_ACCELERATION
 
 
 #endif /* RTE_COMPONENTS_H */
