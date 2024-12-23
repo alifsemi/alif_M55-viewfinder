@@ -1,14 +1,27 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Open-CMSIS-Pack/devtools/tools/projmgr/2.6.0/tools/projmgr/schemas/cproject.schema.json
 project:
+  # Select development board variant
+  #   <4=> Alif Development Kit (Generation 2)
+  #   <5=> Alif AI/ML Application Kit (Generation 2)
+  define:
+    - BOARD_ALIF_DEVKIT_VARIANT: 4
+
   groups:
     - group: App
       files:
         - file: main.c
         - file: bayer2rgb.c
-        - file: image_processing.c
-        - file: color_correction.c
-        - file: video_alloc.c
-        - file: cpu_cache.c
+        - file: power_management/power_management.c
+        - file: camera/camera.c
+        - file: logo/alif_logo.c
+
+    - group: ImageProcessingLibraryIntegration
+      files:
+        - file: aipl/video_alloc.c
+        - file: aipl/cpu_cache.c
+        - file: graphics/image.c
+        - file: display/disp.c
+
     - group: Board
       files:
         - file: ../libs/board/devkit_gen2/board_init.c
@@ -29,6 +42,12 @@ project:
     - ../libs/board/
     - ../libs/common_app_utils/logging
     - ../libs/common_app_utils/fault_handler
+    - power_management
+    - camera
+    - graphics
+    - display
+    - logo
+
   components:
     # needed for Alif Ensemble support
     - component: AlifSemiconductor::Device:Startup&C Startup
@@ -74,7 +93,7 @@ project:
     - component: AlifSemiconductor::Device:SE runtime Services:Initialization Helper
 
     - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
-    # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
+    #- component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
     # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor AR0144
     # - component: AlifSemiconductor::BSP:External peripherals:Ethernet PHY
     # - component: AlifSemiconductor::BSP:External peripherals:GT911 Touch Controller
@@ -97,4 +116,5 @@ project:
     - component: AlifSemiconductor::Graphics:Acceleration:Dave2d
     - component: AlifSemiconductor::Graphics:Acceleration:Helium
     - component: AlifSemiconductor::Graphics:AIPL:Color correction
-    # - component: AlifSemiconductor::Graphics:AIPL:Color conversion
+    - component: AlifSemiconductor::Graphics:AIPL:Color conversion
+    - component: AlifSemiconductor::Graphics:AIPL:Bayer

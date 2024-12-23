@@ -10,8 +10,10 @@
 extern "C" {
 #endif
 
+#if defined(_RTE_)
 #include <RTE_Components.h>
 #include CMSIS_device_header
+#endif
 
 /**
  * Custom video alloc setting
@@ -46,19 +48,20 @@ extern "C" {
 #define TO_RGBA8888     BIT(4)
 #define TO_RGBA4444     BIT(5)
 #define TO_RGBA5551     BIT(6)
-#define TO_RGB888       BIT(7)
-#define TO_RGB565       BIT(8)
-#define TO_YV12         BIT(9)
-#define TO_I420         BIT(10)
-#define TO_I422         BIT(11)
-#define TO_I444         BIT(12)
-#define TO_NV12         BIT(13)
-#define TO_NV21         BIT(14)
-#define TO_YUY2         BIT(15)
-#define TO_UYVY         BIT(16)
+#define TO_BGR888       BIT(7)
+#define TO_RGB888       BIT(8)
+#define TO_RGB565       BIT(9)
+#define TO_YV12         BIT(10)
+#define TO_I420         BIT(11)
+#define TO_I422         BIT(12)
+#define TO_I444         BIT(13)
+#define TO_NV12         BIT(14)
+#define TO_NV21         BIT(15)
+#define TO_YUY2         BIT(16)
+#define TO_UYVY         BIT(17)
 #define TO_ALL          (TO_ALPHA8_I400 | TO_ARGB8888 | TO_ARGB4444\
                          | TO_ARGB1555 | TO_RGBA8888 | TO_RGBA4444\
-                         | TO_RGBA5551 | TO_RGB888 | TO_RGB565\
+                         | TO_RGBA5551 | TO_BGR888 | TO_RGB565\
                          | TO_YV12 | TO_I420 | TO_I422 | TO_I444\
                          | TO_NV12 | TO_NV21 | TO_YUY2 | TO_UYVY)
 
@@ -76,13 +79,13 @@ extern "C" {
 #define AIPL_CONVERT_RGBA8888       TO_ARGB8888
 #define AIPL_CONVERT_RGBA4444       TO_ARGB8888
 #define AIPL_CONVERT_RGBA5551       TO_ARGB8888
+#define AIPL_CONVERT_BGR888         TO_ARGB8888
 #define AIPL_CONVERT_RGB888         TO_ARGB8888
 #define AIPL_CONVERT_RGB565         TO_ARGB8888
 #define AIPL_CONVERT_YV12           TO_ARGB8888
 #define AIPL_CONVERT_I420           TO_ARGB8888
 #define AIPL_CONVERT_I422           TO_ARGB8888
 #define AIPL_CONVERT_I444           TO_ARGB8888
-#define AIPL_CONVERT_I400           TO_ARGB8888
 #define AIPL_CONVERT_NV12           TO_ARGB8888
 #define AIPL_CONVERT_NV21           TO_ARGB8888
 #define AIPL_CONVERT_YUY2           TO_ARGB8888
