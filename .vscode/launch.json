@@ -20,7 +20,40 @@
                 "set $sp = __Vectors[0]",
                 "set $pc = __Vectors[1]",
                 "set *0xe000ed08 = __Vectors"
-            ]
+            ],
+            "rttConfig": {
+                "enabled": true,
+                "address": "auto",
+                "decoders": [
+                    {
+                        "port": 0,
+                        "type": "console"
+                    }
+                ]
+            },
+        },
+        {
+            "name": "Alif Ensemble Attach (Cortex-Debug)",
+            "cwd": "${workspaceFolder}",
+            "executable": "${command:cmsis-csolution.getBinaryFile}",
+            "request": "attach",
+            "type": "cortex-debug",
+            "runToEntryPoint": "main",
+            "servertype": "jlink",
+            "showDevDebugOutput": "parsed",
+            "device": "${command:cmsis-csolution.getDeviceName}_${command:cmsis-csolution.getProcessorName}",
+            "interface": "jtag",
+            "serverArgs": ["-JLinkDevicesXmlPath" ".alif/JLinkDevices.xml"],
+            "rttConfig": {
+                "enabled": true,
+                "address": "auto",
+                "decoders": [
+                    {
+                        "port": 0,
+                        "type": "console"
+                    }
+                ]
+            },
         }
     ]
 }
