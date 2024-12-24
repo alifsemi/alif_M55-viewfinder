@@ -107,6 +107,42 @@ void aipl_image_draw(uint32_t x, uint32_t y, const aipl_image_t* image)
     }
 }
 
+void aipl_image_draw_clut(uint32_t x, uint32_t y, const aipl_image_t* image)
+{
+    if (image->format != AIPL_COLOR_ALPHA8)
+        return;
+
+    graph_image_t img = {
+        .x = x,
+        .y = y,
+        .image = image->data,
+        .pitch = image->pitch,
+        .width = image->width,
+        .height = image->height
+    };
+
+    if (aipl_dave2d_format_supported(image->format))
+    {
+        dave2d_image_draw(d2_mode_i8 | d2_mode_clut, &img);
+    }
+}
+
+void aipl_dave2d_set_clut(const uint8_t* clut, aipl_color_format_t format)
+{
+    if (format != AIPL_COLOR_ARGB8888 && format != AIPL_COLOR_RGB565)
+        return;
+
+    d2_device* handle = aipl_dave2d_handle();
+
+    d2_s32 ret = d2_settexclut(handle, (d2_color*)clut);
+    if (ret != D2_OK)
+    {
+        return;
+    }
+
+    d2_settexclut_format(handle, aipl_dave2d_format_to_mode(format));
+}
+
 /**********************
  *   STATIC FUNCTIONS
  **********************/

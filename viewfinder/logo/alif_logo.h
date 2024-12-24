@@ -11,6 +11,8 @@
 #define ALIF_LOGO_H
 #include "aipl_image.h"
 
-aipl_image_t create_alif_logo(void);
+const aipl_image_t* get_alif_logo(void);
+
+const uint8_t* get_alif_lut(void);
 
 #endif

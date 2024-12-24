@@ -108,8 +108,8 @@ int main(void) {
         }
     }
 
-    // Load logo
-    aipl_image_t logo_img = create_alif_logo();
+    // Set Logo CLUT
+    aipl_dave2d_set_clut(get_alif_lut(), AIPL_COLOR_ARGB8888);
 
     // Enable PMU cycle counter for measurements
     DCB->DEMCR |= DCB_DEMCR_TRCENA_Msk;
@@ -220,7 +220,7 @@ int main(void) {
             uint32_t render_time = ARM_PMU_Get_CCNTR();
             aipl_dave2d_prepare();
             aipl_image_draw(0, 0, draw_image);
-            aipl_image_draw(100, 600, &logo_img);
+            aipl_image_draw_clut(100, 600, get_alif_logo());
             aipl_dave2d_render();
             aipl_image_destroy(draw_image);
             render_time = ARM_PMU_Get_CCNTR() - render_time;

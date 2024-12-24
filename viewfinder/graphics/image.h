@@ -37,6 +37,10 @@ void aipl_dave2d_render(void);
 
 void aipl_image_draw(uint32_t x, uint32_t y, const aipl_image_t* image);
 
+void aipl_image_draw_clut(uint32_t x, uint32_t y, const aipl_image_t* image);
+
+void aipl_dave2d_set_clut(const uint8_t* clut, aipl_color_format_t format);
+
 #ifdef __cplusplus
 } /*extern "C"*/
 #endif
