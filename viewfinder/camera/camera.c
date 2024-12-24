@@ -19,22 +19,6 @@
 // Buffer for camera frame (RGB565 or Bayer depending on camera and configuration)
 static uint8_t camera_buffer[CAM_FRAME_SIZE_BYTES] __attribute__((aligned(32), section(".bss.camera_frame_buf")));
 
-// Buffer for bayer conversion to RGB is not needed when camera outputs RGB565
-#if CAM_USE_RGB565
-aipl_image_t camera_image = {camera_buffer,       // data
-                             CAM_FRAME_WIDTH,     // pitch
-                             CAM_FRAME_WIDTH,     // width
-                             CAM_FRAME_HEIGHT,    // height
-                             AIPL_COLOR_RGB565};  // format
-#else
-static uint8_t rgb_buffer[CAM_FRAME_SIZE * 3] __attribute__((aligned(32), section(RGB_BUFFER_SECTION)));
-aipl_image_t camera_image = {rgb_buffer,          // data
-                             CAM_FRAME_WIDTH,     // pitch
-                             CAM_FRAME_WIDTH,     // width
-                             CAM_FRAME_HEIGHT,    // height
-                             AIPL_COLOR_BGR888};  // format
-#endif
-
 /* Camera  Driver instance 0 */
 extern ARM_DRIVER_CPI Driver_CPI;
 static ARM_DRIVER_CPI *CAMERAdrv = &Driver_CPI;
@@ -130,39 +114,48 @@ int camera_capture(void) {
     return ret;
 }
 
-void camera_post_capture_process(void) {
-
-    bool clean_cache = false;
+aipl_image_t camera_post_capture_process(void) {
+#if CAM_USE_RGB565
+    // Just return an image built from camera buffer
+    aipl_image_t cam_image = {
+        .data = camera_buffer,
+        .pitch = CAM_FRAME_WIDTH,
+        .width = CAM_FRAME_WIDTH,
+        .height = CAM_FRAME_HEIGHT,
+        .format = AIPL_COLOR_RGB565
+    };
+#else
+    aipl_image_t debayer_image;
+    aipl_error_t aipl_ret = aipl_image_create(&debayer_image, CAM_FRAME_WIDTH,
+                                              CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT,
+                                              AIPL_COLOR_BGR888);
+    if (aipl_ret != AIPL_ERR_OK)
+    {
+        printf("\r\nError: Not enough memory to allocate debayering buffer\r\n");
+        __BKPT(0);
+    }
 
     // ARX3A0 camera uses bayer output
     // MT9M114 can use bayer or RGB565 depending on RTE config
-#if !CAM_USE_RGB565
-    dc1394_bayer_Simple(camera_buffer, rgb_buffer, CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT, CAM_BAYER_FORMAT);
-    camera_get_image()->format = AIPL_COLOR_BGR888;
-    clean_cache = true;
+    dc1394_bayer_Simple(camera_buffer, debayer_image.data, CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT, CAM_BAYER_FORMAT);
+
+    aipl_image_t cam_image;
+    aipl_ret = aipl_image_create(&cam_image, CAM_FRAME_WIDTH, CAM_FRAME_WIDTH,
+                                 CAM_FRAME_HEIGHT, AIPL_COLOR_RGB565);
+    aipl_ret = aipl_color_convert_img(&debayer_image,
+                                      &cam_image);
+    if (aipl_ret != AIPL_ERR_OK)
+    {
+        printf("Error: Conversion to RGB565 failed.\r\n");
+    }
+
+    aipl_image_destroy(&debayer_image);
+
+    SCB_CleanDCache();
 #endif
 
-    // ARX3A0 is BGR888 after bayer conversion --> convert to RGB565
-    // The rest of the pipeline and LCD buffer are in RGB565 format for both cameras
-    if (camera_get_image()->format != AIPL_COLOR_RGB565) {
-        aipl_image_t img_temp = *camera_get_image();
-        img_temp.format = AIPL_COLOR_RGB565;
-        aipl_error_t aipl_ret = aipl_color_convert_img(camera_get_image(),
-                                                       &img_temp);
-        if (aipl_ret == AIPL_ERR_OK) {
-            camera_get_image()->format = img_temp.format;
-        } else {
-            printf("Error: Conversion to RGB565 failed.\r\n");
-        }
-        clean_cache = true;
-    }
-
-    if (clean_cache) {
-        SCB_CleanDCache();
-    }
+    return cam_image;
 }
-
-aipl_image_t *camera_get_image() { return &camera_image; }
 
 /* Revised matrix (BECP-1455)
  * Manual WB, Illuminant 6021, Relative Red 1.42, Relative Blue 1.47

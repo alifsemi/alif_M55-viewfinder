@@ -132,7 +132,7 @@ int main(void) {
 
             // Do Bayer conversion
             uint32_t bayer_time = ARM_PMU_Get_CCNTR();
-            camera_post_capture_process();
+            aipl_image_t cam_image = camera_post_capture_process();
             bayer_time = ARM_PMU_Get_CCNTR() - bayer_time;
 
             // Do color correction for the ARX3A0 camera
@@ -140,13 +140,13 @@ int main(void) {
 #if CAM_COLOR_CORRECTION
             // See camera.c for coefficients
             uint32_t cc_time = ARM_PMU_Get_CCNTR();
-            aipl_ret = aipl_color_correction_rgb_img(camera_get_image(), camera_get_image(), camera_get_color_correction_matrix());
+            aipl_ret = aipl_color_correction_rgb_img(&cam_image, &cam_image, camera_get_color_correction_matrix());
             if (aipl_ret != AIPL_ERR_OK) {
                 printf("Error: color correction aipl_ret = %s\r\n", aipl_error_str(aipl_ret));
                 __BKPT(0);
             }
 
-            aipl_ret = aipl_lut_transform_rgb_img(camera_get_image(), camera_get_image(), camera_get_gamma_lut());
+            aipl_ret = aipl_lut_transform_rgb_img(&cam_image, &cam_image, camera_get_gamma_lut());
             if (aipl_ret != AIPL_ERR_OK) {
                 printf("Error: gamma correction aipl_ret = %s\r\n", aipl_error_str(aipl_ret));
                 __BKPT(0);
@@ -158,27 +158,31 @@ int main(void) {
             uint32_t ip_time = ARM_PMU_Get_CCNTR();
 
             // Crop image to a square using the smaller of the camera dimensions
-            const uint32_t crop_dim = camera_get_image()->width > camera_get_image()->height ? camera_get_image()->height : camera_get_image()->width;
-            const uint32_t crop_border = (camera_get_image()->width - crop_dim) / 2;
-            const uint32_t crop_header = (camera_get_image()->height - crop_dim) / 2;
+            const uint32_t crop_dim = cam_image.width > cam_image.height ? cam_image.height : cam_image.width;
+            const uint32_t crop_border = (cam_image.width - crop_dim) / 2;
+            const uint32_t crop_header = (cam_image.height - crop_dim) / 2;
 
             aipl_image_t crop_image;
-            aipl_ret = aipl_image_create(&crop_image, crop_dim, crop_dim, crop_dim, camera_get_image()->format);
+            aipl_ret = aipl_image_create(&crop_image, crop_dim, crop_dim, crop_dim, cam_image.format);
             if (aipl_ret != AIPL_ERR_OK) {
                 printf("Error: Failed allocating crop image\r\n");
                 __BKPT(0);
             }
 
-            aipl_ret = aipl_crop_img(camera_get_image(), &crop_image, crop_border, crop_header, camera_get_image()->width - crop_border,
-                                     camera_get_image()->height - crop_header);
+            aipl_ret = aipl_crop_img(&cam_image, &crop_image, crop_border, crop_header, cam_image.width - crop_border,
+                                     cam_image.height - crop_header);
             if (aipl_ret != AIPL_ERR_OK) {
                 printf("Error: crop aipl_ret = %s\r\n", aipl_error_str(aipl_ret));
                 __BKPT(0);
             }
 
+#if !CAM_USE_RGB565
+            aipl_image_destroy(&cam_image);
+#endif
+
             // Resize the cropped image so that it fits to full display width
             aipl_image_t res_image;
-            aipl_ret = aipl_image_create(&res_image, MY_DISP_HOR_RES, MY_DISP_HOR_RES, MY_DISP_HOR_RES, camera_get_image()->format);
+            aipl_ret = aipl_image_create(&res_image, MY_DISP_HOR_RES, MY_DISP_HOR_RES, MY_DISP_HOR_RES, crop_image.format);
             if (aipl_ret != AIPL_ERR_OK) {
                 printf("Error: Failed allocating resize temp image\r\n");
                 __BKPT(0);

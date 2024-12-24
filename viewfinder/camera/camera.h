@@ -17,7 +17,13 @@
 
 // Choose camera parameters based on RTE configuration
 #if RTE_Drivers_CAMERA_SENSOR_MT9M114
-#if (RTE_MT9M114_CAMERA_SENSOR_MIPI_IMAGE_CONFIG == 2)
+#if (RTE_MT9M114_CAMERA_SENSOR_MIPI_IMAGE_CONFIG == 1)
+#define CAM_FRAME_WIDTH      (1280)
+#define CAM_FRAME_HEIGHT     (720)
+#define CAM_COLOR_CORRECTION (0)
+#define CAM_USE_RGB565       (0)
+#define CAM_BAYER_FORMAT     (DC1394_COLOR_FILTER_GRBG)
+#elif (RTE_MT9M114_CAMERA_SENSOR_MIPI_IMAGE_CONFIG == 2)
 #define CAM_FRAME_WIDTH      (1280)
 #define CAM_FRAME_HEIGHT     (720)
 #define CAM_COLOR_CORRECTION (0)
@@ -36,7 +42,6 @@
 #define CAM_COLOR_CORRECTION (1)
 #define CAM_USE_RGB565       (0)
 #define CAM_BAYER_FORMAT     (DC1394_COLOR_FILTER_GRBG)
-#define RGB_BUFFER_SECTION   ".bss.camera_frame_bayer_to_rgb_buf"
 #endif
 
 #define CAM_BYTES_PER_PIXEL
@@ -46,8 +51,7 @@
 
 int camera_init(void);
 int camera_capture(void);
-void camera_post_capture_process(void);
-aipl_image_t* camera_get_image(void);
+aipl_image_t camera_post_capture_process(void);
 const float* camera_get_color_correction_matrix(void);
 uint8_t* camera_get_gamma_lut(void);
 
