@@ -13,8 +13,8 @@
 #include <stdio.h>
 
 #include "Driver_CPI.h"
-#include "bayer.h"
 #include "aipl_color_conversion.h"
+#include "aipl_bayer.h"
 
 // Buffer for camera frame (RGB565 or Bayer depending on camera and configuration)
 static uint8_t camera_buffer[CAM_FRAME_SIZE_BYTES] __attribute__((aligned(32), section(".bss.camera_frame_buf")));
@@ -137,7 +137,9 @@ aipl_image_t camera_post_capture_process(void) {
 
     // ARX3A0 camera uses bayer output
     // MT9M114 can use bayer or RGB565 depending on RTE config
-    dc1394_bayer_Simple(camera_buffer, debayer_image.data, CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT, CAM_BAYER_FORMAT);
+    aipl_bayer_decoding_rgb888(camera_buffer, debayer_image.data,
+                               debayer_image.width, debayer_image.height,
+                               CAM_BAYER_FORMAT, AIPL_BAYER_METHOD_SIMPLE);
 
     if (aipl_ret != AIPL_ERR_OK)
     {
