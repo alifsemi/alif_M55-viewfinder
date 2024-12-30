@@ -137,9 +137,15 @@ aipl_image_t camera_post_capture_process(void) {
 
     // ARX3A0 camera uses bayer output
     // MT9M114 can use bayer or RGB565 depending on RTE config
-    aipl_bayer_decoding_rgb888(camera_buffer, debayer_image.data,
-                               debayer_image.width, debayer_image.height,
-                               CAM_BAYER_FORMAT, AIPL_BAYER_METHOD_SIMPLE);
+    aipl_ret = aipl_bayer_decoding_rgb888(camera_buffer, debayer_image.data,
+                                         debayer_image.width, debayer_image.height,
+                                         CAM_BAYER_FORMAT, AIPL_BAYER_METHOD_SIMPLE);
+    if (aipl_ret != AIPL_ERR_OK)
+    {
+        printf("\r\nError: Camera output debayering failed (%s)\r\n",
+                aipl_error_str(aipl_ret));
+        __BKPT(0);
+    }
 
     if (aipl_ret != AIPL_ERR_OK)
     {
