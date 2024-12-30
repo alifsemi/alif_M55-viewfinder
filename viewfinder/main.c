@@ -37,7 +37,7 @@ void clock_init(void);   // Enables needed SoC clocks
 extern void clk_init();  // time.h clock functionality (from retarget.c)
 
 // DAVE heap
-#define D1_HEAP_SIZE 0x00280000
+#define D1_HEAP_SIZE 0x00300000
 static uint8_t d0_heap[D1_HEAP_SIZE] __attribute__((section(".bss.video_mem_heap")));
 
 // Check if UART trace is disabled
@@ -132,6 +132,7 @@ int main(void) {
 
             // Do Bayer conversion
             uint32_t bayer_time = ARM_PMU_Get_CCNTR();
+            // The buffer for cam_image is static, so it should not be destroyed
             aipl_image_t cam_image = camera_post_capture_process();
             bayer_time = ARM_PMU_Get_CCNTR() - bayer_time;
 
@@ -175,10 +176,6 @@ int main(void) {
                 printf("Error: crop aipl_ret = %s\r\n", aipl_error_str(aipl_ret));
                 __BKPT(0);
             }
-
-#if !CAM_USE_RGB565
-            aipl_image_destroy(&cam_image);
-#endif
 
             // Resize the cropped image so that it fits to full display width
             aipl_image_t res_image;

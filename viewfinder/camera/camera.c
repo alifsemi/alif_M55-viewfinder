@@ -115,8 +115,7 @@ int camera_capture(void) {
 }
 
 aipl_image_t camera_post_capture_process(void) {
-#if CAM_USE_RGB565
-    // Just return an image built from camera buffer
+    // Use the camera buffer as output for both RGB565 and Bayer camera output
     aipl_image_t cam_image = {
         .data = camera_buffer,
         .pitch = CAM_FRAME_WIDTH,
@@ -124,11 +123,12 @@ aipl_image_t camera_post_capture_process(void) {
         .height = CAM_FRAME_HEIGHT,
         .format = AIPL_COLOR_RGB565
     };
-#else
+
+#if !CAM_USE_RGB565
     aipl_image_t debayer_image;
     aipl_error_t aipl_ret = aipl_image_create(&debayer_image, CAM_FRAME_WIDTH,
                                               CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT,
-                                              AIPL_COLOR_BGR888);
+                                              AIPL_COLOR_RGB888);
     if (aipl_ret != AIPL_ERR_OK)
     {
         printf("\r\nError: Not enough memory to allocate debayering buffer\r\n");
@@ -139,14 +139,17 @@ aipl_image_t camera_post_capture_process(void) {
     // MT9M114 can use bayer or RGB565 depending on RTE config
     dc1394_bayer_Simple(camera_buffer, debayer_image.data, CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT, CAM_BAYER_FORMAT);
 
-    aipl_image_t cam_image;
-    aipl_ret = aipl_image_create(&cam_image, CAM_FRAME_WIDTH, CAM_FRAME_WIDTH,
-                                 CAM_FRAME_HEIGHT, AIPL_COLOR_RGB565);
+    if (aipl_ret != AIPL_ERR_OK)
+    {
+        printf("\r\nError: Not enough memory to allocate color conversion buffer\r\n");
+        __BKPT(0);
+    }
     aipl_ret = aipl_color_convert_img(&debayer_image,
                                       &cam_image);
     if (aipl_ret != AIPL_ERR_OK)
     {
-        printf("Error: Conversion to RGB565 failed.\r\n");
+        printf("\r\nError: Conversion to RGB565 failed (%s).\r\n",
+               aipl_error_str(aipl_ret));
     }
 
     aipl_image_destroy(&debayer_image);

@@ -59,9 +59,9 @@ static void disp_callback(uint32_t event);
  **********************/
 
 static Pixel lcd_buffer_1[MY_DISP_VER_RES][MY_DISP_HOR_RES]
-            __attribute__((section(".bss.lcd_frame_buf"))) = {0};
+            __attribute__((section(".bss.lcd_frame_buf_1"))) = {0};
 static Pixel lcd_buffer_2[MY_DISP_VER_RES][MY_DISP_HOR_RES]
-            __attribute__((section(".bss.lcd_frame_buf"))) = {0};
+            __attribute__((section(".bss.lcd_frame_buf_2"))) = {0};
 
 enum {
     BUFFER_1 = 0,

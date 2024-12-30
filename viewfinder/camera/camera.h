@@ -47,7 +47,7 @@
 #define CAM_BYTES_PER_PIXEL
 #define CAM_FRAME_SIZE       (CAM_FRAME_WIDTH * CAM_FRAME_HEIGHT)
 #define CAM_MPIX             (CAM_FRAME_SIZE / 1000000.0f)
-#define CAM_FRAME_SIZE_BYTES (CAM_FRAME_SIZE + CAM_USE_RGB565 * CAM_FRAME_SIZE)
+#define CAM_FRAME_SIZE_BYTES (CAM_FRAME_SIZE * 2)
 
 int camera_init(void);
 int camera_capture(void);
