@@ -1,4 +1,4 @@
-/* Copyright (C) 2023-2024 Alif Semiconductor - All Rights Reserved.
+/* Copyright (C) 2024 Alif Semiconductor - All Rights Reserved.
  * Use, distribution and modification of this code is permitted under the
  * terms stated in the Alif Semiconductor Software License Agreement
  *
@@ -8,15 +8,15 @@
  *
  */
 
-#include "aipl_video_alloc.h"
-#include "dave_d0lib.h"
+#ifndef POWER_MANAGEMENT_H_
+#define POWER_MANAGEMENT_H_
 
-void* aipl_video_alloc(uint32_t size)
-{
-    return d0_allocvidmem(size);
-}
+#include <stdbool.h>
+#include <stdint.h>
 
-void aipl_video_free(void* ptr)
-{
-    d0_freevidmem(ptr);
-}
+#include "aipm.h"
+
+void print_runprofile(const run_profile_t *runprof);
+bool init_power_management(void);
+
+#endif
