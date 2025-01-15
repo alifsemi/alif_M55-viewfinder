@@ -125,42 +125,18 @@ aipl_image_t camera_post_capture_process(void) {
     };
 
 #if !CAM_USE_RGB565
-    aipl_image_t debayer_image;
-    aipl_error_t aipl_ret = aipl_image_create(&debayer_image, CAM_FRAME_WIDTH,
-                                              CAM_FRAME_WIDTH, CAM_FRAME_HEIGHT,
-                                              AIPL_COLOR_RGB888);
-    if (aipl_ret != AIPL_ERR_OK)
-    {
-        printf("\r\nError: Not enough memory to allocate debayering buffer\r\n");
-        __BKPT(0);
-    }
-
     // ARX3A0 camera uses bayer output
     // MT9M114 can use bayer or RGB565 depending on RTE config
-    aipl_ret = aipl_bayer_decoding_rgb888(camera_buffer, debayer_image.data,
-                                         debayer_image.width, debayer_image.height,
-                                         CAM_BAYER_FORMAT, AIPL_BAYER_METHOD_SIMPLE);
+    aipl_error_t aipl_ret = aipl_bayer_decoding(camera_buffer, cam_image.data,
+                                                cam_image.width, cam_image.height,
+                                                CAM_BAYER_FORMAT, AIPL_BAYER_METHOD_SIMPLE,
+                                                AIPL_COLOR_RGB565);
     if (aipl_ret != AIPL_ERR_OK)
     {
         printf("\r\nError: Camera output debayering failed (%s)\r\n",
                 aipl_error_str(aipl_ret));
         __BKPT(0);
     }
-
-    if (aipl_ret != AIPL_ERR_OK)
-    {
-        printf("\r\nError: Not enough memory to allocate color conversion buffer\r\n");
-        __BKPT(0);
-    }
-    aipl_ret = aipl_color_convert_img(&debayer_image,
-                                      &cam_image);
-    if (aipl_ret != AIPL_ERR_OK)
-    {
-        printf("\r\nError: Conversion to RGB565 failed (%s).\r\n",
-               aipl_error_str(aipl_ret));
-    }
-
-    aipl_image_destroy(&debayer_image);
 
     SCB_CleanDCache();
 #endif
