@@ -19,6 +19,11 @@
 // Buffer for camera frame (RGB565 or Bayer depending on camera and configuration)
 static uint8_t camera_buffer[CAM_FRAME_SIZE_BYTES] __attribute__((aligned(32), section(".bss.camera_frame_buf")));
 
+#if !CAM_USE_RGB565
+// Buffer for debayering raw image to RGB565 format
+static uint8_t rgb565_buffer[CAM_FRAME_SIZE*sizeof(uint16_t)] __attribute__((aligned(32), section(".bss.rgb565_frame_buf")));
+#endif
+
 /* Camera  Driver instance 0 */
 extern ARM_DRIVER_CPI Driver_CPI;
 static ARM_DRIVER_CPI *CAMERAdrv = &Driver_CPI;
@@ -117,14 +122,16 @@ int camera_capture(void) {
 aipl_image_t camera_post_capture_process(void) {
     // Use the camera buffer as output for both RGB565 and Bayer camera output
     aipl_image_t cam_image = {
-        .data = camera_buffer,
         .pitch = CAM_FRAME_WIDTH,
         .width = CAM_FRAME_WIDTH,
         .height = CAM_FRAME_HEIGHT,
         .format = AIPL_COLOR_RGB565
     };
 
-#if !CAM_USE_RGB565
+#if CAM_USE_RGB565
+    cam_image.data = camera_buffer;
+#else
+    cam_image.data = rgb565_buffer;
     // ARX3A0 camera uses bayer output
     // MT9M114 can use bayer or RGB565 depending on RTE config
     aipl_error_t aipl_ret = aipl_bayer_decoding(camera_buffer, cam_image.data,

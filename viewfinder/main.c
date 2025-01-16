@@ -37,7 +37,7 @@ void clock_init(void);   // Enables needed SoC clocks
 extern void clk_init();  // time.h clock functionality (from retarget.c)
 
 // DAVE heap
-#define D1_HEAP_SIZE 0x00300000
+#define D1_HEAP_SIZE 0x00230000
 static uint8_t d0_heap[D1_HEAP_SIZE] __attribute__((section(".bss.video_mem_heap")));
 
 // Check if UART trace is disabled
