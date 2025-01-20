@@ -16,13 +16,13 @@
 #include "aipl_color_conversion.h"
 #include "aipl_bayer.h"
 
-// Buffer for camera frame (RGB565 or Bayer depending on camera and configuration)
-static uint8_t camera_buffer[CAM_FRAME_SIZE_BYTES] __attribute__((aligned(32), section(".bss.camera_frame_buf")));
-
 #if !CAM_USE_RGB565
-// Buffer for debayering raw image to RGB565 format
-static uint8_t rgb565_buffer[CAM_FRAME_SIZE*sizeof(uint16_t)] __attribute__((aligned(32), section(".bss.rgb565_frame_buf")));
+// Camera frame buffer for raw image format
+static uint8_t camera_raw_buffer[CAM_FRAME_SIZE] __attribute__((aligned(32), section(".bss.camera_raw_frame_buf")));
 #endif
+
+// Camera frame buffer for RGB565 image format
+static uint8_t camera_rgb565_buffer[CAM_FRAME_SIZE*sizeof(uint16_t)] __attribute__((aligned(32), section(".bss.camera_rgb565_frame_buf")));
 
 /* Camera  Driver instance 0 */
 extern ARM_DRIVER_CPI Driver_CPI;
@@ -100,7 +100,11 @@ int camera_init(void) {
 int camera_capture(void) {
     g_cam_cb_events = CAM_CB_EVENT_NONE;
 
-    int ret = CAMERAdrv->CaptureFrame(camera_buffer);
+    #if CAM_USE_RGB565
+    int ret = CAMERAdrv->CaptureFrame(camera_rgb565_buffer);
+    #else
+    int ret = CAMERAdrv->CaptureFrame(camera_raw_buffer);
+    #endif
 
     // Wait for capture
     if (ret == ARM_DRIVER_OK) {
@@ -120,21 +124,21 @@ int camera_capture(void) {
 }
 
 aipl_image_t camera_post_capture_process(void) {
-    // Use the camera buffer as output for both RGB565 and Bayer camera output
+    // Use RGB565 camera buffer as image data
+    // No conversion required if the camera provides RGB565 image as output
     aipl_image_t cam_image = {
+        .data = camera_rgb565_buffer,
         .pitch = CAM_FRAME_WIDTH,
         .width = CAM_FRAME_WIDTH,
         .height = CAM_FRAME_HEIGHT,
         .format = AIPL_COLOR_RGB565
     };
 
-#if CAM_USE_RGB565
-    cam_image.data = camera_buffer;
-#else
-    cam_image.data = rgb565_buffer;
+#if !CAM_USE_RGB565
     // ARX3A0 camera uses bayer output
     // MT9M114 can use bayer or RGB565 depending on RTE config
-    aipl_error_t aipl_ret = aipl_bayer_decoding(camera_buffer, cam_image.data,
+    // Convert raw image to RGB565 buffer using debayering method
+    aipl_error_t aipl_ret = aipl_bayer_decoding(camera_raw_buffer, cam_image.data,
                                                 cam_image.width, cam_image.height,
                                                 CAM_BAYER_FORMAT, AIPL_BAYER_METHOD_SIMPLE,
                                                 AIPL_COLOR_RGB565);
