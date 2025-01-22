@@ -22,17 +22,20 @@
 #define CAM_FRAME_HEIGHT     (720)
 #define CAM_COLOR_CORRECTION (0)
 #define CAM_USE_RGB565       (0)
+#define CAM_BYTES_PER_PIXEL  (1)
 #define CAM_BAYER_FORMAT     (AIPL_COLOR_FILTER_GRBG)
 #elif (RTE_MT9M114_CAMERA_SENSOR_MIPI_IMAGE_CONFIG == 2)
 #define CAM_FRAME_WIDTH      (1280)
 #define CAM_FRAME_HEIGHT     (720)
 #define CAM_COLOR_CORRECTION (0)
 #define CAM_USE_RGB565       (1)
+#define CAM_BYTES_PER_PIXEL  (2)
 #elif (RTE_MT9M114_CAMERA_SENSOR_MIPI_IMAGE_CONFIG == 3)
 #define CAM_FRAME_WIDTH      (640)
 #define CAM_FRAME_HEIGHT     (480)
 #define CAM_COLOR_CORRECTION (0)
 #define CAM_USE_RGB565       (1)
+#define CAM_BYTES_PER_PIXEL  (2)
 #else
 #error "Unsupported MT9M114 configuration"
 #endif
@@ -44,10 +47,9 @@
 #define CAM_BAYER_FORMAT     (DC1394_COLOR_FILTER_GRBG)
 #endif
 
-#define CAM_BYTES_PER_PIXEL
 #define CAM_FRAME_SIZE       (CAM_FRAME_WIDTH * CAM_FRAME_HEIGHT)
 #define CAM_MPIX             (CAM_FRAME_SIZE / 1000000.0f)
-#define CAM_FRAME_SIZE_BYTES (CAM_FRAME_SIZE * 2)
+#define CAM_FRAME_SIZE_BYTES (CAM_FRAME_SIZE * CAM_BYTES_PER_PIXEL)
 
 int camera_init(void);
 int camera_capture(void);

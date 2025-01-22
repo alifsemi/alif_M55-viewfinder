@@ -126,13 +126,13 @@ SECTIONS
   .bss.at_sram0 (NOLOAD) : ALIGN(8)
   {
     * (.bss.video_mem_heap)                /* Heap buffer for video memory */
-    * (.bss.lcd_frame_buf_1)               /* LCD frame Buffer. */
+    * (.bss.camera_rgb565_frame_buf)       /* Camera RGB565 frame buffer */
   } > SRAM0
 
   .bss.at_sram1 (NOLOAD) :
   {
-    * (.bss.lcd_frame_buf_2)               /* LCD frame Buffer. */
-    * (.bss.camera_frame_buf)              /* Camera Frame Buffer */
+    * (.bss.lcd_frame_buf)                 /* LCD frame buffer. */
+    * (.bss.camera_raw_frame_buf)          /* Camera raw frame buffer */
   } > SRAM1
 
   .bss (NOLOAD) : ALIGN(8)
