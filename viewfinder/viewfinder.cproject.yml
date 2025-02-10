@@ -88,8 +88,8 @@ project:
     # - component: AlifSemiconductor::Device:OSPI FLASH XIP:core
     # - component: AlifSemiconductor::Device:OSPI FLASH XIP:utility
     # - component: AlifSemiconductor::Device:OSPI HYPERRAM XIP
-    - component: AlifSemiconductor::Device:SE runtime Services:core
-    - component: AlifSemiconductor::Device:SE runtime Services:Initialization Helper
+    - component: AlifSemiconductor::Device:SE runtime Services:core&Source
+    - component: AlifSemiconductor::Device:SE runtime Services:Initialization Helper&Source
 
     - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
     #- component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
