@@ -10,8 +10,8 @@
 
 //-------- <<< Use Configuration Wizard in Context Menu >>> --------------------
 
-#ifndef __M55_HE_CONFIG_H
-#define __M55_HE_CONFIG_H
+#ifndef __CORE_CONFIG_H
+#define __CORE_CONFIG_H
 
 // <o> Map Global to Local address of TCM Alias
 //     <0=> DISABLE
@@ -40,4 +40,4 @@
 
 // </e> Prefetch Control
 
-#endif  /* __M55_HE_CONFIG_H */
+#endif  /* __CORE_CONFIG_H */

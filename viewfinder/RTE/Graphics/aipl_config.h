@@ -15,6 +15,10 @@ extern "C" {
 #include CMSIS_device_header
 #endif
 
+#ifndef BIT
+#define BIT(x)          (1u<<(x))
+#endif
+
 /**
  * Custom video alloc setting
  *

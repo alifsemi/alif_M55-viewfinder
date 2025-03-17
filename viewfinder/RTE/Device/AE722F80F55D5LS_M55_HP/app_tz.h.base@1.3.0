@@ -1,4 +1,4 @@
-/* Copyright (C) 2022 Alif Semiconductor - All Rights Reserved.
+/* Copyright (C) 2025 Alif Semiconductor - All Rights Reserved.
  * Use, distribution and modification of this code is permitted under the
  * terms stated in the Alif Semiconductor Software License Agreement
  *
@@ -26,8 +26,8 @@
  * limitations under the License.
  */
 
-#ifndef PARTITION_M55_HE_H
-#define PARTITION_M55_HE_H
+#ifndef APP_TZ_H
+#define APP_TZ_H
 
 /*
 //-------- <<< Use Configuration Wizard in Context Menu >>> -----------------
@@ -80,7 +80,10 @@
   #define SAU_INIT_START0     (uint32_t)&Image$$NS_REGION_0$$Base
 #elif defined ( __GNUC__ )
   extern const uint32_t __ns_region_0_start;
-  #define SAU_INIT_START0     (uint32_t)&__ns_region_0_start /* start address of SAU region 0 */
+  #define SAU_INIT_START0     (uint32_t)&__ns_region_0_start
+#elif defined ( __ICCARM__ )
+  extern const uint32_t NS_REGION_0$$Base;
+  #define SAU_INIT_START0     (uint32_t)&NS_REGION_0$$Base
 #else
   #error Unknown compiler.
 #endif
@@ -93,7 +96,10 @@
   #define SAU_INIT_END0       ((uint32_t)&Image$$NS_REGION_0_PAD$$Base - 1)
 #elif defined ( __GNUC__ )
   extern const uint32_t __ns_region_0_end;
-  #define SAU_INIT_END0       ((uint32_t)&__ns_region_0_end - 1) /* end address of SAU region 0 */
+  #define SAU_INIT_END0       ((uint32_t)&__ns_region_0_end - 1)
+#elif defined ( __ICCARM__ )
+  extern const uint32_t NS_REGION_0$$Limit;
+  #define SAU_INIT_END0       ((uint32_t)&NS_REGION_0$$Limit - 1)
 #else
   #error Unknown compiler.
 #endif
@@ -1278,4 +1284,4 @@ __STATIC_INLINE void TZ_SAU_Setup (void)
 
 }
 
-#endif  /* PARTITION_M55_HE_H */
+#endif  /* APP_TZ_H */

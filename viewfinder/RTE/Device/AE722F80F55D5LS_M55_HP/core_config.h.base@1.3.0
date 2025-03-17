@@ -1,4 +1,4 @@
-/* Copyright (C) 2023 Alif Semiconductor - All Rights Reserved.
+/* Copyright (C) 2025 Alif Semiconductor - All Rights Reserved.
  * Use, distribution and modification of this code is permitted under the
  * terms stated in the Alif Semiconductor Software License Agreement
  *
@@ -10,8 +10,8 @@
 
 //-------- <<< Use Configuration Wizard in Context Menu >>> --------------------
 
-#ifndef __M55_HP_CONFIG_H
-#define __M55_HP_CONFIG_H
+#ifndef __CORE_CONFIG_H
+#define __CORE_CONFIG_H
 
 // <o> Map Global to Local address of TCM Alias
 //     <0=> DISABLE
@@ -40,4 +40,4 @@
 
 // </e> Prefetch Control
 
-#endif  /* __M55_HP_CONFIG_H */
+#endif  /* __CORE_CONFIG_H */
