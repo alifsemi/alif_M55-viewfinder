@@ -90,7 +90,7 @@ int camera_init(void) {
 
     // NOTE: There is automatic gain control implemented for ARX3A0 in ML example repository
     //       https://github.com/alifsemi/alif_ml-embedded-evaluation-kit
-#if RTE_Drivers_CAMERA_SENSOR_ARX3A0
+#if defined(RTE_Drivers_CAMERA_SENSOR_ARX3A0)
     CAMERAdrv->Control(CPI_CAMERA_SENSOR_GAIN, 0x10000 * 5.0f);
 #endif
 
@@ -169,7 +169,7 @@ aipl_image_t camera_post_capture_process(void) {
 #define C_BB +2.3735f
 
 const float *camera_get_color_correction_matrix(void) {
-#if RTE_Drivers_CAMERA_SENSOR_ARX3A0
+#if defined(RTE_Drivers_CAMERA_SENSOR_ARX3A0)
     static const float ccm[9] = {C_RR, C_GR, C_BR, C_RG, C_GG, C_BG, C_RB, C_GB, C_BB};
     return ccm;
 #endif

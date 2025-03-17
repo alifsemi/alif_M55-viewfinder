@@ -455,7 +455,7 @@
 //     <90=> 90 FPS
 // <i> Defines camera ARX3A0 frame per second
 // <i> Default: 90 FPS
-#define RTE_ARX3A0_CAMERA_SENSOR_CSI_CFG_FPS                 40
+#define RTE_ARX3A0_CAMERA_SENSOR_CSI_CFG_FPS                 90
 
 // <o> Select camera ARX3A0 frequency
 // <i> Defines camera ARX3A0 frequency
@@ -822,7 +822,7 @@
 //     <4=>   320x240_RGB565
 //     <5=>   320x320_RGB565
 // <i> Default: 0
-#define RTE_MT9M114_CAMERA_SENSOR_MIPI_IMAGE_CONFIG                3
+#define RTE_MT9M114_CAMERA_SENSOR_MIPI_IMAGE_CONFIG                2
 
 // <o> select MT9M114 MIPI number of lanes in DPHY
 // <i> defines select MT9M114 MIPI number of lanes in DPHY.
@@ -1236,7 +1236,7 @@
 //     <5=> 24bit
 // <i> Defines Color mode for display panel
 // <i> Default: 24bit
-#define RTE_ILI9806E_PANEL_DSI_COLOR_MODE            5
+#define RTE_ILI9806E_PANEL_DSI_COLOR_MODE            1
 
 // <o> Number of data lanes
 //     <1=> ONE

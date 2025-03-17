@@ -49,6 +49,9 @@
 #elif (BOARD_ALIF_DEVKIT_VARIANT == 5)
 #define BOARD_IS_ALIF_APPKIT_B1_VARIANT
 #include "appkit_gen2/board_defs.h"
+#elif (BOARD_ALIF_DEVKIT_VARIANT == 6)
+#define BOARD_IS_ALIF_DEVKIT_E8_VARIANT
+#include "devkit_e8/board_defs.h"
 #endif
 
 // <o> ILI9806E LCD panel variant
