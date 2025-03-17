@@ -28,8 +28,8 @@
 #include "camera.h"
 #include "disp.h"
 #include "image.h"
-#include "power.h"
-// #include "power_management.h"
+
+#include "power_management.h"
 #include "se_services_port.h"
 #include "alif_logo.h"
 
@@ -62,10 +62,12 @@ int main(void) {
     /* Initialize the SE services */
     se_services_port_init();
 
-    /* Enable MIPI power. TODO: To be changed to aiPM call */
-    enable_mipi_dphy_power();
-    disable_mipi_dphy_isolation();
-    // bool pm_ok = init_power_management();
+    /* Enable MIPI power */
+    bool pm_ok = init_power_management();
+    if (!pm_ok) {
+        printf("\r\nError: power management init failed.\r\n");
+        __BKPT(0);
+    }
 
     clock_init();
 
@@ -89,11 +91,6 @@ int main(void) {
     }
 
     clk_init();  // for time.h clock()
-
-    // if (!pm_ok) {
-    //     printf("\r\nError: power management init failed.\r\n");
-    //     __BKPT(0);
-    // }
 
     // Init camera
     int ret = camera_init();

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022 Alif Semiconductor - All Rights Reserved.
+/* Copyright (C) 2025 Alif Semiconductor - All Rights Reserved.
  * Use, distribution and modification of this code is permitted under the
  * terms stated in the Alif Semiconductor Software License Agreement
  *
@@ -12,6 +12,8 @@
 
 #ifndef __RTE_DEVICE_H
 #define __RTE_DEVICE_H
+
+#include "board.h"
 
 // <e> MRAM (NVM (Non-Volatile Memory)) [Driver_MRAM]
 // <i> Configuration settings for Driver_MRAM in component ::Drivers:MRAM
@@ -505,12 +507,12 @@
 // <o> Select camera sensor ARX3A0 reset pin number
 // <i> Defines camera sensor ARX3A0 reset pin number
 // <i> Default: 1
-#define RTE_ARX3A0_CAMERA_SENSOR_RESET_PIN_NO                1
+#define RTE_ARX3A0_CAMERA_SENSOR_RESET_PIN_NO                BOARD_CAMERA_RESET_PIN_NO
 
 // <o> Select camera sensor ARX3A0 reset GPIO port
 // <i> Defines camera sensor ARX3A0 reset GPIO port
 // <i> Default: 9
-#define RTE_ARX3A0_CAMERA_SENSOR_RESET_GPIO_PORT             9
+#define RTE_ARX3A0_CAMERA_SENSOR_RESET_GPIO_PORT             BOARD_CAMERA_RESET_GPIO_PORT
 
 // <o> Select camera sensor ARX3A0 power pin number
 // <i> Defines camera sensor ARX3A0 power pin number
@@ -593,12 +595,12 @@
 // <o> Select camera sensor AR0144 reset pin number
 // <i> Defines camera sensor AR0144 reset pin number
 // <i> Default: 5
-#define RTE_AR0144_CAMERA_SENSOR_RESET_PIN_NO                 1
+#define RTE_AR0144_CAMERA_SENSOR_RESET_PIN_NO                 BOARD_CAMERA_RESET_GPIO_PIN
 
 // <o> Select camera sensor AR0144 reset GPIO port
 // <i> Defines camera sensor AR0144 reset GPIO port
 // <i> Default: 4
-#define RTE_AR0144_CAMERA_SENSOR_RESET_GPIO_PORT              9
+#define RTE_AR0144_CAMERA_SENSOR_RESET_GPIO_PORT              BOARD_CAMERA_RESET_GPIO_PORT
 
 // <o> Select camera sensor AR0144 power pin number
 // <i> Defines camera sensor AR0144 power pin number
@@ -852,12 +854,12 @@
 // <o> Select camera sensor MT9M114 MIPI reset pin number
 // <i> Defines camera sensor MT9M114 MIPI reset pin number
 // <i> Default: 1
-#define RTE_MT9M114_CAMERA_SENSOR_MIPI_RESET_PIN_NO                 1
+#define RTE_MT9M114_CAMERA_SENSOR_MIPI_RESET_PIN_NO                 BOARD_CAMERA_RESET_PIN_NO
 
 // <o> Select camera sensor MT9M114 MIPI reset GPIO port
 // <i> Defines camera sensor MT9M114 MIPI reset GPIO port
 // <i> Default: 9
-#define RTE_MT9M114_CAMERA_SENSOR_MIPI_RESET_GPIO_PORT              9
+#define RTE_MT9M114_CAMERA_SENSOR_MIPI_RESET_GPIO_PORT              BOARD_CAMERA_RESET_GPIO_PORT
 
 // <o> Select camera sensor MT9M114 MIPI power pin number
 // <i> Defines camera sensor MT9M114 MIPI power pin number
@@ -1253,22 +1255,22 @@
 // <o> ILI9806 LCD panel reset pin number
 // <i> Defines ILI9806 LCD panel reset pin number.
 // <i> Default: 5
-#define RTE_ILI9806E_PANEL_RESET_PIN_NO              5
+#define RTE_ILI9806E_PANEL_RESET_PIN_NO                  BOARD_LCD_RESET_PIN_NO
 
 // <o> ILI9806 LCD panel reset pin GPIO port number
 // <i> Defines ILI9806 LCD panel reset pin GPIO port number.
 // <i> Default: 15
-#define RTE_ILI9806E_PANEL_RESET_GPIO_PORT           15
+#define RTE_ILI9806E_PANEL_RESET_GPIO_PORT               BOARD_LCD_RESET_GPIO_PORT
 
 // <o> ILI9806 LCD panel back light pin number
 // <i> Defines ILI9806 LCD panel back light pin number.
 // <i> Default: 1
-#define RTE_ILI9806E_PANEL_BL_LED_PIN_NO             1
+#define RTE_ILI9806E_PANEL_BL_LED_PIN_NO                 BOARD_LCD_BACKLIGHT_PIN_NO
 
 // <o> ILI9806 LCD panel back light pin GPIO port number
 // <i> Defines ILI9806 LCD panel back light pin GPIO port number.
 // <i> Default: 6
-#define RTE_ILI9806E_PANEL_BL_LED_GPIO_PORT          6
+#define RTE_ILI9806E_PANEL_BL_LED_GPIO_PORT              BOARD_LCD_BACKLIGHT_GPIO_PORT
 
 // <e> MIPI_DSI (ILI9806E_PANEL_E43RB_FW405 | ILI9806E_PANEL_E43GB_MW405) [Driver_ILI9806E_PANEL]
 #if (RTE_ILI9806E_PANEL_E43RB_FW405_EN || RTE_ILI9806E_PANEL_E43GB_MW405_EN)
@@ -1483,22 +1485,22 @@
 // <o> GT911 Touch screen reset pin GPIO port number range <0-15>
 // <i> Defines GT911 Touch screen reset pin GPIO port number.
 // <i> Default: 4
-#define RTE_GT911_TOUCH_RESET_GPIO_PORT   4
+#define RTE_GT911_TOUCH_RESET_GPIO_PORT   BOARD_TOUCH_RESET_GPIO_PORT
 
 // <o> GT911 Touch screen reset pin number range <0-7>
 // <i> Defines GT911 Touch screen reset pin number.
 // <i> Default: 0
-#define RTE_GT911_TOUCH_RESET_PIN_NO      0
+#define RTE_GT911_TOUCH_RESET_PIN_NO      BOARD_TOUCH_RESET_PIN_NO
 
 // <o> GT911 Touch screen INT pin GPIO port number range <0-15>
 // <i> Defines GT911 Touch screen INT pin GPIO port number.
 // <i> Default: 9
-#define RTE_GT911_TOUCH_INT_GPIO_PORT     9
+#define RTE_GT911_TOUCH_INT_GPIO_PORT     BOARD_TOUCH_INT_GPIO_PORT
 
 // <o> GT911 Touch screen INT pin number range <0-7>
 // <i> Defines GT911 Touch screen INT pin number.
 // <i> Default: 4
-#define RTE_GT911_TOUCH_INT_PIN_NO        4
+#define RTE_GT911_TOUCH_INT_PIN_NO        BOARD_TOUCH_INT_PIN_NO
 
 // <o> RTE_GT911_TOUCH_I2C_INSTANCE
 // <i> Defines GT911 Touchscreen i2c instance
@@ -1663,6 +1665,7 @@
 #endif
 // </e> CDC200 (cdc200) [Driver_CDC200]
 
+// <h> I3C (Improved Inter Integrated Circuit)
 // <e> I3C (Improved Inter-Integrated Circuit) [Driver_I3C]
 // <i> Configuration settings for Driver_I3C in component ::Drivers:I3C
 #define RTE_I3C                             1
@@ -1716,6 +1719,58 @@
 #endif
 // </e> I3C (Improved Inter-Integrated Circuit) [Driver_I3C]
 
+// <e> LPI3C (Low Power Improved Inter-Integrated Circuit) [Driver_LPI3C]
+// <i> Configuration settings for Driver_LPI3C in component ::Drivers:LPI3C
+#if defined(RTSS_HE)
+#define RTE_LPI3C                             1
+
+#if RTE_LPI3C
+
+// <o> LPI3C IRQ priority <0-255>
+// <i> Defines LPI3C  Interrupt priority
+// <i> Default: 0
+#define RTE_LPI3C_IRQ_PRI                     0
+
+// <o> LPI3C DMA ENABLE
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines DMA feature for LPI3C
+// <i> Default: DISABLE
+#define RTE_LPI3C_DMA_ENABLE                  0
+
+#if RTE_LPI3C_DMA_ENABLE
+// <o> LPI3C DMA Selection
+//    <0=> DMA2(M55-HE)
+//    <1=> DMA0
+// <i> Defines Select DMA0 for LPI3C. By default DMA0 will be considered
+// <i> Default: DMA0
+#define RTE_LPI3C_SELECT_DMA0                 1
+
+// <o> LPI3C DMA IRQ priority <0-255>
+// <i> Defines LPI3C DMA Interrupt priority
+// <i> Default: 0
+#define RTE_LPI3C_DMA_IRQ_PRI                 0
+#endif
+// <o> LPI3C blocking mode enable
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines Blocking mode support for LPI3C
+// <i> Default: DISABLE
+#define RTE_LPI3C_BLOCKING_MODE_ENABLE        0
+
+// <o> LPI3C Slave I2C/I3C Adaptive mode Enable
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines whether LPI3C Slave starts with I2C mode or not.
+// <i> It is for for enabling some features for I2C/I3C mode
+// <i> Default: DISABLE
+#define RTE_LPI3C_SLAVE_ADAPTIVE_MODE_ENABLE  0
+
+#endif
+#endif
+// </e> LPI3C (Low Power Improved Inter-Integrated Circuit) [Driver_LPI3C]
+// </h>
+
 // <e> IMU (Initial Measurement Unit) [Driver_IMU]
 // <i> Configuration settings for Driver_IMU in component ::Drivers:IMU
 #define RTE_IMU                             1
@@ -1731,7 +1786,7 @@
 // <o> BMI323 IMU INT pin GPIO port number range <0-15>
 // <i> Defines BMI323 IMU INT pin GPIO port number.
 // <i> Default: 8
-#define RTE_BMI323_INT_GPIO_PORT            8
+#define RTE_BMI323_INT_IO_PORT            8
 
 // <o> BMI323 IMU INT pin number range <0-7>
 // <i> Defines BMI323 IMU INT pin number.
@@ -1781,7 +1836,6 @@
 //    <0=> SS_0
 //    <1=> SS_1
 //    <2=> SS_2
-//    <3=> SS_3
 // <i> Defines slave selection for SPI0.
 // <i> Default: 0
 #define RTE_SPI0_CHIP_SELECTION_PIN             0
@@ -1913,7 +1967,6 @@
 //    <0=> SS_0
 //    <1=> SS_1
 //    <2=> SS_2
-//    <3=> SS_3
 // <i> Defines slave selection for SPI1.
 // <i> Default: 0
 #define RTE_SPI1_CHIP_SELECTION_PIN             0
@@ -2044,7 +2097,6 @@
 //    <0=> SS_0
 //    <1=> SS_1
 //    <2=> SS_2
-//    <3=> SS_3
 // <i> Defines slave selection for SPI2.
 // <i> Default: 0
 #define RTE_SPI2_CHIP_SELECTION_PIN             0
@@ -2176,7 +2228,6 @@
 //    <0=> SS_0
 //    <1=> SS_1
 //    <2=> SS_2
-//    <3=> SS_3
 // <i> Defines slave selection for SPI3.
 // <i> Default: 0
 #define RTE_SPI3_CHIP_SELECTION_PIN             1
@@ -2278,6 +2329,13 @@
 
 #ifdef RTE_LPSPI
 
+// <o> LPSPI mode configuration
+//    <0=> SLAVE
+//    <1=> MASTER
+// <i> Configure LPSPI mode.
+// <i> Default: 1
+#define RTE_LPSPI_CONFIG_MASTER_SLAVE            1
+
 // <o> LPSPI IRQ priority <0-255>
 // <i> Defines Interrupt priority for LPSPI.
 // <i> Default: 0
@@ -2307,6 +2365,11 @@
 
 // <o> LPSPI slave selection
 //    <0=> SS_0
+//    <1=> SS_1
+//    <2=> SS_2
+//    <3=> SS_3
+//    <4=> SS_4
+//    <5=> SS_5
 // <i> Defines slave selection for LPSPI.
 // <i> Default: 0
 #define RTE_LPSPI_CHIP_SELECTION_PIN             0
@@ -2499,10 +2562,15 @@
 // <i> Default: 0
 #define RTE_OSPI0_DDR_DRIVE_EDGE                  0
 
-// <o> OSPI0 RXDS Delay <0-16>
+// <o> OSPI0 RXDS Delay <0-23>
 // <i> Defines the delay applied to the RXDS signal of OSPI0
 // <i> Default: 0
 #define RTE_OSPI0_RXDS_DELAY                      0
+
+// <o> OSPI0 Signal Delay <0-23>
+// <i> Defines the delay applied to signals of OSPI0
+// <i> Default: 0
+#define RTE_OSPI0_SIGNAL_DELAY                     0
 #endif
 // </e> OSPI0 (Octal Serial Peripheral Interface 0) [Driver_OSPI]
 
@@ -2587,10 +2655,15 @@
 // <i> Default: 1
 #define RTE_OSPI1_DDR_DRIVE_EDGE                  1
 
-// <o> OSPI1 RXDS Delay <0-16>
+// <o> OSPI1 RXDS Delay <0-23>
 // <i> Defines the delay applied to the RXDS signal of OSPI1
 // <i> Default: 11
 #define RTE_OSPI1_RXDS_DELAY                      11
+
+// <o> OSPI1 Signal Delay <0-23>
+// <i> Defines the delay applied to signals of OSPI1
+// <i> Default: 0
+#define RTE_OSPI1_SIGNAL_DELAY                    0
 #endif
 // </e> OSPI1 (Octal Serial Peripheral Interface 1) [Driver_OSPI]
 
@@ -2599,6 +2672,11 @@
 // <i> Configuration settings for Driver_Flash in component ::Drivers:Flash
 #define RTE_ISSI_FLASH               1
 #if RTE_ISSI_FLASH
+
+// <o> ISSI FLASH SIZE
+// <i>  ISSI flash density in bytes
+// <i> Default: 0x4000000
+#define RTE_ISSI_FLASH_SIZE                     0x4000000
 
 // <o> ISSI FLASH OSPI Instance
 // <i> Defines the OSPI controller instance the ISSI flash is connected to
@@ -7268,15 +7346,6 @@
 // </e> UTIMER (Universal timer) [Driver_UTIMER]
 // </h> UTIMER (Universal Timer)
 
-
-// <e> Analog configuration [vbat analog register2 and comparator register2]
-#define RTE_ANALOG_CONFIG          1
-#if RTE_ANALOG_CONFIG
-#define RTE_VBAT_ANA_REG2_VAL      (0x388C4230)
-#define RTE_COMP_REG2_VAL          (0x10200000 | 0x1C240100)
-#endif
-// </e> Analog configuration [vbat analog register2 and comparator register2]
-
 // <h> DAC (Digital to analog converter )
 // <e> DAC0 (Digital to analog converter ) [Driver_DAC0]
 // <i> Configuration settings for Driver_DAC0 in component ::Drivers:DAC
@@ -8283,8 +8352,8 @@
 
 // <o> I2C0 RX FIFO threshold <0-31>
 // <i> Defines RX FIFO threshold for I2C0.
-// <i> Default: 16
-#define RTE_I2C0_RX_FIFO_THRESHOLD   16
+// <i> Default: 0
+#define RTE_I2C0_RX_FIFO_THRESHOLD   0
 
 // <o> I2C0 DMA ENABLE
 //    <0=> DISABLE
@@ -8320,8 +8389,8 @@
 
 // <o> I2C1 RX FIFO threshold <0-31>
 // <i> Defines RX FIFO threshold for I2C1.
-// <i> Default: 16
-#define RTE_I2C1_RX_FIFO_THRESHOLD   16
+// <i> Default: 0
+#define RTE_I2C1_RX_FIFO_THRESHOLD   0
 
 // <o> I2C1 DMA ENABLE
 //    <0=> DISABLE
@@ -8357,8 +8426,8 @@
 
 // <o> I2C2 RX FIFO threshold <0-31>
 // <i> Defines RX FIFO threshold for I2C2.
-// <i> Default: 16
-#define RTE_I2C2_RX_FIFO_THRESHOLD   16
+// <i> Default: 0
+#define RTE_I2C2_RX_FIFO_THRESHOLD   0
 
 // <o> I2C2 DMA ENABLE
 //    <0=> DISABLE
@@ -8395,8 +8464,8 @@
 
 // <o> I2C3 RX FIFO threshold <0-31>
 // <i> Defines RX FIFO threshold for I2C3.
-// <i> Default: 16
-#define RTE_I2C3_RX_FIFO_THRESHOLD   16
+// <i> Default: 0
+#define RTE_I2C3_RX_FIFO_THRESHOLD   0
 
 // <o> I2C3 DMA ENABLE
 //    <0=> DISABLE
@@ -8415,26 +8484,71 @@
 #endif
 // </e> I2C (Inter Integrated Circuit) [Driver_I2C3]
 
-// <e> LPI2C (Low Power Inter-Integrated Circuit) [Driver_LPI2C]
-// <i> Configuration settings for Driver_LPI2C in component ::Drivers:LPI2C
+// <e> LPI2C0 (Low Power Inter-Integrated Circuit) [Driver_LPI2C0]
+// <i> Configuration settings for Driver_LPI2C0 in component ::Drivers:LPI2C
 #if defined(RTSS_HE)
-#define RTE_LPI2C   1
-#if RTE_LPI2C
+#define RTE_LPI2C0   1
+#if RTE_LPI2C0
 
-// <o> LPI2C IRQ PRIORITY <0-225>
-// <i> defines LPI2C interrupt priority
+// <o> LPI2C0 IRQ PRIORITY <0-225>
+// <i> defines LPI2C0 interrupt priority
 // <i> default: 0
-#define RTE_LPI2C_IRQ_PRIORITY       0
+#define RTE_LPI2C0_IRQ_PRIORITY       0
 
-// <o> LPI2C Bus-Speed <1-400000>
-// <i> defines LPI2C Bus-Speed - It is used for Bit-time calculation in driver
+// <o> LPI2C0 Bus-Speed <1-400000>
+// <i> defines LPI2C0 Bus-Speed - It is used for Bit-time calculation in driver
 // <i> default: 400KHz
-#define RTE_LPI2C_BUS_SPEED          400000
+#define RTE_LPI2C0_BUS_SPEED          400000
 
 #endif
-// </e> LPI2C (Low Power Inter-Integrated Circuit) [Driver_LPI2C]
+// </e> LPI2C0(Low Power Inter-Integrated Circuit) [Driver_LPI2C0]
+
+// <e> LPI2C (Low Power Inter Integrated Circuit) [Driver_LPI2C1]
+// <i> Configuration settings for Driver_LPI2C1 in component ::Drivers:LPI2C1
+#define RTE_LPI2C1                     1
+
+#if RTE_LPI2C1
+
+// <o> LPI2C1 IRQ priority <0-255>
+// <i> Defines Interrupt priority for LPI2C1.
+// <i> Default: 0
+#define RTE_LPI2C1_IRQ_PRIORITY        0
+
+// <o> LPI2C1 TX FIFO threshold <0-31>
+// <i> Defines TX FIFO threshold for LPI2C1.
+// <i> Default: 16
+#define RTE_LPI2C1_TX_FIFO_THRESHOLD   16
+
+// <o> LPI2C1 RX FIFO threshold <0-31>
+// <i> Defines RX FIFO threshold for LPI2C1.
+// <i> Default: 0
+#define RTE_LPI2C1_RX_FIFO_THRESHOLD   0
+
+// <o> LPI2C1 DMA ENABLE
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines DMA feature for LPI2C1
+// <i> Default: DISABLE
+#define RTE_LPI2C1_DMA_ENABLE          0
+#if RTE_LPI2C1_DMA_ENABLE
+
+// <o> LPI2C1 DMA Selection
+//    <0=> DMA2(M55-HE)
+//    <1=> DMA0
+// <i> Defines Select DMA0 for LPI2C1. By default DMA0 will be considered
+// <i> Default: DMA0
+#define RTE_LPI2C1_SELECT_DMA0         1
+
+// <o> LPI2C1 DMA IRQ priority <0-255>
+// <i> Defines LPI2C1 DMA Interrupt priority
+// <i> Default: 0
+#define RTE_LPI2C1_DMA_IRQ_PRI         0
+#endif
+
+#endif
+// </e> LPI2C (Low Power Inter Integrated Circuit) [Driver_LPI2C1]
 #endif //defined(RTSS_HE)
-// </h>
+// </h> I2C (Inter Integrated Circuit)
 
 // <e> DMA0 (Direct Memory Access Controller) [Driver_DMA0]
 // <i> Configuration settings for Driver_DMA0 in component ::Drivers:DMA
@@ -8528,8 +8642,15 @@
 
 // <o> GPIO0 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO0.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO0_DB_CLK_DIV            1
+
+// <o> GPIO0 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO0.
+// <i> Default: DISABLED
+#define RTE_GPIO0_BIT_MANIPULATION      0
 
 // <o> GPIO0_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO0_PIN0.
@@ -8581,8 +8702,15 @@
 
 // <o> GPIO1 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO1.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO1_DB_CLK_DIV            1
+
+// <o> GPIO1 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO1.
+// <i> Default: DISABLED
+#define RTE_GPIO1_BIT_MANIPULATION      0
 
 // <o> GPIO1_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO1_PIN0.
@@ -8634,8 +8762,15 @@
 
 // <o> GPIO2 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO2.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO2_DB_CLK_DIV            1
+
+// <o> GPIO2 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO2.
+// <i> Default: DISABLED
+#define RTE_GPIO2_BIT_MANIPULATION      0
 
 // <o> GPIO2_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO2_PIN0.
@@ -8687,8 +8822,15 @@
 
 // <o> GPIO3 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO3.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO3_DB_CLK_DIV            1
+
+// <o> GPIO3 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO3.
+// <i> Default: DISABLED
+#define RTE_GPIO3_BIT_MANIPULATION      0
 
 // <o> GPIO3_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO3_PIN0.
@@ -8796,8 +8938,15 @@
 
 // <o> GPIO4 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO4.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO4_DB_CLK_DIV            1
+
+// <o> GPIO4 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO4.
+// <i> Default: DISABLED
+#define RTE_GPIO4_BIT_MANIPULATION      0
 
 // <o> GPIO4_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO4_PIN0.
@@ -8906,8 +9055,15 @@
 
 // <o> GPIO5 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO5.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO5_DB_CLK_DIV            1
+
+// <o> GPIO5 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO5.
+// <i> Default: DISABLED
+#define RTE_GPIO5_BIT_MANIPULATION      0
 
 // <o> GPIO5_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO5_PIN0.
@@ -8948,7 +9104,7 @@
 // <i> Defines Interrupt priority for GPIO5_PIN7.
 // <i> Default: 0
 #define RTE_GPIO5_PIN7_IRQ_PRIORITY     0
-#endif 
+#endif
 // </e> GPIO5
 
 // <e> GPIO6
@@ -8959,8 +9115,15 @@
 
 // <o> GPIO6 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO6.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO6_DB_CLK_DIV            1
+
+// <o> GPIO6 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO6.
+// <i> Default: DISABLED
+#define RTE_GPIO6_BIT_MANIPULATION      0
 
 // <o> GPIO6_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO6_PIN0.
@@ -9012,8 +9175,15 @@
 
 // <o> GPIO7 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO7.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO7_DB_CLK_DIV            1
+
+// <o> GPIO7 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO7.
+// <i> Default: DISABLED
+#define RTE_GPIO7_BIT_MANIPULATION      0
 
 // <o> GPIO7_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO7_PIN0.
@@ -9121,8 +9291,15 @@
 
 // <o> GPIO8 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO8.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO8_DB_CLK_DIV            1
+
+// <o> GPIO8 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO8.
+// <i> Default: DISABLED
+#define RTE_GPIO8_BIT_MANIPULATION      0
 
 // <o> GPIO8_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO8_PIN0.
@@ -9230,8 +9407,15 @@
 
 // <o> GPIO9 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO9.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO9_DB_CLK_DIV            1
+
+// <o> GPIO9 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO9.
+// <i> Default: DISABLED
+#define RTE_GPIO9_BIT_MANIPULATION      0
 
 // <o> GPIO9_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO9_PIN0.
@@ -9339,8 +9523,15 @@
 
 // <o> GPIO10 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO10.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO10_DB_CLK_DIV            1
+
+// <o> GPIO10 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO10.
+// <i> Default: DISABLED
+#define RTE_GPIO10_BIT_MANIPULATION      0
 
 // <o> GPIO10_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO10_PIN0.
@@ -9392,8 +9583,15 @@
 
 // <o> GPIO11 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO11.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO11_DB_CLK_DIV            1
+
+// <o> GPIO11 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO11.
+// <i> Default: DISABLED
+#define RTE_GPIO11_BIT_MANIPULATION      0
 
 // <o> GPIO11_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO11_PIN0.
@@ -9434,7 +9632,7 @@
 // <i> Defines Interrupt priority for GPIO11_PIN7.
 // <i> Default: 0
 #define RTE_GPIO11_PIN7_IRQ_PRIORITY     0
-#endif 
+#endif
 // </e> GPIO11
 
 // <e> GPIO12
@@ -9445,8 +9643,15 @@
 
 // <o> GPIO12 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO12.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO12_DB_CLK_DIV            1
+
+// <o> GPIO12 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO12.
+// <i> Default: DISABLED
+#define RTE_GPIO12_BIT_MANIPULATION      0
 
 // <o> GPIO12_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO12_PIN0.
@@ -9498,13 +9703,20 @@
 
 // <o> GPIO13 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO13.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO13_DB_CLK_DIV            1
 
 // <o> GPIO13_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO13_PIN0.
 // <i> Default: 0
 #define RTE_GPIO13_PIN0_IRQ_PRIORITY     0
+
+// <o> GPIO13 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO13.
+// <i> Default: DISABLED
+#define RTE_GPIO13_BIT_MANIPULATION      1
 
 // <o> GPIO13_PIN1 IRQ Priority
 // <i> Defines Interrupt priority for GPIO13_PIN1.
@@ -9551,13 +9763,20 @@
 
 // <o> GPIO14 Debounce Clock Divisor <0-1023>
 // <i> Defines debounce clock divisor for GPIO14.
-// <i> Default: 0
+// <i> Default: 1
 #define RTE_GPIO14_DB_CLK_DIV            1
 
 // <o> GPIO14_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for GPIO14_PIN0.
 // <i> Default: 0
 #define RTE_GPIO14_PIN0_IRQ_PRIORITY     0
+
+// <o> GPIO14 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO14.
+// <i> Default: DISABLED
+#define RTE_GPIO14_BIT_MANIPULATION      0
 
 // <o> GPIO14_PIN1 IRQ Priority
 // <i> Defines Interrupt priority for GPIO14_PIN1.
@@ -9595,6 +9814,45 @@
 #define RTE_GPIO14_PIN7_IRQ_PRIORITY     0
 #endif
 // </e> GPIO14
+
+// <e> GPIO16
+// <i> Configuration settings for Driver_GPIO16 in component ::Drivers:GPIO
+#define RTE_GPIO16   1
+
+#if RTE_GPIO16
+
+// <o> GPIO16 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO16.
+// <i> Default: DISABLED
+#define RTE_GPIO16_BIT_MANIPULATION      0
+
+// <o> GPIO16 IRQ Priority
+// <i> Defines Interrupt priority for GPIO16
+// <i> Default: 0
+#define RTE_GPIO16_IRQ_PRIORITY          0
+#endif
+// </e> GPIO16
+
+// <e> GPIO17
+// <i> Configuration settings for Driver_GPIO17 in component ::Drivers:GPIO
+#define RTE_GPIO17   1
+#if RTE_GPIO17
+
+// <o> GPIO17 Bit Manipulation Feature
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Bit Manipulation Control for GPIO17.
+// <i> Default: DISABLED
+#define RTE_GPIO17_BIT_MANIPULATION      0
+
+// <o> GPIO17 IRQ Priority
+// <i> Defines Interrupt priority for GPIO17
+// <i> Default: 0
+#define RTE_GPIO17_IRQ_PRIORITY          0
+#endif
+// </e> GPIO17
 
 // <e> LPGPIO
 // <i> Configuration settings for Driver_LPGPIO in component ::Drivers:GPIO
