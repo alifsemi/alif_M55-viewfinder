@@ -113,7 +113,6 @@ project:
     - component: AlifSemiconductor::Graphics:AIPL:Essential
     - component: AlifSemiconductor::Graphics:AIPL:Basic
     - component: AlifSemiconductor::Graphics:Acceleration:Dave2d
-    - component: AlifSemiconductor::Graphics:Acceleration:Helium
     - component: AlifSemiconductor::Graphics:AIPL:Color correction
     - component: AlifSemiconductor::Graphics:AIPL:Color conversion
     - component: AlifSemiconductor::Graphics:AIPL:Bayer
