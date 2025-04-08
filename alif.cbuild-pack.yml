@@ -12,3 +12,6 @@ cbuild-pack:
     - resolved-pack: AlifSemiconductor::Ensemble@2.0.0-alpha
       selected-by-pack:
         - AlifSemiconductor::Ensemble@2.0.0-alpha
+    - resolved-pack: AlifSemiconductor::Ensemble@2.0.0-alpha1
+      selected-by-pack:
+        - AlifSemiconductor::Ensemble@2.0.0-alpha1
