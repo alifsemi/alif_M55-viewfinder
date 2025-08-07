@@ -115,4 +115,4 @@ project:
     - component: AlifSemiconductor::Graphics:Acceleration:Dave2d
     - component: AlifSemiconductor::Graphics:AIPL:Color correction
     - component: AlifSemiconductor::Graphics:AIPL:Color conversion
-    - component: AlifSemiconductor::Graphics:AIPL:Bayer
+    - component: AlifSemiconductor::Graphics:AIPL:Demosaic
