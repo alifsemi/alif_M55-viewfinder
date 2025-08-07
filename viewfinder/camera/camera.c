@@ -14,7 +14,7 @@
 
 #include "Driver_CPI.h"
 #include "aipl_color_conversion.h"
-#include "aipl_bayer.h"
+#include "aipl_demosaic.h"
 
 #if !CAM_USE_RGB565
 // Camera frame buffer for raw image format
@@ -138,10 +138,10 @@ aipl_image_t camera_post_capture_process(void) {
     // ARX3A0 camera uses bayer output
     // MT9M114 can use bayer or RGB565 depending on RTE config
     // Convert raw image to RGB565 buffer using debayering method
-    aipl_error_t aipl_ret = aipl_bayer_decoding(camera_raw_buffer, cam_image.data,
-                                                cam_image.width, cam_image.height,
-                                                CAM_BAYER_FORMAT, AIPL_BAYER_METHOD_SIMPLE,
-                                                AIPL_COLOR_RGB565);
+    aipl_error_t aipl_ret = aipl_demosaic(camera_raw_buffer, cam_image.data,
+                                          cam_image.width, cam_image.width,
+                                          cam_image.height, CAM_BAYER_FORMAT,
+                                          AIPL_COLOR_RGB565);
     if (aipl_ret != AIPL_ERR_OK)
     {
         printf("\r\nError: Camera output debayering failed (%s)\r\n",
