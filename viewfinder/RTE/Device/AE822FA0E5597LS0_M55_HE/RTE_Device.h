@@ -13,7 +13,7 @@
 #ifndef __RTE_DEVICE_H
 #define __RTE_DEVICE_H
 
-#include "board.h"
+#include "board_defs.h"
 
 // <e> MRAM (NVM (Non-Volatile Memory)) [Driver_MRAM]
 // <i> Configuration settings for Driver_MRAM in component ::Drivers:MRAM
@@ -40,6 +40,20 @@
 // <i> Default: 0
 #define RTE_CPI_CSI_HALT                                      0
 
+// <o> Select CPI AXI port
+//     <0=> disable
+//     <1=> enable
+// <i> Defines CPI AXI port
+// <i> Default: AXI port enable
+#define RTE_CPI_AXI_PORT                                      1
+
+// <o> Select CPI ISP port
+//     <0=> disable
+//     <1=> enable
+// <i> Defines CPI ISP port
+// <i> Default: ISP port disable
+#define RTE_CPI_ISP_PORT                                      0
+
 // <o> CPI Row roundup
 //     <0=> disable
 //     <1=> enable
@@ -56,6 +70,40 @@
 // <i> Defines CPI FIFO write watermark.
 // <i> Default: 0x18
 #define RTE_CPI_FIFO_WRITE_WATERMARK                          0x18
+
+// <o> CPI horizontal back porch
+// <i> Defines CPI horizontal back porch.
+// <i> Default: 0x0
+#define RTE_CPI_HBP                                           0
+
+// <o> CPI horizontal front porch
+// <i> Defines CPI horizontal front porch.
+// <i> Default: 0x0
+#define RTE_CPI_HFP                                           0
+
+// <o> CPI horizontal cropping
+//     <0=> disable
+//     <1=> enable
+// <i> Defines CPI horizontal cropping
+// <i> Default: 0x1
+#define RTE_CPI_HFP_EN                                        0
+
+// <o> CPI vertical back porch
+// <i> Defines CPI vertical back porch.
+// <i> Default: 0x0
+#define RTE_CPI_VBP                                           0
+
+// <o> CPI vertical front porch
+// <i> Defines CPI vertical front porch.
+// <i> Default: 0x0
+#define RTE_CPI_VFP                                           0
+
+// <o> CPI vertical cropping
+//     <0=> disable
+//     <1=> enable
+// <i> Defines CPI vertical cropping
+// <i> Default: 0x1
+#define RTE_CPI_VFP_EN                                        0
 
 // <e> MT9M114 [Driver_MT9M114]
 // <o> Enable/Disable MT9M114 camera sensor
@@ -457,7 +505,7 @@
 //     <90=> 90 FPS
 // <i> Defines camera ARX3A0 frame per second
 // <i> Default: 90 FPS
-#define RTE_ARX3A0_CAMERA_SENSOR_CSI_CFG_FPS                 40
+#define RTE_ARX3A0_CAMERA_SENSOR_CSI_CFG_FPS                 90
 
 // <o> Select camera ARX3A0 frequency
 // <i> Defines camera ARX3A0 frequency
@@ -507,7 +555,7 @@
 // <o> Select camera sensor ARX3A0 reset pin number
 // <i> Defines camera sensor ARX3A0 reset pin number
 // <i> Default: 1
-#define RTE_ARX3A0_CAMERA_SENSOR_RESET_PIN_NO                BOARD_CAMERA_RESET_PIN_NO
+#define RTE_ARX3A0_CAMERA_SENSOR_RESET_PIN_NO                BOARD_CAMERA_RESET_GPIO_PIN
 
 // <o> Select camera sensor ARX3A0 reset GPIO port
 // <i> Defines camera sensor ARX3A0 reset GPIO port
@@ -517,12 +565,12 @@
 // <o> Select camera sensor ARX3A0 power pin number
 // <i> Defines camera sensor ARX3A0 power pin number
 // <i> Default: 5
-#define RTE_ARX3A0_CAMERA_SENSOR_POWER_PIN_NO                5
+#define RTE_ARX3A0_CAMERA_SENSOR_POWER_PIN_NO                BOARD_CAMERA_POWER_GPIO_PIN
 
 // <o> Select camera sensor ARX3A0 power GPIO port
 // <i> Defines camera sensor ARX3A0 power GPIO port
 // <i> Default: 7
-#define RTE_ARX3A0_CAMERA_SENSOR_POWER_GPIO_PORT             7
+#define RTE_ARX3A0_CAMERA_SENSOR_POWER_GPIO_PORT             BOARD_CAMERA_POWER_GPIO_PORT
 
 // <o> RTE_ARX3A0_CAMERA_SENSOR_I2C_INSTANCE
 // <i> Defines camera sensor ARX3A0 i2c instance
@@ -854,7 +902,7 @@
 // <o> Select camera sensor MT9M114 MIPI reset pin number
 // <i> Defines camera sensor MT9M114 MIPI reset pin number
 // <i> Default: 1
-#define RTE_MT9M114_CAMERA_SENSOR_MIPI_RESET_PIN_NO                 BOARD_CAMERA_RESET_PIN_NO
+#define RTE_MT9M114_CAMERA_SENSOR_MIPI_RESET_PIN_NO                 BOARD_CAMERA_RESET_GPIO_PIN
 
 // <o> Select camera sensor MT9M114 MIPI reset GPIO port
 // <i> Defines camera sensor MT9M114 MIPI reset GPIO port
@@ -864,12 +912,12 @@
 // <o> Select camera sensor MT9M114 MIPI power pin number
 // <i> Defines camera sensor MT9M114 MIPI power pin number
 // <i> Default: 5
-#define RTE_MT9M114_CAMERA_SENSOR_MIPI_POWER_PIN_NO                 5
+#define RTE_MT9M114_CAMERA_SENSOR_MIPI_POWER_PIN_NO                 BOARD_CAMERA_POWER_GPIO_PIN
 
 // <o> Select camera sensor MT9M114 MIPI power GPIO port
 // <i> Defines camera sensor MT9M114 MIPI power GPIO port
 // <i> Default: 7
-#define RTE_MT9M114_CAMERA_SENSOR_MIPI_POWER_GPIO_PORT              7
+#define RTE_MT9M114_CAMERA_SENSOR_MIPI_POWER_GPIO_PORT              BOARD_CAMERA_POWER_GPIO_PORT
 
 // <o> RTE_MT9M114_CAMERA_SENSOR_MIPI_I2C_INSTANCE
 // <i> Defines camera sensor MT9M114 MIPI i2c instance
@@ -1255,7 +1303,7 @@
 // <o> ILI9806 LCD panel reset pin number
 // <i> Defines ILI9806 LCD panel reset pin number.
 // <i> Default: 5
-#define RTE_ILI9806E_PANEL_RESET_PIN_NO                  BOARD_LCD_RESET_PIN_NO
+#define RTE_ILI9806E_PANEL_RESET_PIN_NO                  BOARD_LCD_RESET_GPIO_PIN
 
 // <o> ILI9806 LCD panel reset pin GPIO port number
 // <i> Defines ILI9806 LCD panel reset pin GPIO port number.
@@ -1265,7 +1313,7 @@
 // <o> ILI9806 LCD panel back light pin number
 // <i> Defines ILI9806 LCD panel back light pin number.
 // <i> Default: 1
-#define RTE_ILI9806E_PANEL_BL_LED_PIN_NO                 BOARD_LCD_BACKLIGHT_PIN_NO
+#define RTE_ILI9806E_PANEL_BL_LED_PIN_NO                 BOARD_LCD_BACKLIGHT_GPIO_PIN
 
 // <o> ILI9806 LCD panel back light pin GPIO port number
 // <i> Defines ILI9806 LCD panel back light pin GPIO port number.
