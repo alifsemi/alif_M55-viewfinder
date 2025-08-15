@@ -417,6 +417,10 @@ const struct pinconf board_pinconf[] = {
     /* Selected: GPIO6_4 for "LEDRGB1_G" */
     {PORT_6, PIN_4, PINMUX_ALTERNATE_FUNCTION_0, PADCTRL_OUTPUT_DRIVE_STRENGTH_4MA},
 
+    /* P6_5 on pin E8. */
+    /* Selected: GPIO6_5 for "TOUCH_RESET" */
+    {PORT_6, PIN_5, PINMUX_ALTERNATE_FUNCTION_0, PADCTRL_DRIVER_DISABLED_PULL_UP | PADCTRL_OUTPUT_DRIVE_STRENGTH_4MA},
+
     /* P6_6 on pin E6. Functions: [0]: >>>GPIO6_6<<<, [1]: OSPI0_D6_C, [2]: UART0_CTS_B, [3]:
        Reserved, [4]: SPI1_SS2_B, [5]: UT7_T0_B, [6]: SD_D6_D, [7]: ETH_MDC_A */
     /* Selected: GPIO6_6 for "LEDRGB1_B" */
