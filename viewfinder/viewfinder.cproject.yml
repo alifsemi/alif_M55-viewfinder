@@ -1,11 +1,5 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Open-CMSIS-Pack/devtools/tools/projmgr/2.6.0/tools/projmgr/schemas/cproject.schema.json
 project:
-  # Select development board variant
-  #   <4=> Alif Development Kit (Generation 2)
-  #   <5=> Alif AI/ML Application Kit (Generation 2)
-  define:
-    - BOARD_ALIF_DEVKIT_VARIANT: 4
-
   groups:
     - group: App
       files:
@@ -23,8 +17,6 @@ project:
 
     - group: Board
       files:
-        - file: ../libs/board/devkit_gen2/board_init.c
-        - file: ../libs/board/appkit_gen2/board_init.c
         - file: ../libs/common_app_utils/logging/uart_tracelib.c
         - file: ../libs/common_app_utils/logging/retarget.c
         - file: ../libs/common_app_utils/fault_handler/fault_handler.c
@@ -49,60 +41,25 @@ project:
 
   components:
     # needed for Alif Ensemble support
-    - component: AlifSemiconductor::Device:Startup&C Startup
     - component: ARM::CMSIS:CORE
+    - component: AlifSemiconductor::Device:Startup
+    - component: AlifSemiconductor::Device:SOC Peripherals:PINCONF
+    - component: AlifSemiconductor::Device:SOC Peripherals:GPIO
+    - component: AlifSemiconductor::CMSIS Driver:USART
 
     # peripheral drivers & middleware, uncomment as needed
-    # - component: AlifSemiconductor::Device:SOC Peripherals:ADC
-    # - component: AlifSemiconductor::Device:SOC Peripherals:CAN-FD
     - component: AlifSemiconductor::Device:SOC Peripherals:CDC
     - component: AlifSemiconductor::Device:SOC Peripherals:CPI
-    # - component: AlifSemiconductor::Device:SOC Peripherals:CRC
-    # - component: AlifSemiconductor::Device:SOC Peripherals:DAC
-    # - component: AlifSemiconductor::Device:SOC Peripherals:DMA
-    # - component: AlifSemiconductor::Device:SOC Peripherals:Ethernet MAC
-    - component: AlifSemiconductor::Device:SOC Peripherals:GPIO
-    # - component: AlifSemiconductor::Device:SOC Peripherals:HSCMP
-    # - component: AlifSemiconductor::Device:SOC Peripherals:HWSEM
-    - component: AlifSemiconductor::Device:SOC Peripherals:I2C
-    # - component: AlifSemiconductor::Device:SOC Peripherals:I2C_I3C
-    # - component: AlifSemiconductor::Device:SOC Peripherals:I2S
-    # - component: AlifSemiconductor::Device:SOC Peripherals:I3C
-    # - component: AlifSemiconductor::Device:SOC Peripherals:LPI2C
-    # - component: AlifSemiconductor::Device:SOC Peripherals:LPTIMER
+
     - component: AlifSemiconductor::Device:SOC Peripherals:MHU
     - component: AlifSemiconductor::Device:SOC Peripherals:MIPI DSI CSI2 DPHY
     - component: AlifSemiconductor::Device:SOC Peripherals:MIPI CSI2
     - component: AlifSemiconductor::Device:SOC Peripherals:MIPI DSI
-    # - component: AlifSemiconductor::Device:SOC Peripherals:MRAM
-    # - component: AlifSemiconductor::Device:SOC Peripherals:OSPI
-    # - component: AlifSemiconductor::Device:SOC Peripherals:PDM
-    - component: AlifSemiconductor::Device:SOC Peripherals:PINCONF
-    # - component: AlifSemiconductor::Device:SOC Peripherals:RTC
-    # - component: AlifSemiconductor::Device:SOC Peripherals:SDMMC
-    # - component: AlifSemiconductor::Device:SOC Peripherals:SPI
-    - component: AlifSemiconductor::Device:SOC Peripherals:USART
-    # - component: AlifSemiconductor::Device:SOC Peripherals:UTIMER
-    # - component: AlifSemiconductor::Device:SOC Peripherals:WDT
-
-    # - component: AlifSemiconductor::Device:OSPI FLASH XIP:core
-    # - component: AlifSemiconductor::Device:OSPI FLASH XIP:utility
-    # - component: AlifSemiconductor::Device:OSPI HYPERRAM XIP
-    - component: AlifSemiconductor::Device:SE runtime Services:core&Source
-    - component: AlifSemiconductor::Device:SE runtime Services:Initialization Helper&Source
 
     - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
     #- component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
-    # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor AR0144
-    # - component: AlifSemiconductor::BSP:External peripherals:Ethernet PHY
-    # - component: AlifSemiconductor::BSP:External peripherals:GT911 Touch Controller
+
     - component: AlifSemiconductor::BSP:External peripherals:ILI9806E LCD panel
-    # - component: AlifSemiconductor::BSP:External peripherals:OSPI Flash ISSI
-    # - component: AlifSemiconductor::Device:Conductor Tool support
-    # - component: AlifSemiconductor::Device:Power Management
-    # - component: AlifSemiconductor::Device:Retarget IO:STDERR
-    # - component: AlifSemiconductor::Device:Retarget IO:STDIN
-    # - component: AlifSemiconductor::Device:Retarget IO:STDOUT
 
     # D/AVE2D driver
     - component: AlifSemiconductor::Graphics:DAVE2D:Layer2
@@ -116,3 +73,16 @@ project:
     - component: AlifSemiconductor::Graphics:AIPL:Color correction
     - component: AlifSemiconductor::Graphics:AIPL:Color conversion
     - component: AlifSemiconductor::Graphics:AIPL:Demosaic
+    - component: AlifSemiconductor::CMSIS Driver:I2C
+    - component: AlifSemiconductor::Services:Secure Enclave:core&Source
+    - component: AlifSemiconductor::Services:Secure Enclave:Initialization Helper&Source
+ 
+    - component: AlifSemiconductor::BSP:Board Config
+    - component: AlifSemiconductor::BSP:DevKit Config&DevKit-e7
+      for-context:
+        - +E7-HE
+        - +E7-HP
+    - component: AlifSemiconductor::BSP:DevKit Config&DevKit-e8
+      for-context:
+        - +E8-HE
+        - +E8-HP

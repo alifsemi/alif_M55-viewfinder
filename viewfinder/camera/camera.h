@@ -16,7 +16,7 @@
 #include "aipl_image.h"
 
 // Choose camera parameters based on RTE configuration
-#if RTE_Drivers_CAMERA_SENSOR_MT9M114
+#if defined(RTE_Drivers_CAMERA_SENSOR_MT9M114)
 #if (RTE_MT9M114_CAMERA_SENSOR_MIPI_IMAGE_CONFIG == 1)
 #define CAM_FRAME_WIDTH      (1280)
 #define CAM_FRAME_HEIGHT     (720)
@@ -39,7 +39,7 @@
 #else
 #error "Unsupported MT9M114 configuration"
 #endif
-#elif RTE_Drivers_CAMERA_SENSOR_ARX3A0
+#elif defined(RTE_Drivers_CAMERA_SENSOR_ARX3A0)
 #define CAM_FRAME_WIDTH      (RTE_ARX3A0_CAMERA_SENSOR_FRAME_WIDTH)
 #define CAM_FRAME_HEIGHT     (RTE_ARX3A0_CAMERA_SENSOR_FRAME_HEIGHT)
 #define CAM_COLOR_CORRECTION (1)

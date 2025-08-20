@@ -11,6 +11,8 @@
 
 #include "RTE_Components.h"
 #include CMSIS_device_header
+#include "Driver_IO.h"
+#include "board_defs.h"
 
 // DAVE
 #include "aipl_dave2d.h"
@@ -24,12 +26,12 @@
 #include "aipl_lut_transform.h"
 #include "aipl_resize.h"
 #include "aipl_rotate.h"
-#include "board.h"
+#include "board_config.h"
 #include "camera.h"
 #include "disp.h"
 #include "image.h"
-#include "power.h"
-// #include "power_management.h"
+
+#include "power_management.h"
 #include "se_services_port.h"
 #include "alif_logo.h"
 
@@ -51,21 +53,51 @@ static void uart_callback(uint32_t event) {}
 #define printf(fmt, ...) (0)
 #endif
 
+
+extern ARM_DRIVER_GPIO ARM_Driver_GPIO_(BOARD_LEDRGB1_G_GPIO_PORT);
+static ARM_DRIVER_GPIO* green_port = &ARM_Driver_GPIO_(BOARD_LEDRGB1_G_GPIO_PORT);
+
+#if BOARD_LEDRGB1_G_GPIO_PORT != BOARD_LEDRGB1_R_GPIO_PORT
+extern ARM_DRIVER_GPIO ARM_Driver_GPIO_(BOARD_LEDRGB1_R_GPIO_PORT);
+#endif
+
+static ARM_DRIVER_GPIO* red_port = &ARM_Driver_GPIO_(BOARD_LEDRGB1_R_GPIO_PORT);
+
 // Print measurements
 #define PRINT_INTERVAL_SEC    (1)
 #define PRINT_INTERVAL_CLOCKS (PRINT_INTERVAL_SEC * CLOCKS_PER_SEC)
 extern uint32_t SystemCoreClock;
-
+#include "pinconf.h"
 int main(void) {
-    BOARD_Pinmux_Init();
+    
+    int32_t board_init_ret = board_pins_config();
+    if(board_init_ret) {
+        __BKPT(0);
+    }
+
+    board_init_ret = board_gpios_config();
+    if(board_init_ret) {
+        __BKPT(0);
+    }
+
+    green_port->Initialize(BOARD_LEDRGB1_G_GPIO_PIN, NULL);
+    green_port->PowerControl(BOARD_LEDRGB1_G_GPIO_PIN, ARM_POWER_FULL);
+    green_port->SetDirection(BOARD_LEDRGB1_G_GPIO_PIN, GPIO_PIN_DIRECTION_OUTPUT);
+
+    red_port->Initialize(BOARD_LEDRGB1_R_GPIO_PIN, NULL);
+    red_port->PowerControl(BOARD_LEDRGB1_R_GPIO_PIN, ARM_POWER_FULL);
+    red_port->SetDirection(BOARD_LEDRGB1_R_GPIO_PIN, GPIO_PIN_DIRECTION_OUTPUT);
+
 
     /* Initialize the SE services */
     se_services_port_init();
 
-    /* Enable MIPI power. TODO: To be changed to aiPM call */
-    enable_mipi_dphy_power();
-    disable_mipi_dphy_isolation();
-    // bool pm_ok = init_power_management();
+    /* Enable MIPI power */
+    bool pm_ok = init_power_management();
+    if (!pm_ok) {
+        printf("\r\nError: power management init failed.\r\n");
+        __BKPT(0);
+    }
 
     clock_init();
 
@@ -90,21 +122,16 @@ int main(void) {
 
     clk_init();  // for time.h clock()
 
-    // if (!pm_ok) {
-    //     printf("\r\nError: power management init failed.\r\n");
-    //     __BKPT(0);
-    // }
-
     // Init camera
     int ret = camera_init();
     if (ret != ARM_DRIVER_OK) {
-        __BKPT(0);
+        __BKPT(1);
     } else {
         // Camera init OK --> init display
         ret = display_init();
 
         if (ret != ARM_DRIVER_OK) {
-            __BKPT(0);
+            __BKPT(2);
         }
     }
 
@@ -121,7 +148,7 @@ int main(void) {
     clock_t print_ts = clock();
     while (ret == ARM_DRIVER_OK) {
         // Blink green LED
-        BOARD_LED2_Control(BOARD_LED_STATE_TOGGLE);
+        green_port->SetValue(BOARD_LEDRGB1_G_GPIO_PIN, GPIO_PIN_OUTPUT_STATE_TOGGLE);
         // Reset cycle counter
         ARM_PMU_CYCCNT_Reset();
 
@@ -256,7 +283,7 @@ int main(void) {
     }
 
     // Set RED LED in error case
-    BOARD_LED1_Control(BOARD_LED_STATE_HIGH);
+    red_port->SetValue(BOARD_LEDRGB1_R_GPIO_PIN, GPIO_PIN_OUTPUT_STATE_HIGH);
 
     while (1) {
         __WFI();
