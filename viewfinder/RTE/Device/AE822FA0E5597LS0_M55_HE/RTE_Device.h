@@ -505,7 +505,7 @@
 //     <90=> 90 FPS
 // <i> Defines camera ARX3A0 frame per second
 // <i> Default: 90 FPS
-#define RTE_ARX3A0_CAMERA_SENSOR_CSI_CFG_FPS                 90
+#define RTE_ARX3A0_CAMERA_SENSOR_CSI_CFG_FPS                 40
 
 // <o> Select camera ARX3A0 frequency
 // <i> Defines camera ARX3A0 frequency

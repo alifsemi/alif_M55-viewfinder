@@ -91,7 +91,7 @@ int camera_init(void) {
     // NOTE: There is automatic gain control implemented for ARX3A0 in ML example repository
     //       https://github.com/alifsemi/alif_ml-embedded-evaluation-kit
 #if defined(RTE_Drivers_CAMERA_SENSOR_ARX3A0)
-    CAMERAdrv->Control(CPI_CAMERA_SENSOR_GAIN, 0x10000 * 5.0f);
+    CAMERAdrv->Control(CPI_CAMERA_SENSOR_GAIN, 0x10000 * 2.0f);
 #endif
 
     return ret;
