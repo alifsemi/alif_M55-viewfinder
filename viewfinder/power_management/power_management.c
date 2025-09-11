@@ -90,6 +90,5 @@ static bool set_power_profiles(void) {
 }
 
 bool init_power_management(void) {
-    SERVICES_synchronize_with_se(se_services_s_handle);
     return set_power_profiles();
 }

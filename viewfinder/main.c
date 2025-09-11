@@ -35,7 +35,6 @@
 #include "se_services_port.h"
 #include "alif_logo.h"
 
-void clock_init(void);   // Enables needed SoC clocks
 extern void clk_init();  // time.h clock functionality (from retarget.c)
 
 // DAVE heap
@@ -69,13 +68,21 @@ static ARM_DRIVER_GPIO* red_port = &ARM_Driver_GPIO_(BOARD_LEDRGB1_R_GPIO_PORT);
 extern uint32_t SystemCoreClock;
 #include "pinconf.h"
 int main(void) {
-    
+
     int32_t board_init_ret = board_pins_config();
     if(board_init_ret) {
         __BKPT(0);
     }
 
     board_init_ret = board_gpios_config();
+    if(board_init_ret) {
+        __BKPT(0);
+    }
+
+    /* Initialize the SE services */
+    se_services_port_init();
+
+    board_init_ret = board_clocks_config(CLKEN_HFOSC_MASK | CLKEN_CLK_100M_MASK);
     if(board_init_ret) {
         __BKPT(0);
     }
@@ -88,18 +95,12 @@ int main(void) {
     red_port->PowerControl(BOARD_LEDRGB1_R_GPIO_PIN, ARM_POWER_FULL);
     red_port->SetDirection(BOARD_LEDRGB1_R_GPIO_PIN, GPIO_PIN_DIRECTION_OUTPUT);
 
-
-    /* Initialize the SE services */
-    se_services_port_init();
-
     /* Enable MIPI power */
     bool pm_ok = init_power_management();
     if (!pm_ok) {
         printf("\r\nError: power management init failed.\r\n");
         __BKPT(0);
     }
-
-    clock_init();
 
 #if !defined(DISABLE_UART_TRACE)
     tracelib_init(NULL, uart_callback);
@@ -287,21 +288,5 @@ int main(void) {
 
     while (1) {
         __WFI();
-    }
-}
-
-void clock_init(void) {
-    uint32_t service_error_code = 0;
-    /* Enable Clocks */
-    uint32_t error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_CLK_100M, true, &service_error_code);
-    if (error_code || service_error_code) {
-        printf("SE: 100MHz clock enable error_code=%u se_error_code=%u\n", error_code, service_error_code);
-        return;
-    }
-
-    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_HFOSC, true, &service_error_code);
-    if (error_code || service_error_code) {
-        printf("SE: HFOSC enable error_code=%u se_error_code=%u\n", error_code, service_error_code);
-        return;
     }
 }
