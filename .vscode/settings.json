@@ -6,4 +6,5 @@
     "cmake.configureOnOpen": false,
 
     "cortex-debug.variableUseNaturalFormat": false,
+    "debug.hideSlowPreLaunchWarning": true,
 }

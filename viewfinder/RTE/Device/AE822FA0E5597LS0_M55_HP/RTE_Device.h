@@ -219,6 +219,20 @@
 // <i> Default: 0
 #define RTE_LPCPI_IRQ_PRI                                     0
 
+// <o> Select LPCPI AXI port
+//     <0=> disable
+//     <1=> enable
+// <i> Defines LPCPI AXI port
+// <i> Default: AXI port enable
+#define RTE_LPCPI_AXI_PORT                                      1
+
+// <o> Select LPCPI ISP port
+//     <0=> disable
+//     <1=> enable
+// <i> Defines LPCPI ISP port
+// <i> Default: ISP port disable
+#define RTE_LPCPI_ISP_PORT                                      0
+
 // <o> LPCPI Row roundup
 //     <0=> disable
 //     <1=> enable
@@ -234,7 +248,41 @@
 // <o> LPCPI FIFO write watermark
 // <i> Defines LPCPI FIFO write watermark.
 // <i> Default: 0x18
-#define RTE_LPCPI_FIFO_WRITE_WATERMARK                        0x18
+#define RTE_LPCPI_FIFO_WRITE_WATERMARK         0x18
+
+// <o> LPCPI horizontal back porch
+// <i> Defines LPCPI horizontal back porch.
+// <i> Default: 0x0
+#define RTE_LPCPI_HBP                                           0
+
+// <o> LPCPI horizontal front porch
+// <i> Defines LPCPI horizontal front porch.
+// <i> Default: 0x0
+#define RTE_LPCPI_HFP                                           0
+
+// <o> LPCPI horizontal cropping
+//     <0=> disable
+//     <1=> enable
+// <i> Defines LPCPI horizontal cropping
+// <i> Default: 0x1
+#define RTE_LPCPI_HFP_EN                                        0
+
+// <o> LPCPI vertical back porch
+// <i> Defines LPCPI vertical back porch.
+// <i> Default: 0x0
+#define RTE_LPCPI_VBP                                           0
+
+// <o> LPCPI vertical front porch
+// <i> Defines LPCPI vertical front porch.
+// <i> Default: 0x0
+#define RTE_LPCPI_VFP                                           0
+
+// <o> LPCPI vertical cropping
+//     <0=> disable
+//     <1=> enable
+// <i> Defines LPCPI vertical cropping
+// <i> Default: 0x1
+#define RTE_LPCPI_VFP_EN                                        0
 
 // <e> MT9M114 [Driver_MT9M114]
 // <o> Enable/Disable MT9M114 camera sensor
@@ -329,6 +377,139 @@
 
 #endif
 // </e> LPCPI (Camera) [Driver_LPCPI]
+
+// <e> ISP (ISP) [Driver_ISP]
+// <i> Configuration settings for Driver_ISP in component ::Drivers:ISP
+#define RTE_ISP 0
+#if RTE_ISP
+
+// <o> ISP IRQ priority <0-255>
+// <i> Defines Interrupt priority for ISP.
+// <i> Default: 0
+#define RTE_ISP_IRQ_PRIORITY                    0
+
+// <o> ISP Enable AE Module
+//     <0=> disable
+//     <1=> enable
+// <i> defines if AE Module is enabled or not
+// <i> default: false
+#define RTE_ISP_AE_MODULE 0
+
+// <o> ISP Enable BLS Module
+//     <0=> disable
+//     <1=> enable
+// <i> defines if Black Level Subtraction Module is enabled or not
+// <i> default: false
+#define RTE_ISP_BLS_MODULE 0
+
+// <o> ISP Enable DMSC Module
+//     <0=> disable
+//     <1=> enable
+// <i> defines if Demosaic Module is enabled or not
+// <i> default: false
+#define RTE_ISP_DMSC_MODULE 1
+
+// <o> ISP Enable FLT Module
+//     <0=> disable
+//     <1=> enable
+// <i> defines if Noise/Sharpening-Filter Module is enabled or not
+// <i> default: false
+#define RTE_ISP_FLT_MODULE 0
+
+// <o> ISP Enable CCM Module
+//     <0=> disable
+//     <1=> enable
+// <i> defines if Color Correction Matrix Module is enabled or not
+// <i> default: false
+#define RTE_ISP_CCM_MODULE 1
+
+// <o> ISP Enable CSM Module
+//     <0=> disable
+//     <1=> enable
+// <i> defines if Color Space Conversion Module is enabled or not
+// <i> default: false
+#define RTE_ISP_CSM_MODULE 0
+
+// <o> ISP Enable WB Module
+//     <0=> disable
+//     <1=> enable
+// <i> defines if White Balancing Module is enabled or not
+// <i> default: false
+#define RTE_ISP_WB_MODULE 1
+
+// <o> ISP Enable EXPM Module
+//     <0=> disable
+//     <1=> enable
+// <i> defines if Auto-Exposure Statistics Module is enabled or not
+// <i> default: false
+#define RTE_ISP_EXPM_MODULE 0
+
+// <o> ISP Enable Gamma-out Module
+//     <0=> disable
+//     <1=> enable
+// <i> defines if Gamma-out Module is enabled or not
+// <i> default: false
+#define RTE_ISP_GAMMAOUT_MODULE 0
+
+// <o> ISP Enable WBM Module
+//     <0=> disable
+//     <1=> enable
+// <i> defines if White-Balancing Statistics Module is enabled or not
+// <i> default: false
+#define RTE_ISP_WBM_MODULE 1
+
+// <o> ISP Enable Binning Module
+//     <0=> disable
+//     <1=> enable
+// <i> defines if Binning Module is enabled or not
+// <i> default: false
+#define RTE_ISP_BINNING_MODULE 0
+
+// <o> ISP Enable Scaling Module
+//     <0=> disable
+//     <1=> enable
+// <i> defines if scaling Module is enabled or not
+// <i> default: true
+#define RTE_ISP_SCALAR_MODULE 1
+
+// <o> ISP log level
+//    <0=> NONE
+//    <1 => Logs all fatal errors.
+//    <2=> Logs all warnings.
+//    <3=> Logs all informational messages.
+//    <4=> Logs all debug messages.
+//    <5=> Log level verbose
+// <i> Defines ISP logging level
+#define RTE_ISP_LOG_LEVEL 5
+
+// <o> ISP Buffer Count <2-8>
+// <i> Number of video buffers for ISP
+#define RTE_ISP_BUFFER_COUNT 1
+
+// <o> ISP Output Format
+//    <20=> RAW8 (8-bit raw)
+//    <21=> RAW10 (10-bit raw)
+//    <22=> RAW12 (12-bit raw)
+//    <23=> NV12 (YUV420 semi-planar)
+//    <25=> NV16 (YUV422 semi-planar)
+//    <30=> YUV422P (YUV422 planar)
+//    <31=> YUV420P (YUV420 planar)
+//    <32=> YUYV (YUV422 packed)
+//    <37=> YUV400 (Grayscale)
+//    <38=> RGB888 (RGB interleaved)
+//    <39=> RGB888P (RGB planar)
+//    <40=> RAW420SP (RAW420 semi-planar)
+//    <41=> RAW422SP (RAW422 semi-planar)
+// <i> Defines ISP output pixel format for memory dump
+// <i> Default: RGB888
+#define RTE_ISP_OUTPUT_FORMAT 32
+
+#define RTE_ISP_OUTPUT_WIDTH 480
+
+#define RTE_ISP_OUTPUT_HEIGHT 480
+
+#endif
+// </e> ISP (ISP) [Driver_ISP]
 
 // <e> MIPI_CSI2 (mipi csi2) [Driver_MIPI_CSI2]
 // <i> Configuration settings for Driver_MIPI_CSI2 in component ::Drivers:MIPI_CSI2
@@ -1212,7 +1393,9 @@
 
 // <e> MIPI_DSI (mipi dsi) [Driver_MIPI_DSI]
 // <i> Configuration settings for Driver_MIPI_DSI in component ::Drivers:MIPI_DSI
+#ifndef RTE_MIPI_DSI
 #define RTE_MIPI_DSI 1
+#endif  // RTE_MIPI_DSI
 
 #if RTE_MIPI_DSI
 
@@ -1637,7 +1820,9 @@
 //     <1=> ENABLE
 // <i> Defines Parallel ILI6122 LCD PANEL
 // <i> Default: ENABLE
+#ifndef RTE_ILI6122_PANEL
 #define RTE_ILI6122_PANEL  0
+#endif  // RTE_ILI6122_PANEL
 
 #if RTE_ILI6122_PANEL
 
@@ -1787,12 +1972,6 @@
 #define RTE_LPI3C_DMA_ENABLE                  0
 
 #if RTE_LPI3C_DMA_ENABLE
-// <o> LPI3C DMA Selection
-//    <0=> DMA2(M55-HE)
-//    <1=> DMA0
-// <i> Defines Select DMA0 for LPI3C. By default DMA0 will be considered
-// <i> Default: DMA0
-#define RTE_LPI3C_SELECT_DMA0                 1
 
 // <o> LPI3C DMA IRQ priority <0-255>
 // <i> Defines LPI3C DMA Interrupt priority
@@ -1824,6 +2003,38 @@
 #define RTE_IMU                             1
 
 #if RTE_IMU
+
+// <e> ICM42670 (Initial Measurement Unit) [Driver_ICM42670]
+// <i> Configuration settings for Driver_ICM42670 in component ::Drivers:IMU
+#define RTE_ICM42670 1
+
+#if RTE_ICM42670
+
+// <o> ICM42670 IMU enable In-band_interrupt
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines whether In-band-interrupt to be enabled
+// <i> If disabled, then Normal-GPIO interrupt will be enabled
+// <i> Default: DISABLE
+#define RTE_ICM42670_IBI_ENABLE 0
+
+#if !RTE_ICM42670_IBI_ENABLE
+
+// <o> ICM42670 IMU INT pin GPIO port number range <0-15>
+// <i> Defines ICM42670 IMU INT pin GPIO port number.
+//    <1=> Port number for E8 Appkit
+//    <8=> Port number for E8 Devkit
+// <i> Default: 8
+#define RTE_ICM42670_INT_IO_PORT 8
+
+// <o> ICM42670 IMU INT pin number range <0-7>
+// <i> Defines ICM42670 IMU INT pin number.
+// <i> Default: 5
+#define RTE_ICM42670_INT_PIN_NO  5
+#endif
+
+#endif
+//</e> ICM42670 (Initial Measurement Unit) [Driver_ICM42670]
 
 // <e> BMI323 (Initial Measurement Unit) [Driver_BMI323]
 // <i> Configuration settings for Driver_BMI323 in component ::Drivers:IMU
@@ -3242,8 +3453,8 @@
 //     <2=>   I2C2
 //     <3=>   I2C3
 //     <I3C=> I2C OVER I3C
-// <i> Default: 2
-#define RTE_WM8904_CODEC_I2C_INSTANCE         2
+// <i> Default: 1
+#define RTE_WM8904_CODEC_I2C_INSTANCE 1
 #endif
 
 // </h> WM8904 Codec [Driver_WM8904]
@@ -4016,7 +4227,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 0.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL0_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL0_DMA_CLEAR_ENABLE         0
 
 // <o> CHANNEL0 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -4228,7 +4439,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 1.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL1_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL1_DMA_CLEAR_ENABLE         0
 
 // <o> CHANNEL1 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -4440,7 +4651,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 2.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL2_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL2_DMA_CLEAR_ENABLE         0
 
 // <o> CHANNEL2 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -4652,7 +4863,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 0.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL3_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL3_DMA_CLEAR_ENABLE         0
 
 // <o> CHANNEL3 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -4864,7 +5075,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 4.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL4_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL4_DMA_CLEAR_ENABLE         0
 
 // <o> CHANNEL4 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -5076,7 +5287,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 4.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL5_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL5_DMA_CLEAR_ENABLE         0
 
 // <o> CHANNEL5 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -5288,7 +5499,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 6.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL6_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL6_DMA_CLEAR_ENABLE         0
 
 // <o> CHANNEL6 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -5500,7 +5711,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 7.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL7_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL7_DMA_CLEAR_ENABLE         0
 
 // <o> CHANNEL7 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -5712,7 +5923,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 8.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL8_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL8_DMA_CLEAR_ENABLE         0
 
 // <o> CHANNEL8 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -5924,7 +6135,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 9.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL9_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL9_DMA_CLEAR_ENABLE         0
 
 // <o> CHANNEL9 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -6136,7 +6347,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 10.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL10_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL10_DMA_CLEAR_ENABLE        0
 
 // <o> CHANNEL10 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -6348,7 +6559,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 11.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL11_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL11_DMA_CLEAR_ENABLE        0
 
 // <o> CHANNEL11 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -6560,7 +6771,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 12.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL12_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL12_DMA_CLEAR_ENABLE        0
 
 // <o> CHANNEL12 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -6772,7 +6983,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 13.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL13_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL13_DMA_CLEAR_ENABLE        0
 
 // <o> CHANNEL13 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -6984,7 +7195,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 14.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL14_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL14_DMA_CLEAR_ENABLE        0
 
 // <o> CHANNEL14 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -7196,7 +7407,7 @@
 //    <1=> ENABLED
 // <i> Defines DMA feature control for UT channel 15.
 // <i> Default: DISABLED
-#define RTE_UTIMER_CHANNEL15_DMA_CONTROL            0
+#define RTE_UTIMER_CHANNEL15_DMA_CLEAR_ENABLE        0
 
 // <o> CHANNEL15 FAULT TYPE
 //    <0=> LOW_UNTIL_CYCLE_END
@@ -7392,6 +7603,568 @@
 // </e>  UTIMER CHANNEL 15
 #endif /*RTE_UTIMER*/
 // </e> UTIMER (Universal timer) [Driver_UTIMER]
+
+// <e> LPUTIMER (Low-Power Universal Timer) [Driver_UTIMERLP]
+// <i> Configuration settings for Driver_UTIMERLP in component ::Drivers:UTIMER
+#define RTE_LPUTIMER 1
+
+#if RTE_LPUTIMER
+
+// <e> LPUTIMER CHANNEL 0
+// <i> Configuration settings for LPUTIMER channel 0 in component ::Drivers:UTIMERLP
+#define RTE_LPUTIMER_CHANNEL0                         1
+
+// <o> CHANNEL0 FIXED BUFFER
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Fixed Buffer features for LP UT channel 0.
+// <i> Default: DISABLED
+#define RTE_LPUTIMER_CHANNEL0_FIXED_BUFFER            0
+
+// <o> CHANNEL0 DMA CLEAR ENABLE
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines DMA feature control for LP UT channel 0.
+// <i> Default: DISABLED
+#define RTE_LPUTIMER_CHANNEL0_DMA_CLEAR_ENABLE        0
+
+// <o> CHANNEL0 FAULT TYPE
+//    <0=> LOW_UNTIL_CYCLE_END
+//    <1=> LOW_UNTIL_COUNTER_STOP
+// <i> Defines fault type for LP UT channel 0.
+// <i> Default: LOW_UNTIL_COUNTER_STOP
+#define RTE_LPUTIMER_CHANNEL0_FAULT_TYPE              0
+
+// <o> CHANNEL0 TRIANGLE COUNTER BUFFER EVENT
+//    <0=> BUF_AT_TROUGH
+//    <1=> BUF_AT_TROUGH_N_CREST
+// <i> Defines Buffer for triangle counter of LP UT channel 0.
+// <i> Default: BUF_AT_TROUGH
+#define RTE_LPUTIMER_CHANNEL0_BUF_TROUGH_N_CREST      0
+
+// <o> CHANNEL0 DRIVER A
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Driver A state for LP UT channel 0.
+// <i> Default: DISABLED
+#define RTE_LPUTIMER_CHANNEL0_DRIVER_A                1
+
+// <o> CHANNEL0 DRIVER B
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Driver B state for LP UT channel 0.
+// <i> Default: DISABLED
+#define RTE_LPUTIMER_CHANNEL0_DRIVER_B                0
+
+// <o> CHANNEL0 DRIVER A START STATE
+//    <0=> LOW
+//    <1=> HIGH
+// <i> Defines Driver A start state for LP UT channel 0.
+// <i> Default: LOW
+#define RTE_LPUTIMER_CHANNEL0_DRV_A_START_STATE       0
+
+// <o> CHANNEL0 DRIVER A STOP STATE
+//    <0=> LOW
+//    <1=> HIGH
+// <i> Defines Driver A stop state for LP UT channel 0.
+// <i> Default: LOW
+#define RTE_LPUTIMER_CHANNEL0_DRV_A_STOP_STATE        0
+
+// <o> CHANNEL0 DRIVER A AT COMP MATCH
+//    <0=> NO CHANGE
+//    <1=> LOW
+//    <2=> HIGH
+//    <3=> TOGGLE
+// <i> Defines Driver A state at compare match for LP UT channel 0.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL0_DRV_A_OP_AT_MATCH_COUNT 0
+
+// <o> CHANNEL0 DRIVER A AT CYCLE END
+//    <0=> NO CHANGE
+//    <1=> LOW
+//    <2=> HIGH
+//    <3=> TOGGLE
+// <i> Defines Driver A state at cycle end for LP UT channel 0.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL0_DRV_A_OP_AT_CYCLE_END   0
+
+// <o> CHANNEL0 DRIVER B START STATE
+//    <0=> LOW
+//    <1=> HIGH
+// <i> Defines Driver B start state for LP UT channel 0.
+// <i> Default: LOW
+#define RTE_LPUTIMER_CHANNEL0_DRV_B_START_STATE       0
+
+// <o> CHANNEL0 DRIVER B STOP STATE
+//    <0=> LOW
+//    <1=> HIGH
+// <i> Defines Driver B stop state for LP UT channel 0.
+// <i> Default: LOW
+#define RTE_LPUTIMER_CHANNEL0_DRV_B_STOP_STATE        0
+
+// <o> CHANNEL0 DRIVER B AT COMP MATCH
+//    <0=> NO CHANGE
+//    <1=> LOW
+//    <2=> HIGH
+//    <3=> TOGGLE
+// <i> Defines Driver B state at compare match for LP UT channel 0.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL0_DRV_B_OP_AT_MATCH_COUNT 0
+
+// <o> CHANNEL0 DRIVER B AT CYCLE END
+//    <0=> NO CHANGE
+//    <1=> LOW
+//    <2=> HIGH
+//    <3=> TOGGLE
+// <i> Defines Driver B state at cycle end for LP UT channel 0.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL0_DRV_B_OP_AT_CYCLE_END   0
+
+// <o> CHANNEL0 BUFFER TRANSFER AT CREST
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines buffer transfer at crest for LP UT channel 0.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL0_EVENT_AT_CREST          1
+
+// <o> CHANNEL0 BUFFER TRANSFER AT TROUGH
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines buffer transfer at trough for LP UT channel 0.
+// <i> Default: DISABLE
+#define RTE_LPUTIMER_CHANNEL0_EVENT_AT_TROUGH         0
+
+// <o> CHANNEL0 BUFFERING TYPE
+//    <0=> SINGLE BUFFER
+//    <1=> DOUBLE BUFFER
+// <i> Defines buffer type for LP UT channel 0.
+// <i> Default: DOUBLE BUFFER
+#define RTE_LPUTIMER_CHANNEL0_BUFFERING_TYPE          0
+
+// <o> CHANNEL0 BUFFER OPERATION
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines buffer operation for LP UT channel 0.
+// <i> Default: ENABLE
+#define RTE_LPUTIMER_CHANNEL0_BUFFER_OPERATION        0
+
+// <o> CHANNEL0 CAPTURE BUFFER OPERATION FOR DRIVER A
+//    <0=> NO BUFFER
+//    <1=> SINGLE BUFFER
+//    <2=> DOUBLE BUFFER
+// <i> Defines buffer operation for LP UT channel 0 capture mode.
+// <i> Default: DOUBLE BUFFER
+#define RTE_LPUTIMER_CHANNEL0_BUFFERING_TYPE_A        2
+
+// <o> CHANNEL0 CAPTURE BUFFER OPERATION FOR DRIVER B
+//    <0=> NO BUFFER
+//    <1=> SINGLE BUFFER
+//    <2=> DOUBLE BUFFER
+// <i> Defines buffer operation for LP UT channel 0 capture mode.
+// <i> Default: NO BUFFER
+#define RTE_LPUTIMER_CHANNEL0_BUFFERING_TYPE_B        0
+
+// <o> CHANNEL0 CAPTURE A IRQ priority <0-255>
+// <i> Defines Interrupt priority for channel 0 capture A.
+// <i> Default: 0
+#define RTE_LPUTIMER_CHANNEL0_CAPTURE_A_IRQ_PRIORITY  0
+
+// <o> CHANNEL0 CAPTURE B IRQ priority <0-255>
+// <i> Defines Interrupt priority for channel 0 capture B.
+// <i> Default: 0
+#define RTE_LPUTIMER_CHANNEL0_CAPTURE_B_IRQ_PRIORITY  0
+
+// <o> CHANNEL0 CAPTURE C IRQ priority <0-255>
+// <i> Defines Interrupt priority for channel 0 capture C.
+// <i> Default: 0
+#define RTE_LPUTIMER_CHANNEL0_CAPTURE_C_IRQ_PRIORITY  0
+
+// <o> CHANNEL0 CAPTURE D IRQ priority <0-255>
+// <i> Defines Interrupt priority for channel 0 capture D.
+// <i> Default: 0
+#define RTE_LPUTIMER_CHANNEL0_CAPTURE_D_IRQ_PRIORITY  0
+
+// <o> CHANNEL0 CAPTURE E IRQ priority <0-255>
+// <i> Defines Interrupt priority for channel 0 capture E.
+// <i> Default: 0
+#define RTE_LPUTIMER_CHANNEL0_CAPTURE_E_IRQ_PRIORITY  0
+
+// <o> CHANNEL0 CAPTURE F IRQ priority <0-255>
+// <i> Defines Interrupt priority for channel 0 capture F.
+// <i> Default: 0
+#define RTE_LPUTIMER_CHANNEL0_CAPTURE_F_IRQ_PRIORITY  0
+
+// <o> CHANNEL0 OVERFLOW IRQ priority <0-255>
+// <i> Defines Interrupt priority for channel 0 overflow interrupt.
+// <i> Default: 0
+#define RTE_LPUTIMER_CHANNEL0_OVER_FLOW_IRQ_PRIORITY  0
+
+// <o> CHANNEL0 UNDERFLOW IRQ priority <0-255>
+// <i> Defines Interrupt priority for channel 0 underflow interrupt.
+// <i> Default: 0
+#define RTE_LPUTIMER_CHANNEL0_UNDER_FLOW_IRQ_PRIORITY 0
+
+// <o> CHANNEL0 DUTY CYCLE
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines duty cycle for LP UT channel 0.
+// <i> Default: DISABLE
+#define RTE_LPUTIMER_CHANNEL0_DUTY_CYCLE_ENABLE       0
+
+// <o> CHANNEL0 DUTY CYCLE VALUE
+//    <0=> COMP MATCH
+//    <1=> COMP MATCH
+//    <2=> 0 PERCENT
+//    <3=> 100 PERCENT
+// <i> Defines duty cycle value for LP UT channel 0.
+// <i> Default: DISABLE
+#define RTE_LPUTIMER_CHANNEL0_DUTY_CYCLE_VALUE        0
+// </e> LPUTIMER CHANNEL 0
+
+// <e> LPUTIMER CHANNEL 1
+// <i> Configuration settings for LPUTIMER channel 1 in component ::Drivers:UTIMERLP
+#define RTE_LPUTIMER_CHANNEL1                         1
+
+// <o> CHANNEL1 FIXED BUFFER
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Fixed Buffer features for LP UT channel 1.
+// <i> Default: DISABLED
+#define RTE_LPUTIMER_CHANNEL1_FIXED_BUFFER            0
+
+// <o> CHANNEL1 DMA CLEAR ENABLE
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines DMA feature control for LP UT channel 1.
+// <i> Default: DISABLED
+#define RTE_LPUTIMER_CHANNEL1_DMA_CLEAR_ENABLE        0
+
+// <o> CHANNEL1 FAULT TYPE
+//    <0=> LOW_UNTIL_CYCLE_END
+//    <1=> LOW_UNTIL_COUNTER_STOP
+// <i> Defines fault type for LP UT channel 1.
+// <i> Default: LOW_UNTIL_COUNTER_STOP
+#define RTE_LPUTIMER_CHANNEL1_FAULT_TYPE              0
+
+// <o> CHANNEL1 TRIANGLE COUNTER BUFFER EVENT
+//    <0=> BUF_AT_TROUGH
+//    <1=> BUF_AT_TROUGH_N_CREST
+// <i> Defines Buffer for triangle counter of LP UT channel 1.
+// <i> Default: BUF_AT_TROUGH
+#define RTE_LPUTIMER_CHANNEL1_BUF_TROUGH_N_CREST      0
+
+// <o> CHANNEL1 DRIVER A
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Driver A state for LP UT channel 1.
+// <i> Default: DISABLED
+#define RTE_LPUTIMER_CHANNEL1_DRIVER_A                0
+
+// <o> CHANNEL1 DRIVER B
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Driver B state for LP UT channel 1.
+// <i> Default: DISABLED
+#define RTE_LPUTIMER_CHANNEL1_DRIVER_B                0
+
+// <o> CHANNEL1 DRIVER A START STATE
+//    <0=> LOW
+//    <1=> HIGH
+// <i> Defines Driver A start state for LP UT channel 1.
+// <i> Default: LOW
+#define RTE_LPUTIMER_CHANNEL1_DRV_A_START_STATE       0
+
+// <o> CHANNEL1 DRIVER A STOP STATE
+//    <0=> LOW
+//    <1=> HIGH
+// <i> Defines Driver A stop state for LP UT channel 1.
+// <i> Default: LOW
+#define RTE_LPUTIMER_CHANNEL1_DRV_A_STOP_STATE        0
+
+// <o> CHANNEL1 DRIVER A AT COMP MATCH
+//    <0=> NO CHANGE
+//    <1=> LOW
+//    <2=> HIGH
+//    <3=> TOGGLE
+// <i> Defines Driver A state at compare match for LP UT channel 1.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL1_DRV_A_OP_AT_MATCH_COUNT 0
+
+// <o> CHANNEL1 DRIVER A AT CYCLE END
+//    <0=> NO CHANGE
+//    <1=> LOW
+//    <2=> HIGH
+//    <3=> TOGGLE
+// <i> Defines Driver A state at cycle end for LP UT channel 1.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL1_DRV_A_OP_AT_CYCLE_END   0
+
+// <o> CHANNEL1 DRIVER B START STATE
+//    <0=> LOW
+//    <1=> HIGH
+// <i> Defines Driver B start state for LP UT channel 1.
+// <i> Default: LOW
+#define RTE_LPUTIMER_CHANNEL1_DRV_B_START_STATE       0
+
+// <o> CHANNEL1 DRIVER B STOP STATE
+//    <0=> LOW
+//    <1=> HIGH
+// <i> Defines Driver B stop state for LP UT channel 1.
+// <i> Default: LOW
+#define RTE_LPUTIMER_CHANNEL1_DRV_B_STOP_STATE        0
+
+// <o> CHANNEL1 DRIVER B AT COMP MATCH
+//    <0=> NO CHANGE
+//    <1=> LOW
+//    <2=> HIGH
+//    <3=> TOGGLE
+// <i> Defines Driver B state at compare match for LP UT channel 1.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL1_DRV_B_OP_AT_MATCH_COUNT 0
+
+// <o> CHANNEL1 DRIVER B AT CYCLE END
+//    <0=> NO CHANGE
+//    <1=> LOW
+//    <2=> HIGH
+//    <3=> TOGGLE
+// <i> Defines Driver B state at cycle end for LP UT channel 1.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL1_DRV_B_OP_AT_CYCLE_END   0
+
+// <o> CHANNEL1 BUFFER TRANSFER AT CREST
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines buffer transfer at crest for LP UT channel 1.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL1_EVENT_AT_CREST          1
+
+// <o> CHANNEL1 BUFFER TRANSFER AT TROUGH
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines buffer transfer at trough for LP UT channel 1.
+// <i> Default: DISABLE
+#define RTE_LPUTIMER_CHANNEL1_EVENT_AT_TROUGH         0
+
+// <o> CHANNEL1 BUFFERING TYPE
+//    <0=> SINGLE BUFFER
+//    <1=> DOUBLE BUFFER
+// <i> Defines buffer type for LP UT channel 1.
+// <i> Default: DOUBLE BUFFER
+#define RTE_LPUTIMER_CHANNEL1_BUFFERING_TYPE          1
+
+// <o> CHANNEL1 BUFFER OPERATION
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines buffer operation for LP UT channel 1.
+// <i> Default: ENABLE
+#define RTE_LPUTIMER_CHANNEL1_BUFFER_OPERATION        1
+
+// <o> CHANNEL1 CAPTURE BUFFER OPERATION FOR DRIVER A
+//    <0=> NO BUFFER
+//    <1=> SINGLE BUFFER
+//    <2=> DOUBLE BUFFER
+// <i> Defines buffer operation for LP UT channel 1 capture mode.
+// <i> Default: DOUBLE BUFFER
+#define RTE_LPUTIMER_CHANNEL1_BUFFERING_TYPE_A        0
+
+// <o> CHANNEL1 CAPTURE BUFFER OPERATION FOR DRIVER B
+//    <0=> NO BUFFER
+//    <1=> SINGLE BUFFER
+//    <2=> DOUBLE BUFFER
+// <i> Defines buffer operation for LP UT channel 1 capture mode.
+// <i> Default: NO BUFFER
+#define RTE_LPUTIMER_CHANNEL1_BUFFERING_TYPE_B        0
+
+// <o> CHANNEL1 DUTY CYCLE
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines duty cycle for LP UT channel 1.
+// <i> Default: DISABLE
+#define RTE_LPUTIMER_CHANNEL1_DUTY_CYCLE_ENABLE       0
+
+// <o> CHANNEL1 DUTY CYCLE VALUE
+//    <0=> COMP MATCH
+//    <1=> COMP MATCH
+//    <2=> 0 PERCENT
+//    <3=> 100 PERCENT
+// <i> Defines duty cycle value for LP UT channel 1.
+// <i> Default: DISABLE
+#define RTE_LPUTIMER_CHANNEL1_DUTY_CYCLE_VALUE        0
+// </e> LPUTIMER CHANNEL 1
+
+// <e> LPUTIMER CHANNEL 2
+// <i> Configuration settings for LPUTIMER channel 2 in component ::Drivers:UTIMERLP
+#define RTE_LPUTIMER_CHANNEL2                         1
+
+// <o> CHANNEL2 FIXED BUFFER
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Fixed Buffer features for LP UT channel 2.
+// <i> Default: DISABLED
+#define RTE_LPUTIMER_CHANNEL2_FIXED_BUFFER            0
+
+// <o> CHANNEL2 DMA CLEAR ENABLE
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines DMA feature control for LP UT channel 2.
+// <i> Default: DISABLED
+#define RTE_LPUTIMER_CHANNEL2_DMA_CLEAR_ENABLE        0
+
+// <o> CHANNEL2 FAULT TYPE
+//    <0=> LOW_UNTIL_CYCLE_END
+//    <1=> LOW_UNTIL_COUNTER_STOP
+// <i> Defines fault type for LP UT channel 2.
+// <i> Default: LOW_UNTIL_COUNTER_STOP
+#define RTE_LPUTIMER_CHANNEL2_FAULT_TYPE              0
+
+// <o> CHANNEL2 TRIANGLE COUNTER BUFFER EVENT
+//    <0=> BUF_AT_TROUGH
+//    <1=> BUF_AT_TROUGH_N_CREST
+// <i> Defines Buffer for triangle counter of LP UT channel 2.
+// <i> Default: BUF_AT_TROUGH
+#define RTE_LPUTIMER_CHANNEL2_BUF_TROUGH_N_CREST      0
+
+// <o> CHANNEL2 DRIVER A
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Driver A state for LP UT channel 2.
+// <i> Default: DISABLED
+#define RTE_LPUTIMER_CHANNEL2_DRIVER_A                0
+
+// <o> CHANNEL2 DRIVER B
+//    <0=> DISABLED
+//    <1=> ENABLED
+// <i> Defines Driver B state for LP UT channel 2.
+// <i> Default: DISABLED
+#define RTE_LPUTIMER_CHANNEL2_DRIVER_B                0
+
+// <o> CHANNEL2 DRIVER A START STATE
+//    <0=> LOW
+//    <1=> HIGH
+// <i> Defines Driver A start state for LP UT channel 2.
+// <i> Default: LOW
+#define RTE_LPUTIMER_CHANNEL2_DRV_A_START_STATE       0
+
+// <o> CHANNEL2 DRIVER A STOP STATE
+//    <0=> LOW
+//    <1=> HIGH
+// <i> Defines Driver A stop state for LP UT channel 2.
+// <i> Default: LOW
+#define RTE_LPUTIMER_CHANNEL2_DRV_A_STOP_STATE        0
+
+// <o> CHANNEL2 DRIVER A AT COMP MATCH
+//    <0=> NO CHANGE
+//    <1=> LOW
+//    <2=> HIGH
+//    <3=> TOGGLE
+// <i> Defines Driver A state at compare match for LP UT channel 2.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL2_DRV_A_OP_AT_MATCH_COUNT 0
+
+// <o> CHANNEL2 DRIVER A AT CYCLE END
+//    <0=> NO CHANGE
+//    <1=> LOW
+//    <2=> HIGH
+//    <3=> TOGGLE
+// <i> Defines Driver A state at cycle end for LP UT channel 2.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL2_DRV_A_OP_AT_CYCLE_END   0
+
+// <o> CHANNEL2 DRIVER B START STATE
+//    <0=> LOW
+//    <1=> HIGH
+// <i> Defines Driver B start state for LP UT channel 2.
+// <i> Default: LOW
+#define RTE_LPUTIMER_CHANNEL2_DRV_B_START_STATE       0
+
+// <o> CHANNEL2 DRIVER B STOP STATE
+//    <0=> LOW
+//    <1=> HIGH
+// <i> Defines Driver B stop state for LP UT channel 2.
+// <i> Default: LOW
+#define RTE_LPUTIMER_CHANNEL2_DRV_B_STOP_STATE        0
+
+// <o> CHANNEL2 DRIVER B AT COMP MATCH
+//    <0=> NO CHANGE
+//    <1=> LOW
+//    <2=> HIGH
+//    <3=> TOGGLE
+// <i> Defines Driver B state at compare match for LP UT channel 2.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL2_DRV_B_OP_AT_MATCH_COUNT 0
+
+// <o> CHANNEL2 DRIVER B AT CYCLE END
+//    <0=> NO CHANGE
+//    <1=> LOW
+//    <2=> HIGH
+//    <3=> TOGGLE
+// <i> Defines Driver B state at cycle end for LP UT channel 2.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL2_DRV_B_OP_AT_CYCLE_END   0
+
+// <o> CHANNEL2 BUFFER TRANSFER AT CREST
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines buffer transfer at crest for LP UT channel 2.
+// <i> Default: NO CHANGE
+#define RTE_LPUTIMER_CHANNEL2_EVENT_AT_CREST          1
+
+// <o> CHANNEL2 BUFFER TRANSFER AT TROUGH
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines buffer transfer at trough for LP UT channel 2.
+// <i> Default: DISABLE
+#define RTE_LPUTIMER_CHANNEL2_EVENT_AT_TROUGH         0
+
+// <o> CHANNEL2 BUFFERING TYPE
+//    <0=> SINGLE BUFFER
+//    <1=> DOUBLE BUFFER
+// <i> Defines buffer type for LP UT channel 2.
+// <i> Default: DOUBLE BUFFER
+#define RTE_LPUTIMER_CHANNEL2_BUFFERING_TYPE          1
+
+// <o> CHANNEL2 BUFFER OPERATION
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines buffer operation for LP UT channel 2.
+// <i> Default: ENABLE
+#define RTE_LPUTIMER_CHANNEL2_BUFFER_OPERATION        1
+
+// <o> CHANNEL2 CAPTURE BUFFER OPERATION FOR DRIVER A
+//    <0=> NO BUFFER
+//    <1=> SINGLE BUFFER
+//    <2=> DOUBLE BUFFER
+// <i> Defines buffer operation for LP UT channel 2 capture mode.
+// <i> Default: DOUBLE BUFFER
+#define RTE_LPUTIMER_CHANNEL2_BUFFERING_TYPE_A        2
+
+// <o> CHANNEL2 CAPTURE BUFFER OPERATION FOR DRIVER B
+//    <0=> NO BUFFER
+//    <1=> SINGLE BUFFER
+//    <2=> DOUBLE BUFFER
+// <i> Defines buffer operation for LP UT channel 2 capture mode.
+// <i> Default: NO BUFFER
+#define RTE_LPUTIMER_CHANNEL2_BUFFERING_TYPE_B        0
+
+// <o> CHANNEL2 DUTY CYCLE
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines duty cycle for LP UT channel 2.
+// <i> Default: DISABLE
+#define RTE_LPUTIMER_CHANNEL2_DUTY_CYCLE_ENABLE       0
+
+// <o> CHANNEL2 DUTY CYCLE VALUE
+//    <0=> COMP MATCH
+//    <1=> COMP MATCH
+//    <2=> 0 PERCENT
+//    <3=> 100 PERCENT
+// <i> Defines duty cycle value for LP UT channel 2.
+// <i> Default: DISABLE
+#define RTE_LPUTIMER_CHANNEL2_DUTY_CYCLE_VALUE        0
+// </e> LPUTIMER CHANNEL 2
+#endif /*RTE_LPUTIMER*/
+
+// </e> LPUTIMER (Low-Power Universal timer) [Driver_UTIMERLP]
 // </h> UTIMER (Universal Timer)
 
 // <h> DAC (Digital to analog converter )
@@ -8579,13 +9352,6 @@
 // <i> Default: DISABLE
 #define RTE_LPI2C1_DMA_ENABLE          0
 #if RTE_LPI2C1_DMA_ENABLE
-
-// <o> LPI2C1 DMA Selection
-//    <0=> DMA2(M55-HE)
-//    <1=> DMA0
-// <i> Defines Select DMA0 for LPI2C1. By default DMA0 will be considered
-// <i> Default: DMA0
-#define RTE_LPI2C1_SELECT_DMA0         1
 
 // <o> LPI2C1 DMA IRQ priority <0-255>
 // <i> Defines LPI2C1 DMA Interrupt priority
@@ -9907,6 +10673,13 @@
 #define RTE_LPGPIO   1
 
 #if RTE_LPGPIO
+
+// <o> LPGPIO Fast mode enable
+//    <0=> DISABLE
+//    <1=> ENABLE
+// <i> Defines Enable Fast mode
+// <i> Default: DISABLE
+#define RTE_LPGPIO_FAST_MODE_ENABLE              0
 
 // <o> LPGPIO_PIN0 IRQ Priority
 // <i> Defines Interrupt priority for LPGPIO_PIN0.
