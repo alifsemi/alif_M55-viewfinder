@@ -50,6 +50,10 @@ project:
     # peripheral drivers & middleware, uncomment as needed
     - component: AlifSemiconductor::Device:SOC Peripherals:CDC
     - component: AlifSemiconductor::Device:SOC Peripherals:CPI
+    - component: AlifSemiconductor::Device:SOC Peripherals:ISP
+      for-context:
+        - +E8-HE
+        - +E8-HP
 
     - component: AlifSemiconductor::Device:SOC Peripherals:MHU
     - component: AlifSemiconductor::Device:SOC Peripherals:MIPI DSI CSI2 DPHY

@@ -66,6 +66,7 @@ static ARM_DRIVER_GPIO* red_port = &ARM_Driver_GPIO_(BOARD_LEDRGB1_R_GPIO_PORT);
 #define PRINT_INTERVAL_SEC    (1)
 #define PRINT_INTERVAL_CLOCKS (PRINT_INTERVAL_SEC * CLOCKS_PER_SEC)
 extern uint32_t SystemCoreClock;
+
 #include "pinconf.h"
 int main(void) {
 
@@ -183,6 +184,7 @@ int main(void) {
             cc_time = ARM_PMU_Get_CCNTR() - cc_time;
 #endif
 
+#if !RTE_ISP
             // Measure the image processing time (crop and resize)
             uint32_t ip_time = ARM_PMU_Get_CCNTR();
 
@@ -225,7 +227,11 @@ int main(void) {
 
             // Draw the resized image to display
             aipl_image_t *draw_image = &res_image;
-
+            ip_time = ARM_PMU_Get_CCNTR() - ip_time;
+#else
+            // Draw ISP processed image to display
+            aipl_image_t *draw_image = &cam_image;
+#endif
             // Rotate image 180 on AppKit (Camera connected to the connector on the other side than the display)
 #ifdef BOARD_IS_ALIF_APPKIT_B1_VARIANT
             aipl_image_t rot_image;
@@ -243,8 +249,6 @@ int main(void) {
             aipl_image_destroy(&res_image);
             draw_image = &rot_image;
 #endif
-
-            ip_time = ARM_PMU_Get_CCNTR() - ip_time;
 
             uint32_t render_time = ARM_PMU_Get_CCNTR();
             aipl_dave2d_prepare();
@@ -270,10 +274,11 @@ int main(void) {
                                                                               CAM_MPIX / cc_time_s);
 #endif
 
+#if !RTE_ISP
                 float ip_time_s = (float)ip_time / SystemCoreClock;
                 printf("Image processing %.3fms (throughput=%.2fMpix/s)\r\n", ip_time_s * 1000.0f,
                                                                               CAM_MPIX / ip_time_s);
-
+#endif
                 float render_time_s = (float)render_time / SystemCoreClock;
                 printf("Rendering to display %.3fms (throughput=%.2fMpix/s)\r\n", render_time_s * 1000.0f,
                                                                                   CAM_MPIX / render_time_s);
