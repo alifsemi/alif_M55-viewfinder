@@ -45,7 +45,7 @@
 //     <1=> enable
 // <i> Defines CPI AXI port
 // <i> Default: AXI port enable
-#define RTE_CPI_AXI_PORT                                      1
+#define RTE_CPI_AXI_PORT                                      0
 
 // <o> Select CPI ISP port
 //     <0=> disable
@@ -1358,22 +1358,22 @@
 // <o> Select camera sensor OV5675 reset pin number
 // <i> Defines camera sensor OV5675 reset pin number
 // <i> Default: 1
-#define RTE_OV5675_CAMERA_SENSOR_RESET_PIN_NO               1
+#define RTE_OV5675_CAMERA_SENSOR_RESET_PIN_NO               BOARD_CAMERA_RESET_GPIO_PIN
 
 // <o> Select camera sensor OV5675 reset GPIO port
 // <i> Defines camera sensor OV5675 reset GPIO port
 // <i> Default: 9
-#define RTE_OV5675_CAMERA_SENSOR_RESET_GPIO_PORT            9
+#define RTE_OV5675_CAMERA_SENSOR_RESET_GPIO_PORT            BOARD_CAMERA_RESET_GPIO_PORT
 
 // <o> Select camera sensor OV5675 power pin number
 // <i> Defines camera sensor OV5675 power pin number
 // <i> Default: 5
-#define RTE_OV5675_CAMERA_SENSOR_POWER_PIN_NO               5
+#define RTE_OV5675_CAMERA_SENSOR_POWER_PIN_NO               BOARD_CAMERA_POWER_GPIO_PIN
 
 // <o> Select camera sensor OV5675 power GPIO port
 // <i> Defines camera sensor OV5675 power GPIO port
 // <i> Default: 7
-#define RTE_OV5675_CAMERA_SENSOR_POWER_GPIO_PORT            7
+#define RTE_OV5675_CAMERA_SENSOR_POWER_GPIO_PORT            BOARD_CAMERA_POWER_GPIO_PORT
 
 // <o RTE_OV5675_CAMERA_SENSOR_I2C_INSTANCE> Select camera sensor OV5675 i2c instance
 // <i> Defines camera sensor OV5675 i2c instance

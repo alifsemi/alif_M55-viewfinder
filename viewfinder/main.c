@@ -38,7 +38,7 @@
 extern void clk_init();  // time.h clock functionality (from retarget.c)
 
 // DAVE heap
-#define D1_HEAP_SIZE 0x00230000
+#define D1_HEAP_SIZE 0x002E0000
 static uint8_t d0_heap[D1_HEAP_SIZE] __attribute__((section(".bss.video_mem_heap")));
 
 // Check if UART trace is disabled
@@ -161,8 +161,9 @@ int main(void) {
 
             // Do Bayer conversion
             uint32_t bayer_time = ARM_PMU_Get_CCNTR();
-            // The buffer for cam_image is static, so it should not be destroyed
-            aipl_image_t cam_image = camera_post_capture_process();
+            // The buffer for cam_image can be static or dynamic depending on camera module configuration
+            bool buffer_is_dynamic = false;
+            aipl_image_t cam_image = camera_post_capture_process(&buffer_is_dynamic);
             bayer_time = ARM_PMU_Get_CCNTR() - bayer_time;
 
             // Do color correction for the ARX3A0 camera
@@ -193,12 +194,11 @@ int main(void) {
             const uint32_t crop_border = (cam_image.width - crop_dim) / 2;
             const uint32_t crop_header = (cam_image.height - crop_dim) / 2;
 
-            aipl_image_t crop_image;
-            aipl_ret = aipl_image_create(&crop_image, crop_dim, crop_dim, crop_dim, cam_image.format);
-            if (aipl_ret != AIPL_ERR_OK) {
-                printf("Error: Failed allocating crop image\r\n");
-                __BKPT(0);
-            }
+            // Crop can be done in place, save memory by using the cam_image buffer as source and target
+            aipl_image_t crop_image = cam_image;
+            crop_image.pitch = crop_dim;
+            crop_image.width = crop_dim;
+            crop_image.height = crop_dim;
 
             aipl_ret = aipl_crop_img(&cam_image, &crop_image, crop_border, crop_header, cam_image.width - crop_border,
                                      cam_image.height - crop_header);
@@ -218,7 +218,9 @@ int main(void) {
             aipl_ret = aipl_resize_img(&crop_image, &res_image,
                                        true);  // interpolate
 
-            aipl_image_destroy(&crop_image);
+            if (buffer_is_dynamic) {
+                aipl_image_destroy(&cam_image);
+            }
 
             if (aipl_ret != AIPL_ERR_OK) {
                 printf("Error: resize aipl_ret = %s\r\n", aipl_error_str(aipl_ret));

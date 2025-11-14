@@ -17,13 +17,21 @@
 #include "aipl_color_conversion.h"
 #include "aipl_demosaic.h"
 
-#if !CAM_USE_RGB565
-// Camera frame buffer for raw image format
-static uint8_t camera_raw_buffer[CAM_FRAME_SIZE] __attribute__((aligned(32), section(".bss.camera_raw_frame_buf")));
+// Camera frame buffer (can be bayer or RGB565 depending on camera module and camera module configuration)
+// Raw buffer is not needed when using ISP and disabling the CPI AXI output
+#if RTE_ISP
+#if RTE_CPI_AXI_PORT
+#error "RTE_CPI_AXI_PORT should be disabled in this example to save the raw camera frame buffer memory"
 #endif
-
-// Camera frame buffer for RGB565 image format
-static uint8_t camera_rgb565_buffer[CAM_FRAME_SIZE*sizeof(uint16_t)] __attribute__((aligned(32), section(".bss.camera_rgb565_frame_buf")));
+#define OUT_IMAGE_PITCH ISP_PITCH
+#define OUT_IMAGE_WIDTH ISP_OUTPUT_X
+#define OUT_IMAGE_HEIGHT ISP_OUTPUT_Y
+#else
+static uint8_t camera_raw_buffer[CAM_FRAME_SIZE * (CAM_USE_RGB565 ? 2 : 1)] __attribute__((aligned(32), section(".bss.camera_raw_frame_buf")));
+#define OUT_IMAGE_PITCH CAM_FRAME_WIDTH
+#define OUT_IMAGE_WIDTH CAM_FRAME_WIDTH
+#define OUT_IMAGE_HEIGHT CAM_FRAME_HEIGHT
+#endif
 
 /* Camera  Driver instance 0 */
 extern ARM_DRIVER_CPI Driver_CPI;
@@ -169,17 +177,16 @@ int camera_init(void) {
 
 int camera_capture(void) {
     g_cam_cb_events = CAM_CB_EVENT_NONE;
+    int ret = ARM_DRIVER_OK;
 #if RTE_ISP
     CAM_CB_EVENT callback_event = ISP_MI_FRAME_DUMP_EVENT;
+    // It is safe to use dummy buffer address because RTE_CPI_AXI_PORT is disabled
+    ret = CAMERAdrv->CaptureFrame((uint8_t*)0xABCDABCD);
 #else
     CAM_CB_EVENT callback_event = CAM_CB_EVENT_CAPTURE_STOPPED;
+    ret = CAMERAdrv->CaptureFrame(camera_raw_buffer);
 #endif
 
-    #if CAM_USE_RGB565
-    int ret = CAMERAdrv->CaptureFrame(camera_rgb565_buffer);
-    #else
-    int ret = CAMERAdrv->CaptureFrame(camera_raw_buffer);
-#endif
     if (ret != ARM_DRIVER_OK) {
         printf("\r\n Error: CAMERA Capture Frame failed.\r\n");
         return ret;
@@ -207,65 +214,67 @@ int camera_capture(void) {
     return ret;
 }
 
-#if RTE_ISP
-aipl_image_t camera_post_capture_process(void) {
-    // Use ISP buffer as image data
-    // ISP output is YUYV (YUV422 packed) format, so convert it to RGB565
-    aipl_image_t cam_image = {
-        .data = camera_rgb565_buffer,
-        .pitch = ISP_PITCH,
-        .width = ISP_OUTPUT_X,
-        .height = ISP_OUTPUT_Y,
-        .format = AIPL_COLOR_RGB565
-    };
+aipl_image_t camera_post_capture_process(bool *buffer_is_dynamic)
+{
+#if CAM_USE_RGB565
+    *buffer_is_dynamic = false;
 
-    aipl_error_t aipl_ret = aipl_color_convert_yuy2_to_rgb565(y_buffer[0], cam_image.data,
-                                      cam_image.pitch, cam_image.width,
-                                      cam_image.height);
-
-     if (aipl_ret != AIPL_ERR_OK)
-    {
-        printf("\r\nError: Camera format conversion from yuy2 to rgb565 failed (%s)\r\n",
-                aipl_error_str(aipl_ret));
-        __BKPT(0);
-    }
-
-    SCB_CleanDCache();
-    return cam_image;
-}
-#else
-aipl_image_t camera_post_capture_process(void) {
     // Use RGB565 camera buffer as image data
     // No conversion required if the camera provides RGB565 image as output
     aipl_image_t cam_image = {
-        .data = camera_rgb565_buffer,
+        .data = camera_raw_buffer,
         .pitch = CAM_FRAME_WIDTH,
         .width = CAM_FRAME_WIDTH,
         .height = CAM_FRAME_HEIGHT,
         .format = AIPL_COLOR_RGB565
     };
+    return cam_image;
+#else // !CAM_USE_RGB565
+    // Convert camera or ISP output to dynamically allocated RGB565 image
+    aipl_image_t cam_image;
+    aipl_error_t aipl_ret = aipl_image_create(&cam_image,
+                                              OUT_IMAGE_PITCH,
+                                              OUT_IMAGE_WIDTH,
+                                              OUT_IMAGE_HEIGHT,
+                                              AIPL_COLOR_RGB565);
+    if (aipl_ret != AIPL_ERR_OK) {
+        printf("Error: Failed allocating camera image\r\n");
+        cam_image.data = NULL;
+        return cam_image;
+    }
+    *buffer_is_dynamic = true;
 
-#if !CAM_USE_RGB565
+#if RTE_ISP
+    aipl_ret = aipl_color_convert_yuy2_to_rgb565(y_buffer[0], cam_image.data,
+                                                 cam_image.pitch, cam_image.width,
+                                                 cam_image.height);
+    if (aipl_ret != AIPL_ERR_OK)
+    {
+        printf("\r\nError: Camera format conversion from yuy2 to rgb565 failed (%s)\r\n",
+                aipl_error_str(aipl_ret));
+        __BKPT(0);
+    }
+#else // !RTE_ISP
     // ARX3A0 camera uses bayer output
     // MT9M114 can use bayer or RGB565 depending on RTE config
     // Convert raw image to RGB565 buffer using debayering method
-    aipl_error_t aipl_ret = aipl_demosaic(camera_raw_buffer, cam_image.data,
-                                          cam_image.width, cam_image.width,
-                                          cam_image.height, CAM_BAYER_FORMAT,
-                                          AIPL_COLOR_RGB565);
+    aipl_ret = aipl_demosaic(camera_raw_buffer, cam_image.data,
+                             cam_image.pitch, cam_image.width,
+                             cam_image.height, CAM_BAYER_FORMAT,
+                             AIPL_COLOR_RGB565);
     if (aipl_ret != AIPL_ERR_OK)
     {
         printf("\r\nError: Camera output debayering failed (%s)\r\n",
                 aipl_error_str(aipl_ret));
         __BKPT(0);
     }
+#endif // RTE_ISP
+#endif // CAM_USE_RGB565
 
     SCB_CleanDCache();
-#endif
-
     return cam_image;
 }
-#endif
+
 /* Revised matrix (BECP-1455)
  * Manual WB, Illuminant 6021, Relative Red 1.42, Relative Blue 1.47
  */
