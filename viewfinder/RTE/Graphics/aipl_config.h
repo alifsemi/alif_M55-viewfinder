@@ -126,7 +126,7 @@ extern "C" {
 #define AIPL_CONVERT_I444           TO_ARGB8888
 #define AIPL_CONVERT_NV12           TO_ARGB8888
 #define AIPL_CONVERT_NV21           TO_ARGB8888
-#define AIPL_CONVERT_YUY2           TO_ARGB8888
+#define AIPL_CONVERT_YUY2           TO_RGB565
 #define AIPL_CONVERT_UYVY           TO_ARGB8888
 
 #ifdef __cplusplus

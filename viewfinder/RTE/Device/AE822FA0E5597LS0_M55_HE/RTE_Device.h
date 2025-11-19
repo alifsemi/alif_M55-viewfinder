@@ -52,7 +52,7 @@
 //     <1=> enable
 // <i> Defines CPI ISP port
 // <i> Default: ISP port disable
-#define RTE_CPI_ISP_PORT                                      0
+#define RTE_CPI_ISP_PORT                                      1
 
 // <o> CPI Row roundup
 //     <0=> disable
@@ -380,7 +380,7 @@
 
 // <e> ISP (ISP) [Driver_ISP]
 // <i> Configuration settings for Driver_ISP in component ::Drivers:ISP
-#define RTE_ISP 0
+#define RTE_ISP 1
 #if RTE_ISP
 
 // <o> ISP IRQ priority <0-255>
@@ -1052,8 +1052,8 @@
 //     <3=>   640x480_RGB565
 //     <4=>   320x240_RGB565
 //     <5=>   320x320_RGB565
-// <i> Default: 0
-#define RTE_MT9M114_CAMERA_SENSOR_MIPI_IMAGE_CONFIG                3
+// <i> Default: 1
+#define RTE_MT9M114_CAMERA_SENSOR_MIPI_IMAGE_CONFIG                1
 
 // <o> select MT9M114 MIPI number of lanes in DPHY
 // <i> defines select MT9M114 MIPI number of lanes in DPHY.
