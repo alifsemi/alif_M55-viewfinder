@@ -45,6 +45,14 @@
 #define CAM_COLOR_CORRECTION (1)
 #define CAM_USE_RGB565       (0)
 #define CAM_BAYER_FORMAT     (AIPL_BAYER_GRBG)
+#elif defined(RTE_Drivers_CAMERA_SENSOR_OV5675)
+#define CAM_FRAME_WIDTH      (RTE_OV5675_CAMERA_SENSOR_FRAME_WIDTH)
+#define CAM_FRAME_HEIGHT     (RTE_OV5675_CAMERA_SENSOR_FRAME_HEIGHT)
+#define CAM_COLOR_CORRECTION (0)
+#define CAM_USE_RGB565       (0)
+#define CAM_BAYER_FORMAT     (AIPL_BAYER_GRBG)
+#else
+#error "Unsupported camera"
 #endif
 
 #define CAM_FRAME_SIZE       (CAM_FRAME_WIDTH * CAM_FRAME_HEIGHT)
@@ -53,7 +61,7 @@
 
 int camera_init(void);
 int camera_capture(void);
-aipl_image_t camera_post_capture_process(void);
+aipl_image_t camera_post_capture_process(bool *buffer_is_dynamic);
 const float* camera_get_color_correction_matrix(void);
 uint8_t* camera_get_gamma_lut(void);
 

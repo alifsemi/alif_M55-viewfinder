@@ -163,11 +163,12 @@ SECTIONS
   {
     * (.bss.video_mem_heap)                /* Heap buffer for video memory */
     * (.bss.camera_rgb565_frame_buf)       /* Camera RGB565 frame buffer */
+    * (.bss.lcd_frame_buf1)                /* LCD frame buffer. */
   } > SRAM0
 
   .bss.at_sram1 (NOLOAD) :
   {
-    * (.bss.lcd_frame_buf)                 /* LCD frame buffer. */
+    * (.bss.lcd_frame_buf2)                /* LCD frame buffer. */
     * (.bss.camera_raw_frame_buf)          /* Camera raw frame buffer */
   } > SRAM1
 #endif

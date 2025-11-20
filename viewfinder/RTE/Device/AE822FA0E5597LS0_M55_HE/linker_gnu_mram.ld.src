@@ -167,7 +167,7 @@ SECTIONS
 
   .bss.at_sram1 (NOLOAD) :
   {
-    * (.bss.lcd_frame_buf)                 /* LCD frame buffer. */
+    * (.bss.lcd_frame_buf*)                /* LCD frame buffer. */
     * (.bss.camera_raw_frame_buf)          /* Camera raw frame buffer */
   } > SRAM1
 #endif
