@@ -27,6 +27,9 @@
 #define OUT_IMAGE_WIDTH ISP_OUTPUT_X
 #define OUT_IMAGE_HEIGHT ISP_OUTPUT_Y
 #else
+#if defined(RTE_CPI_AXI_PORT) && !RTE_CPI_AXI_PORT
+#error "RTE_CPI_AXI_PORT should be enabled when ISP is disabled"
+#endif
 static uint8_t camera_raw_buffer[CAM_FRAME_SIZE * (CAM_USE_RGB565 ? 2 : 1)] __attribute__((aligned(32), section(".bss.camera_raw_frame_buf")));
 #define OUT_IMAGE_PITCH CAM_FRAME_WIDTH
 #define OUT_IMAGE_WIDTH CAM_FRAME_WIDTH
