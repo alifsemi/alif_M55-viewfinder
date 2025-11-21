@@ -1,22 +1,21 @@
 # Viewfinder demo application
 
 This application is built on VSCode Getting Started Template (alif_vscode-template)
-The default hardware is Gen 2 Ensemble DevKit with camera module and display.
+Please choose the target using CMSIS Solution
 
-**NOTE:** To change the target board set BOARD_ALIF_DEVKIT_VARIANT in board/board.h
-For example AppKit gen2
-#define BOARD_ALIF_DEVKIT_VARIANT       5
 
 **NOTE:** Ensemble DevKits do not ship with a camera and display by default. Please contact Alif to request.
 
 Camera modules supported by the demo application are:
 - MT9M114 **This is the default camera**
+- OV5675
 - ARX3A0 **This camera module has also been shipped with Alif Semiconductor kits**
 
-You can change the camera module in the project by commenting|uncommenting camera component in `viewfinder.cproject.yaml`
+You can change the camera module in the project by using the CMSIS Solution user interface or by commenting|uncommenting camera component in `viewfinder.cproject.yaml`
 ```
     - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
     # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
+    #- component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor OV5675
 ```
 
 Choosing the camera module can be done using the csolution GUI by clicking "Manage Software Components" and searching with CAMERA.
@@ -38,9 +37,6 @@ git clone git@github.com:alifsemi/alif_M55-viewfinder.git
 cd alif_M55-viewfinder
 git submodule update --init
 ```
-
-To build the application for a supported board other than the DevKit, you have to update the `board.h` file to pick the right variant of the board.
-By default the template will build for gen2 DevKit.
 
 The required software setup consists of *VS Code*, *Git*, *CMake*, *Ninja build system*, *cmsis-toolbox*, *Arm GNU toolchain* and *Alif SE tools*.
 By default the template project uses J-link so *J-link software* is required for debugging.
