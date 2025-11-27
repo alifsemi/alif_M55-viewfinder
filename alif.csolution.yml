@@ -1,6 +1,6 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Open-CMSIS-Pack/devtools/tools/projmgr/2.6.0/tools/projmgr/schemas/csolution.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Open-CMSIS-Pack/devtools/tools/projmgr/2.12.0/tools/projmgr/schemas/csolution.schema.json
 solution:
-  created-for: cmsis-toolbox@2.6.0
+  created-for: CMSIS-Toolbox@2.12.0
   cdefault:
 
   # List of tested compilers that can be selected
@@ -21,23 +21,41 @@ solution:
       device: Alif Semiconductor::AE722F80F55D5LS:M55_HE
       define:
         - "CORE_M55_HE"
+      target-set:
+        - set:
+          images:
+            - project-context: viewfinder.debug
 
     - type: E7-HP
       device: Alif Semiconductor::AE722F80F55D5LS:M55_HP
       define:
         - "CORE_M55_HP"
+      target-set:
+        - set:
+          images:
+            - project-context: viewfinder.debug
 
     - type: E8-HE
       device: Alif Semiconductor::AE822FA0E5597LS0:M55_HE
       define:
         - "CORE_M55_HE"
         - "ENSEMBLE_SOC_GEN2"
+        - "AIPL_INCLUDE_ALL_DEFAULT"
+      target-set:
+        - set:
+          images:
+            - project-context: viewfinder.release
 
     - type: E8-HP
       device: Alif Semiconductor::AE822FA0E5597LS0:M55_HP
       define:
         - "CORE_M55_HP"
         - "ENSEMBLE_SOC_GEN2"
+        - "AIPL_INCLUDE_ALL_DEFAULT"
+      target-set:
+        - set:
+          images:
+            - project-context: viewfinder.release
 
   build-types:
     - type: debug

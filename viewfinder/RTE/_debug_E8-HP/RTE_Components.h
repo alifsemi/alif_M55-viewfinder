@@ -29,6 +29,8 @@
 #define RTE_Drivers_CPI              /* Driver CAMERA Controller */
 /* AlifSemiconductor::Device:SOC Peripherals:GPIO@2.0.0 */
 #define RTE_Drivers_IO              /* Driver GPIO */
+/* AlifSemiconductor::Device:SOC Peripherals:ISP@2.0.0 */
+#define RTE_Drivers_ISP              /* Driver ISP Controller */
 /* AlifSemiconductor::Device:SOC Peripherals:MIPI CSI2@2.0.0 */
 #define RTE_Drivers_MIPI_CSI2              /* Driver MIPI CSI2 */
 /* AlifSemiconductor::Device:SOC Peripherals:MIPI DSI CSI2 DPHY@2.0.0 */
