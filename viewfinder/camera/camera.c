@@ -248,7 +248,7 @@ aipl_image_t camera_post_capture_process(bool *buffer_is_dynamic)
     *buffer_is_dynamic = true;
 
 #if RTE_ISP
-    aipl_ret = aipl_color_convert_yuy2_to_rgb565_default(y_buffer[0], cam_image.data,
+    aipl_ret = aipl_color_convert_yuy2_to_rgb565(y_buffer[0], cam_image.data,
                                                  cam_image.pitch, cam_image.width,
                                                  cam_image.height);
     if (aipl_ret != AIPL_ERR_OK)
