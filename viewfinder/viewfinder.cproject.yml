@@ -5,6 +5,8 @@ project:
       files:
         - file: main.c
         - file: power_management/power_management.c
+        - file: power_management/power_profile_107.c
+        - file: power_management/power_profile_109.c
         - file: camera/camera.c
         - file: logo/alif_logo.c
 

@@ -10,11 +10,11 @@
 #include "power_management.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #include "services_lib_api.h"
 #include "services_lib_bare_metal.h"
-
-#define PM_DCDC_VOLTAGE (825)
+#include "power_profile.h"
 
 // SE handle
 extern uint32_t se_services_s_handle;
@@ -33,57 +33,46 @@ void print_runprofile(const run_profile_t *runprof) {
 }
 
 static bool set_power_profiles(void) {
-    run_profile_t default_runprof = {0};
-    off_profile_t default_offprof = {0};
 
     uint32_t service_error_code;
     uint32_t err = 0;
 
-    default_runprof.power_domains = PD_VBAT_AON_MASK | PD_SSE700_AON_MASK | PD_SYST_MASK | PD_SESS_MASK;
-    default_runprof.power_domains |= PD_DBSS_MASK;  // debug PD
-    default_runprof.dcdc_mode = DCDC_MODE_PWM;
-    default_runprof.dcdc_voltage = PM_DCDC_VOLTAGE;
-    default_runprof.aon_clk_src = CLK_SRC_LFXO;
-    default_runprof.run_clk_src = CLK_SRC_PLL;
-    default_runprof.scaled_clk_freq = SCALED_FREQ_XO_HIGH_DIV_38_4_MHZ;
-    default_runprof.memory_blocks = SERAM_MASK | SRAM0_MASK | SRAM1_MASK | MRAM_MASK | FWRAM_MASK;
-    default_runprof.ip_clock_gating = CAMERA_MASK | MIPI_DSI_MASK | MIPI_CSI_MASK | CDC200_MASK | GPU_MASK;
-    default_runprof.phy_pwr_gating = LDO_PHY_MASK | MIPI_TX_DPHY_MASK | MIPI_RX_DPHY_MASK | MIPI_PLL_DPHY_MASK;
-    default_runprof.vdd_ioflex_3V3 = IOFLEX_LEVEL_1V8;
+    // Get SERAM revision string
+    uint8_t revision_data[80];
+    err = SERVICES_get_se_revision(se_services_s_handle, revision_data, &service_error_code);
+    if (err || service_error_code) {
+        return false;
+    }
 
-#ifdef CORE_M55_HP
-    default_runprof.cpu_clk_freq = CLOCK_FREQUENCY_400MHZ;
-#elif CORE_M55_HE
-    default_runprof.cpu_clk_freq = CLOCK_FREQUENCY_160MHZ;
-#else
-#error Unsupported core
-#endif
+    // Parse SERAM version
+    const char *ver_str_ptr = strstr(revision_data, " v");
+    int ver_maj = 0;
+    int ver_min = 0;
+    int ver_patch = 0;
+    int result = sscanf(ver_str_ptr, " v%d.%d.%d", &ver_maj, &ver_min, &ver_patch);
+    if (result != 3) {
+        return false;
+    }
 
-    err = SERVICES_set_run_cfg(se_services_s_handle, &default_runprof, &service_error_code);
+    // Build combined version for easy comparison
+    const uint32_t ver_comp = (ver_maj << 16) | (ver_min << 8) | ver_patch;
+
+    // run profile enumerations changed after 107
+    run_profile_t *default_runprof = NULL;
+    off_profile_t *default_offprof = NULL;
+    const uint32_t ver1_107_0 = (1 << 16) | (107 << 8);
+    if (ver_comp > ver1_107_0) {
+        default_runprof = get_runprof_109();
+        default_offprof = get_offprof_109();
+    } else {
+        default_runprof = get_runprof_107();
+        default_offprof = get_offprof_107();
+    }
+
+    err = SERVICES_set_run_cfg(se_services_s_handle, default_runprof, &service_error_code);
 
     if (err == 0 && service_error_code == 0) {
-        default_offprof.power_domains = 0;
-        default_offprof.aon_clk_src = CLK_SRC_LFXO;
-        default_offprof.dcdc_voltage = PM_DCDC_VOLTAGE;
-        default_offprof.dcdc_mode = DCDC_MODE_PWM;
-        default_offprof.stby_clk_src = CLK_SRC_HFRC;
-        default_offprof.stby_clk_freq = SCALED_FREQ_RC_STDBY_38_4_MHZ;
-        default_offprof.memory_blocks = SERAM_MASK | MRAM_MASK;
-        default_offprof.ip_clock_gating = LP_PERIPH_MASK;
-        default_offprof.phy_pwr_gating = 0;
-        default_offprof.vdd_ioflex_3V3 = IOFLEX_LEVEL_1V8;
-        default_offprof.wakeup_events = WE_LPGPIO | WE_LPTIMER;
-        default_offprof.ewic_cfg = EWIC_VBAT_GPIO | EWIC_VBAT_TIMER;
-#ifdef CORE_M55_HP
-        default_offprof.vtor_address = 0x80200000;
-        default_offprof.vtor_address_ns = 0x80200000;
-#elif CORE_M55_HE
-        default_offprof.vtor_address = 0x80000000;
-        default_offprof.vtor_address_ns = 0x80000000;
-#else
-#error Unsupported core
-#endif
-        err = SERVICES_set_off_cfg(se_services_s_handle, &default_offprof, &service_error_code);
+        err = SERVICES_set_off_cfg(se_services_s_handle, default_offprof, &service_error_code);
     }
 
     return err == 0 && service_error_code == 0;
