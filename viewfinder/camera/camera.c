@@ -103,6 +103,8 @@ static void camera_callback(uint32_t event) {
         case ARM_ISP_MI_EVENT_MP_Y_WRAP_DETECTED:
             g_cam_cb_events |= ISP_MI_FRAME_DUMP_EVENT;
             break;
+        case ARM_ISP_EVENT_AWB_DONE:
+            break;
 #endif
         case ARM_CPI_EVENT_CAMERA_FRAME_HSYNC_DETECTED:
             break;

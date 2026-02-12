@@ -9,7 +9,7 @@ Please choose the target using CMSIS Solution
 
 Camera modules supported by the demo application are:
 - MT9M114 **This is the default camera**
-- OV5675 **Needs an adapter board**
+- OV5675 **Latest introduced camera module (default in near future)**
 - ARX3A0 **This camera module has also been shipped with Alif Semiconductor kits**
 
 You can change the camera module in the project by using the CMSIS Solution user interface or by commenting|uncommenting camera component in `viewfinder.cproject.yaml`
