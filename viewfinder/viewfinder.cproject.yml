@@ -20,6 +20,7 @@ project:
         - file: ../libs/common_app_utils/logging/uart_tracelib.c
         - file: ../libs/common_app_utils/logging/retarget.c
         - file: ../libs/common_app_utils/fault_handler/fault_handler.c
+        - file: leds/leds.c
 
   output:
     base-name: $Project$
@@ -30,8 +31,6 @@ project:
 
   add-path:
     - .
-    - ../board/
-    - ../libs/board/
     - ../libs/common_app_utils/logging
     - ../libs/common_app_utils/fault_handler
     - power_management
@@ -39,9 +38,12 @@ project:
     - graphics
     - display
     - logo
+    - leds
+
+  layers:
+    - layer: $BoardLayer$
 
   components:
-    # needed for Alif Ensemble support
     - component: ARM::CMSIS:CORE
     - component: AlifSemiconductor::Device:Startup
     - component: AlifSemiconductor::Device:SOC Peripherals:PINCONF
@@ -51,10 +53,6 @@ project:
     # peripheral drivers & middleware, uncomment as needed
     - component: AlifSemiconductor::Device:SOC Peripherals:CDC
     - component: AlifSemiconductor::Device:SOC Peripherals:CPI
-    - component: AlifSemiconductor::Device:SOC Peripherals:ISP
-      for-context:
-        - +E8-HE
-        - +E8-HP
 
     - component: AlifSemiconductor::Device:SOC Peripherals:MHU
     - component: AlifSemiconductor::Device:SOC Peripherals:MIPI DSI CSI2 DPHY
@@ -82,13 +80,4 @@ project:
     - component: AlifSemiconductor::CMSIS Driver:I2C
     - component: AlifSemiconductor::Services:Secure Enclave:core&Source
     - component: AlifSemiconductor::Services:Secure Enclave:Initialization Helper&Source
- 
-    - component: AlifSemiconductor::BSP:Board Config
-    - component: AlifSemiconductor::BSP:DevKit Config&DevKit-e7
-      for-context:
-        - +E7-HE
-        - +E7-HP
-    - component: AlifSemiconductor::BSP:DevKit Config&DevKit-e8
-      for-context:
-        - +E8-HE
-        - +E8-HP
+
