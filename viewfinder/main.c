@@ -11,7 +11,6 @@
 
 #include "RTE_Components.h"
 #include CMSIS_device_header
-#include "Driver_IO.h"
 #include "board_defs.h"
 
 // DAVE
@@ -52,22 +51,14 @@ static void uart_callback(uint32_t event) {}
 #define printf(fmt, ...) (0)
 #endif
 
-
-extern ARM_DRIVER_GPIO ARM_Driver_GPIO_(BOARD_LEDRGB1_G_GPIO_PORT);
-static ARM_DRIVER_GPIO* green_port = &ARM_Driver_GPIO_(BOARD_LEDRGB1_G_GPIO_PORT);
-
-#if BOARD_LEDRGB1_G_GPIO_PORT != BOARD_LEDRGB1_R_GPIO_PORT
-extern ARM_DRIVER_GPIO ARM_Driver_GPIO_(BOARD_LEDRGB1_R_GPIO_PORT);
-#endif
-
-static ARM_DRIVER_GPIO* red_port = &ARM_Driver_GPIO_(BOARD_LEDRGB1_R_GPIO_PORT);
-
 // Print measurements
 #define PRINT_INTERVAL_SEC    (1)
 #define PRINT_INTERVAL_CLOCKS (PRINT_INTERVAL_SEC * CLOCKS_PER_SEC)
 extern uint32_t SystemCoreClock;
 
 #include "pinconf.h"
+#include "leds.h"
+
 int main(void) {
 
     int32_t board_init_ret = board_pins_config();
@@ -88,13 +79,7 @@ int main(void) {
         __BKPT(0);
     }
 
-    green_port->Initialize(BOARD_LEDRGB1_G_GPIO_PIN, NULL);
-    green_port->PowerControl(BOARD_LEDRGB1_G_GPIO_PIN, ARM_POWER_FULL);
-    green_port->SetDirection(BOARD_LEDRGB1_G_GPIO_PIN, GPIO_PIN_DIRECTION_OUTPUT);
-
-    red_port->Initialize(BOARD_LEDRGB1_R_GPIO_PIN, NULL);
-    red_port->PowerControl(BOARD_LEDRGB1_R_GPIO_PIN, ARM_POWER_FULL);
-    red_port->SetDirection(BOARD_LEDRGB1_R_GPIO_PIN, GPIO_PIN_DIRECTION_OUTPUT);
+    leds_init();
 
     /* Enable MIPI power */
     bool pm_ok = init_power_management();
@@ -150,7 +135,7 @@ int main(void) {
     clock_t print_ts = clock();
     while (ret == ARM_DRIVER_OK) {
         // Blink green LED
-        green_port->SetValue(BOARD_LEDRGB1_G_GPIO_PIN, GPIO_PIN_OUTPUT_STATE_TOGGLE);
+        leds_toggle_green();
         // Reset cycle counter
         ARM_PMU_CYCCNT_Reset();
 
@@ -291,7 +276,7 @@ int main(void) {
     }
 
     // Set RED LED in error case
-    red_port->SetValue(BOARD_LEDRGB1_R_GPIO_PIN, GPIO_PIN_OUTPUT_STATE_HIGH);
+    leds_set_red(true);
 
     while (1) {
         __WFI();

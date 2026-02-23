@@ -11,6 +11,9 @@
 
 #include <stdio.h>
 
+#include "RTE_Components.h"
+#include CMSIS_device_header
+
 #include "services_lib_api.h"
 #include "services_lib_bare_metal.h"
 
@@ -51,9 +54,9 @@ static bool set_power_profiles(void) {
     default_runprof.phy_pwr_gating = LDO_PHY_MASK | MIPI_TX_DPHY_MASK | MIPI_RX_DPHY_MASK | MIPI_PLL_DPHY_MASK;
     default_runprof.vdd_ioflex_3V3 = IOFLEX_LEVEL_1V8;
 
-#ifdef CORE_M55_HP
+#if defined(RTSS_HP)
     default_runprof.cpu_clk_freq = CLOCK_FREQUENCY_400MHZ;
-#elif CORE_M55_HE
+#elif defined(RTSS_HE)
     default_runprof.cpu_clk_freq = CLOCK_FREQUENCY_160MHZ;
 #else
 #error Unsupported core
@@ -74,10 +77,10 @@ static bool set_power_profiles(void) {
         default_offprof.vdd_ioflex_3V3 = IOFLEX_LEVEL_1V8;
         default_offprof.wakeup_events = WE_LPGPIO | WE_LPTIMER;
         default_offprof.ewic_cfg = EWIC_VBAT_GPIO | EWIC_VBAT_TIMER;
-#ifdef CORE_M55_HP
+#if defined(RTSS_HP)
         default_offprof.vtor_address = 0x80200000;
         default_offprof.vtor_address_ns = 0x80200000;
-#elif CORE_M55_HE
+#elif defined(RTSS_HE)
         default_offprof.vtor_address = 0x80000000;
         default_offprof.vtor_address_ns = 0x80000000;
 #else

@@ -37,7 +37,7 @@
 // =======================
 //   <q>Combine SRAM0 & SRAM1
 //   <i> Combines SRAM0 and SRAM1 into single memory region
-#define SRAM0_SRAM1_COMBINED        0
+#define SRAM0_SRAM1_COMBINED        1
 // <h> SRAM
 //   <o> Base address <0x02000000-0x027FFFFF:8>
 //   <i> Defines base address of SRAM memory region.

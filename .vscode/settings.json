@@ -7,4 +7,5 @@
 
     "cortex-debug.variableUseNaturalFormat": false,
     "debug.hideSlowPreLaunchWarning": true,
+    "debug.showInStatusBar": "never",
 }
