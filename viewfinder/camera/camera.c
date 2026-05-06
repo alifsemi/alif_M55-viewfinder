@@ -9,11 +9,15 @@
  */
 #include "camera.h"
 #include "isp_header.h"
+#if RTE_ISP
+#include "isp_param.h"
+#endif
 
 #include <math.h>
 #include <stdio.h>
 
 #include "Driver_CPI.h"
+#include "Driver_ISP.h"
 #include "aipl_color_conversion.h"
 #include "aipl_demosaic.h"
 
@@ -39,6 +43,9 @@ static uint8_t camera_raw_buffer[CAM_FRAME_SIZE * (CAM_USE_RGB565 ? 2 : 1)] __at
 /* Camera  Driver instance 0 */
 extern ARM_DRIVER_CPI Driver_CPI;
 static ARM_DRIVER_CPI *CAMERAdrv = &Driver_CPI;
+#if RTE_ISP
+extern ARM_DRIVER_ISP Driver_ISP;
+#endif
 
 typedef enum { CAM_CB_EVENT_NONE = 0, CAM_CB_EVENT_ERROR = (1 << 0), CAM_CB_EVENT_CAPTURE_STOPPED = (1 << 1),
              ISP_VSYNC_CB_EVENT = (1 << 2), ISP_MI_FRAME_DUMP_EVENT = ( 1 << 3), ISP_FRAME_IN_DETECTED = (1 << 4) } CAM_CB_EVENT;
@@ -105,6 +112,8 @@ static void camera_callback(uint32_t event) {
             break;
         case ARM_ISP_EVENT_AWB_DONE:
             break;
+        case ARM_ISP_EVENT_EXP_MEASURE_DONE:
+            break;
 #endif
         case ARM_CPI_EVENT_CAMERA_FRAME_HSYNC_DETECTED:
             break;
@@ -124,6 +133,8 @@ static void camera_callback(uint32_t event) {
 int camera_init(void) {
 #if RTE_ISP
     isp_buffer_init();
+    /* Set ISP calibration parameters before initialization */
+    Driver_ISP.SetConfig(&calibration_data, &port_attr, &chan_attr);
 #endif
     int ret = CAMERAdrv->Initialize(camera_callback);
     if (ret != ARM_DRIVER_OK) {
