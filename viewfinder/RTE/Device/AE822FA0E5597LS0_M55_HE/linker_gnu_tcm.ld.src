@@ -1,4 +1,4 @@
-/* This file was ported to work on Alif Semiconductor family of devices. */
+/* This file was ported to work on Alif Semiconductor Ensemble family of devices. */
 
 /* Copyright (C) 2023 Alif Semiconductor - All Rights Reserved.
  * Use, distribution and modification of this code is permitted under the
@@ -28,9 +28,9 @@
  */
 #include "app_mem_regions.h"
 
-#define __STACK_SIZE            APP_HE_STACK_SIZE
-#define __HEAP_SIZE             APP_HE_HEAP_SIZE
-#define __APP_HEAP_SIZE         0x00004000
+#define __STACK_SIZE             APP_HE_STACK_SIZE
+#define __HEAP_SIZE              APP_HE_HEAP_SIZE
+#define __APP_HEAP_SIZE          0x00004000
 
 /*
  * Note:

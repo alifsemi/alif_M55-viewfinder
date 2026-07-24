@@ -9,6 +9,6 @@ cbuild-pack:
     - resolved-pack: AlifSemiconductor::Dave2DDriver@2.0.2
       selected-by-pack:
         - AlifSemiconductor::Dave2DDriver@2.0.2
-    - resolved-pack: AlifSemiconductor::Ensemble@2.1.0
+    - resolved-pack: AlifSemiconductor::Ensemble@2.2.0
       selected-by-pack:
-        - AlifSemiconductor::Ensemble@2.1.0
+        - AlifSemiconductor::Ensemble@2.2.0
