@@ -17,6 +17,10 @@
 #include "aipl_color_conversion.h"
 #include "aipl_demosaic.h"
 
+#if RTE_ISP
+#include "isp_calibration.h"
+#endif
+
 // Camera frame buffer (can be bayer or RGB565 depending on camera module and camera module configuration)
 // Raw buffer is not needed when using ISP and disabling the CPI AXI output
 #if RTE_ISP
@@ -85,14 +89,14 @@ static void camera_callback(uint32_t event) {
         case ARM_CPI_EVENT_CAMERA_CAPTURE_STOPPED:
             g_cam_cb_events |= CAM_CB_EVENT_CAPTURE_STOPPED;
             break;
-#if RTE_ISP            
+#if RTE_ISP
         case ARM_ISP_EVENT_FRAME_VSYNC_DETECTED:
             isp_counter++;
             g_cam_cb_events |= ISP_VSYNC_CB_EVENT;
             break;
         case ARM_ISP_EVENT_FRAME_IN_DETECTED:
             g_cam_cb_events |= ISP_FRAME_IN_DETECTED;
-            break;            
+            break;
         case ARM_ISP_MI_EVENT_MP_FRAME_END_DETECTED:
             isp_mi_counter++;
             g_cam_cb_events |= ISP_MI_FRAME_DUMP_EVENT;
@@ -123,6 +127,8 @@ static void camera_callback(uint32_t event) {
 
 int camera_init(void) {
 #if RTE_ISP
+    /* Apply project-local ISP calibration before the ISP is initialized. */
+    isp_apply_calibration();
     isp_buffer_init();
 #endif
     int ret = CAMERAdrv->Initialize(camera_callback);
