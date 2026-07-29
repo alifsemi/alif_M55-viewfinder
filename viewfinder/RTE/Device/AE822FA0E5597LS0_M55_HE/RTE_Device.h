@@ -13,8 +13,6 @@
 #ifndef __RTE_DEVICE_H
 #define __RTE_DEVICE_H
 
-#include "board_defs.h"
-
 // <e> MRAM (NVM (Non-Volatile Memory)) [Driver_MRAM]
 // <i> Configuration settings for Driver_MRAM in component ::Drivers:MRAM
 #define RTE_MRAM 1
@@ -451,7 +449,7 @@
 //     <1=> enable
 // <i> defines if Binning Module is enabled or not
 // <i> default: false
-#define RTE_ISP_BINNING_MODULE 0
+#define RTE_ISP_BINNING_MODULE 1
 
 // <o> ISP Binning Enable
 //     <0=> disable
@@ -507,14 +505,10 @@
 //    <41=> RAW422SP (RAW422 semi-planar)
 // <i> Defines ISP output pixel format for memory dump
 // <i> Default: RGB888
-#define RTE_ISP_OUTPUT_FORMAT 32
+#define RTE_ISP_OUTPUT_FORMAT 39
 
 // <o> ISP Scaler Output Width
 // <i> Width in pixels of the ISP scaler output (after scaling from sensor dimensions).
-// <i> Square 480x480 output that matches the display region. Because the ISP
-// <i> input below is also square (560x560), the scale is uniform (560->480 on
-// <i> both axes) so the image is NOT distorted. This lets the ISP path in
-// <i> main.c draw the ISP output directly (no software crop/resize needed).
 #define RTE_ISP_OUTPUT_WIDTH        480
 
 // <o> ISP Scaler Output Height
@@ -523,39 +517,31 @@
 
 // <o> ISP Sensor Input Width
 // <i> Width in pixels of the sensor input to the ISP pipeline.
-// <i> SQUARE 560x560 window (matches the 2.1.0 hardcoded input and the CSI2 IPI
-// <i> window) so scaling to the square 480x480 output is uniform and the aspect
-// <i> ratio is correct (no vertical stretch). Feeds snsRect/inFormRect/iSRect.
-// <i> inFormRect top/left are fixed at (0,0) in the pack, so the window is the
-// <i> top-left 560x560 of the 1280x720 frame (cannot be centered via RTE).
-// <i> 560->480 (0.857x) reproduces the old, more zoomed-in / more left framing.
-#define RTE_ISP_SENSOR_INPUT_WIDTH  RTE_MIPI_CSI2_IPI_HACTIVE_TIME
+// <i> Default: MT9M114 sensor resolution (1280). Change for different sensors.
+#define RTE_ISP_SENSOR_INPUT_WIDTH  RTE_MT9M114_CAMERA_SENSOR_FRAME_WIDTH
 
 
 // <o> ISP Sensor Input Height
 // <i> Height in pixels of the sensor input to the ISP pipeline.
-// <i> Square window height (matches the CSI2 IPI window, see width note above).
-#define RTE_ISP_SENSOR_INPUT_HEIGHT RTE_MIPI_CSI2_IPI_VACTIVE_LINE
+// <i> Default: MT9M114 sensor resolution (720). Change for different sensors.
+#define RTE_ISP_SENSOR_INPUT_HEIGHT RTE_MT9M114_CAMERA_SENSOR_FRAME_HEIGHT
 
 // <o> ISP Crop Top offset <0-4095>
-// <i> Top offset in pixels for the cropped output window.
-// <i> NOTE: outFormRect sub-crop (CROP != sensor input) corrupts the output on
-// <i> this ISP pipeline, so the crop must equal the input and stay at (0,0).
+// <i> Top offset in pixels for the cropped output window
 #define RTE_ISP_CROP_TOP    0
 
 // <o> ISP Crop Left offset <0-4095>
-// <i> Left offset in pixels for the cropped output window.
+// <i> Left offset in pixels for the cropped output window
 #define RTE_ISP_CROP_LEFT   0
 
 // <o> ISP Crop Width <1-4095>
-// <i> Width in pixels of the cropped output window (outFormRect).
-// <i> Must equal the sensor input width; a smaller value here (sub-crop) is not
-// <i> supported by this ISP pipeline and produces corrupted output.
+// <i> Width in pixels of the cropped output window.
+// <i> Default: full sensor input (no crop). Override with smaller value to crop.
 #define RTE_ISP_CROP_WIDTH  RTE_ISP_SENSOR_INPUT_WIDTH
 
 // <o> ISP Crop Height <1-4095>
-// <i> Height in pixels of the cropped output window (outFormRect).
-// <i> Must equal the sensor input height.
+// <i> Height in pixels of the cropped output window.
+// <i> Default: full sensor input (no crop). Override with smaller value to crop.
 #define RTE_ISP_CROP_HEIGHT RTE_ISP_SENSOR_INPUT_HEIGHT
 
 #endif
@@ -808,7 +794,7 @@
 // <o> select ARX3A0 override CPI color mode
 // <i> defines select ARX3A0 override CPI color mode.
 // <i> default: 1 (Ensable)
-#define RTE_ARX3A0_CAMERA_SENSOR_OVERRIDE_CPI_COLOR_MODE 1
+#define RTE_ARX3A0_CAMERA_SENSOR_OVERRIDE_CPI_COLOR_MODE 0
 
 // <o> select ARX3A0 CPI color mode
 // <i> defines select ARX3A0 CPI color mode.
@@ -829,26 +815,6 @@
 // <i> Defines camera sensor ARX3A0 CSI clock source division
 // <i> Default: 20
 #define RTE_ARX3A0_CAMERA_SENSOR_CSI_CLK_SCR_DIV         20
-
-// <o> Select camera sensor ARX3A0 reset pin number
-// <i> Defines camera sensor ARX3A0 reset pin number
-// <i> Default: 1
-#define RTE_ARX3A0_CAMERA_SENSOR_RESET_PIN_NO                BOARD_CAMERA_RESET_GPIO_PIN
-
-// <o> Select camera sensor ARX3A0 reset GPIO port
-// <i> Defines camera sensor ARX3A0 reset GPIO port
-// <i> Default: 9
-#define RTE_ARX3A0_CAMERA_SENSOR_RESET_GPIO_PORT             BOARD_CAMERA_RESET_GPIO_PORT
-
-// <o> Select camera sensor ARX3A0 power pin number
-// <i> Defines camera sensor ARX3A0 power pin number
-// <i> Default: 5
-#define RTE_ARX3A0_CAMERA_SENSOR_POWER_PIN_NO                BOARD_CAMERA_POWER_GPIO_PIN
-
-// <o> Select camera sensor ARX3A0 power GPIO port
-// <i> Defines camera sensor ARX3A0 power GPIO port
-// <i> Default: 7
-#define RTE_ARX3A0_CAMERA_SENSOR_POWER_GPIO_PORT             BOARD_CAMERA_POWER_GPIO_PORT
 
 // <o> RTE_ARX3A0_CAMERA_SENSOR_I2C_INSTANCE
 // <i> Defines camera sensor ARX3A0 i2c instance
@@ -918,26 +884,6 @@
 // <i> Default: 20
 #define RTE_AR0144_CAMERA_SENSOR_CSI_CLK_SCR_DIV         20
 
-// <o> Select camera sensor AR0144 reset pin number
-// <i> Defines camera sensor AR0144 reset pin number
-// <i> Default: 5
-#define RTE_AR0144_CAMERA_SENSOR_RESET_PIN_NO                 BOARD_CAMERA_RESET_GPIO_PIN
-
-// <o> Select camera sensor AR0144 reset GPIO port
-// <i> Defines camera sensor AR0144 reset GPIO port
-// <i> Default: 4
-#define RTE_AR0144_CAMERA_SENSOR_RESET_GPIO_PORT              BOARD_CAMERA_RESET_GPIO_PORT
-
-// <o> Select camera sensor AR0144 power pin number
-// <i> Defines camera sensor AR0144 power pin number
-// <i> Default: 5
-#define RTE_AR0144_CAMERA_SENSOR_POWER_PIN_NO                 5
-
-// <o> Select camera sensor AR0144 power GPIO port
-// <i> Defines camera sensor AR0144 power GPIO port
-// <i> Default: 7
-#define RTE_AR0144_CAMERA_SENSOR_POWER_GPIO_PORT         7
-
 // <o> RTE_AR0144_CAMERA_SENSOR_I2C_INSTANCE
 // <i> Defines camera sensor AR0144 i2c instance
 //     <0=>   I2C0
@@ -1004,26 +950,6 @@
 // <i> Defines camera sensor AR0145 CSI clock source division
 // <i> Default: 16
 #define RTE_AR0145_CAMERA_SENSOR_CSI_CLK_SCR_DIV         16
-
-// <o> Select camera sensor AR0145 reset pin number
-// <i> Defines camera sensor AR0145 reset pin number
-// <i> Default: 1
-#define RTE_AR0145_CAMERA_SENSOR_RESET_PIN_NO            1
-
-// <o> Select camera sensor AR0145 reset GPIO port
-// <i> Defines camera sensor AR0145 reset GPIO port
-// <i> Default: 9
-#define RTE_AR0145_CAMERA_SENSOR_RESET_GPIO_PORT         9
-
-// <o> Select camera sensor AR0145 power pin number
-// <i> Defines camera sensor AR0145 power pin number
-// <i> Default: 5
-#define RTE_AR0145_CAMERA_SENSOR_POWER_PIN_NO            5
-
-// <o> Select camera sensor AR0145 power GPIO port
-// <i> Defines camera sensor AR0145 power GPIO port
-// <i> Default: 7
-#define RTE_AR0145_CAMERA_SENSOR_POWER_GPIO_PORT         7
 
 // <o> RTE_AR0145_CAMERA_SENSOR_I2C_INSTANCE
 // <i> Defines camera sensor AR0145 i2c instance
@@ -1093,26 +1019,6 @@
 // <i> Default: 15
 #define RTE_AR0246_CAMERA_SENSOR_CSI_CLK_SCR_DIV         15
 
-// <o> Select camera sensor AR0246 reset pin number
-// <i> Defines camera sensor AR0246 reset pin number
-// <i> Default: 1
-#define RTE_AR0246_CAMERA_SENSOR_RESET_PIN_NO            1
-
-// <o> Select camera sensor AR0246 reset GPIO port
-// <i> Defines camera sensor AR0246 reset GPIO port
-// <i> Default: 9
-#define RTE_AR0246_CAMERA_SENSOR_RESET_GPIO_PORT         9
-
-// <o> Select camera sensor AR0246 power pin number
-// <i> Defines camera sensor AR0246 power pin number
-// <i> Default: 5
-#define RTE_AR0246_CAMERA_SENSOR_POWER_PIN_NO            5
-
-// <o> Select camera sensor AR0246 power GPIO port
-// <i> Defines camera sensor AR0246 power GPIO port
-// <i> Default: 7
-#define RTE_AR0246_CAMERA_SENSOR_POWER_GPIO_PORT         7
-
 // <o> RTE_AR0246_CAMERA_SENSOR_I2C_INSTANCE
 // <i> Defines camera sensor AR0246 i2c instance
 //     <0=>   I2C0
@@ -1150,7 +1056,7 @@
 //     <4=>   320x240_RGB565
 //     <5=>   320x320_RGB565
 // <i> Default: 1
-#define RTE_MT9M114_CAMERA_SENSOR_MIPI_IMAGE_CONFIG            1
+#define RTE_MT9M114_CAMERA_SENSOR_MIPI_IMAGE_CONFIG            0
 
 // <o> select MT9M114 MIPI number of lanes in DPHY
 // <i> defines select MT9M114 MIPI number of lanes in DPHY.
@@ -1177,26 +1083,6 @@
 // <i> Default: 20
 #define RTE_MT9M114_CAMERA_SENSOR_MIPI_CSI_CLK_SCR_DIV         20
 
-// <o> Select camera sensor MT9M114 MIPI reset pin number
-// <i> Defines camera sensor MT9M114 MIPI reset pin number
-// <i> Default: 1
-#define RTE_MT9M114_CAMERA_SENSOR_MIPI_RESET_PIN_NO                 BOARD_CAMERA_RESET_GPIO_PIN
-
-// <o> Select camera sensor MT9M114 MIPI reset GPIO port
-// <i> Defines camera sensor MT9M114 MIPI reset GPIO port
-// <i> Default: 9
-#define RTE_MT9M114_CAMERA_SENSOR_MIPI_RESET_GPIO_PORT              BOARD_CAMERA_RESET_GPIO_PORT
-
-// <o> Select camera sensor MT9M114 MIPI power pin number
-// <i> Defines camera sensor MT9M114 MIPI power pin number
-// <i> Default: 5
-#define RTE_MT9M114_CAMERA_SENSOR_MIPI_POWER_PIN_NO                 BOARD_CAMERA_POWER_GPIO_PIN
-
-// <o> Select camera sensor MT9M114 MIPI power GPIO port
-// <i> Defines camera sensor MT9M114 MIPI power GPIO port
-// <i> Default: 7
-#define RTE_MT9M114_CAMERA_SENSOR_MIPI_POWER_GPIO_PORT              BOARD_CAMERA_POWER_GPIO_PORT
-
 // <o> RTE_MT9M114_CAMERA_SENSOR_MIPI_I2C_INSTANCE
 // <i> Defines camera sensor MT9M114 MIPI i2c instance
 //     <0=>   I2C0
@@ -1209,11 +1095,11 @@
 
 // <o> MT9M114 sensor frame width for ISP / CSI2 pipeline
 // <i> Width in pixels of the MT9M114 MIPI sensor frame
-#define RTE_MT9M114_CAMERA_SENSOR_FRAME_WIDTH  1280
+#define RTE_MT9M114_CAMERA_SENSOR_FRAME_WIDTH  1288
 
 // <o> MT9M114 sensor frame height for ISP / CSI2 pipeline
 // <i> Height in pixels of the MT9M114 MIPI sensor frame
-#define RTE_MT9M114_CAMERA_SENSOR_FRAME_HEIGHT 720
+#define RTE_MT9M114_CAMERA_SENSOR_FRAME_HEIGHT 728
 
 #endif
 // </e> MT9M114_MIPI [Driver_MT9M114_MIPI]
@@ -1294,36 +1180,6 @@
 #define RTE_HM0360_CAMERA_SENSOR_FRAME_WIDTH  320
 #endif
 
-// <o> Select camera sensor HM0360 reset pin number
-// <i> Defines camera sensor HM0360 reset pin number
-// <i> Default: 1
-#define RTE_HM0360_CAMERA_SENSOR_RESET_PIN_NO     1
-
-// <o> Select camera sensor HM0360 reset GPIO port
-// <i> Defines camera sensor HM0360 reset GPIO port
-// <i> Default: 9
-#define RTE_HM0360_CAMERA_SENSOR_RESET_GPIO_PORT  9
-
-// <o> Select camera sensor HM0360 power pin number
-// <i> Defines camera sensor HM0360 power pin number
-// <i> Default: 5
-#define RTE_HM0360_CAMERA_SENSOR_POWER_PIN_NO     5
-
-// <o> Select camera sensor HM0360 power GPIO port
-// <i> Defines camera sensor HM0360 power GPIO port
-// <i> Default: 7
-#define RTE_HM0360_CAMERA_SENSOR_POWER_GPIO_PORT  7
-
-// <o> Select camera sensor HM0360 xsleep pin number
-// <i> Defines camera sensor HM0360 xsleep pin number
-// <i> Default: 3
-#define RTE_HM0360_CAMERA_SENSOR_XSLEEP_PIN_NO    3
-
-// <o> Select camera sensor HM0360 xsleep GPIO port
-// <i> Defines camera sensor HM0360 xsleep GPIO port
-// <i> Default: 6
-#define RTE_HM0360_CAMERA_SENSOR_XSLEEP_GPIO_PORT 6
-
 // <o> RTE_HM0360_CAMERA_SENSOR_I2C_INSTANCE
 // <i> Defines camera sensor HM0360 i2c instance
 //     <0=>   I2C0
@@ -1387,16 +1243,6 @@
 // <i> default: 640
 #define RTE_OV5647_CAMERA_SENSOR_FRAME_WIDTH             640
 
-// <o> Select camera sensor OV5647 reset pin number
-// <i> Defines camera sensor OV5647 reset pin number
-// <i> Default: 1
-#define RTE_OV5647_CAMERA_SENSOR_RESET_PIN_NO            1
-
-// <o> Select camera sensor OV5647 reset GPIO port
-// <i> Defines camera sensor OV5647 reset GPIO port
-// <i> Default: 9
-#define RTE_OV5647_CAMERA_SENSOR_RESET_GPIO_PORT         9
-
 // <o RTE_OV5647_CAMERA_SENSOR_I2C_INSTANCE> Select camera sensor OV5647 i2c instance
 // <i> Defines camera sensor OV5647 i2c instance
 //     <0=>   I2C0
@@ -1443,7 +1289,7 @@
 // <o> select OV5675 override CPI color mode
 // <i> defines select OV5675 override CPI color mode.
 // <i> default: 1
-#define RTE_OV5675_CAMERA_SENSOR_OVERRIDE_CPI_COLOR_MODE 1
+#define RTE_OV5675_CAMERA_SENSOR_OVERRIDE_CPI_COLOR_MODE 0
 
 // <o> select OV5675 CPI color mode
 // <i> defines select OV5675 CPI color mode.
@@ -1483,25 +1329,6 @@
 #else
 #define RTE_OV5675_CAMERA_SENSOR_FRAME_WIDTH             1296
 #endif
-// <o> Select camera sensor OV5675 reset pin number
-// <i> Defines camera sensor OV5675 reset pin number
-// <i> Default: 1
-#define RTE_OV5675_CAMERA_SENSOR_RESET_PIN_NO               BOARD_CAMERA_RESET_GPIO_PIN
-
-// <o> Select camera sensor OV5675 reset GPIO port
-// <i> Defines camera sensor OV5675 reset GPIO port
-// <i> Default: 9
-#define RTE_OV5675_CAMERA_SENSOR_RESET_GPIO_PORT            BOARD_CAMERA_RESET_GPIO_PORT
-
-// <o> Select camera sensor OV5675 power pin number
-// <i> Defines camera sensor OV5675 power pin number
-// <i> Default: 5
-#define RTE_OV5675_CAMERA_SENSOR_POWER_PIN_NO               BOARD_CAMERA_POWER_GPIO_PIN
-
-// <o> Select camera sensor OV5675 power GPIO port
-// <i> Defines camera sensor OV5675 power GPIO port
-// <i> Default: 7
-#define RTE_OV5675_CAMERA_SENSOR_POWER_GPIO_PORT            BOARD_CAMERA_POWER_GPIO_PORT
 
 // <o RTE_OV5675_CAMERA_SENSOR_I2C_INSTANCE> Select camera sensor OV5675 i2c instance
 // <i> Defines camera sensor OV5675 i2c instance
@@ -1614,27 +1441,7 @@
 // <o> Virtual channel ID
 // <i> Defines Virtual Channel ID
 // <i> Default: 0
-#define RTE_ILI9806E_PANEL_DSI_VC_ID                 0
-
-// <o> ILI9806 LCD panel reset pin number
-// <i> Defines ILI9806 LCD panel reset pin number.
-// <i> Default: 5
-#define RTE_ILI9806E_PANEL_RESET_PIN_NO                  BOARD_LCD_RESET_GPIO_PIN
-
-// <o> ILI9806 LCD panel reset pin GPIO port number
-// <i> Defines ILI9806 LCD panel reset pin GPIO port number.
-// <i> Default: 15
-#define RTE_ILI9806E_PANEL_RESET_GPIO_PORT               BOARD_LCD_RESET_GPIO_PORT
-
-// <o> ILI9806 LCD panel back light pin number
-// <i> Defines ILI9806 LCD panel back light pin number.
-// <i> Default: 1
-#define RTE_ILI9806E_PANEL_BL_LED_PIN_NO                 BOARD_LCD_BACKLIGHT_GPIO_PIN
-
-// <o> ILI9806 LCD panel back light pin GPIO port number
-// <i> Defines ILI9806 LCD panel back light pin GPIO port number.
-// <i> Default: 6
-#define RTE_ILI9806E_PANEL_BL_LED_GPIO_PORT              BOARD_LCD_BACKLIGHT_GPIO_PORT
+#define RTE_ILI9806E_PANEL_DSI_VC_ID        0
 
 // <e> MIPI_DSI (ILI9806E_PANEL_E43RB_FW405 | ILI9806E_PANEL_E43GB_MW405) [Driver_ILI9806E_PANEL]
 #if (RTE_ILI9806E_PANEL_E43RB_FW405_EN || RTE_ILI9806E_PANEL_E43GB_MW405_EN)
@@ -1751,26 +1558,6 @@
 // <i> Defines Virtual Channel ID
 // <i> Default: 0
 #define RTE_ILI9488_PANEL_DSI_VC_ID        0
-
-// <o> ILI9488 LCD panel reset pin number
-// <i> Defines ILI9488 LCD panel reset pin number.
-// <i> Default: 5
-#define RTE_ILI9488_PANEL_RESET_PIN_NO     5
-
-// <o> ILI9488 LCD panel reset pin GPIO port number
-// <i> Defines ILI9488 LCD panel reset pin GPIO port number.
-// <i> Default: 15
-#define RTE_ILI9488_PANEL_RESET_GPIO_PORT  15
-
-// <o> ILI9488 LCD panel back light pin number
-// <i> Defines ILI9488 LCD panel back light pin number.
-// <i> Default: 1
-#define RTE_ILI9488_PANEL_BL_LED_PIN_NO    1
-
-// <o> ILI9488 LCD panel back light pin GPIO port number
-// <i> Defines ILI9488 LCD panel back light pin GPIO port number.
-// <i> Default: 6
-#define RTE_ILI9488_PANEL_BL_LED_GPIO_PORT 6
 
 // <o> Panel hsync time in pixels
 // <i> Defines ILI9488 LCD panel hsync time in pixels.

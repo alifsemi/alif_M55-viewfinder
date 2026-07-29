@@ -14,7 +14,7 @@ solution:
     - pack: AlifSemiconductor::Ensemble@2.2.0
     - pack: AlifSemiconductor::Dave2DDriver@2.0.2
     - pack: ARM::CMSIS@6.1.0
-    - pack: AlifSemiconductor::AIPL@1.3.3
+    - pack: AlifSemiconductor::AIPL@1.3.5
 
   target-types:
     - type: DevKit-E7-HE

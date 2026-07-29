@@ -7,6 +7,9 @@ project:
         - file: power_management/power_management.c
         - file: camera/camera.c
         - file: camera/isp_calibration.c
+        - file: camera/isp_calibration_mt9m114.c
+        - file: camera/isp_calibration_arx3a0.c
+        - file: camera/isp_calibration_ov5675.c
         - file: logo/alif_logo.c
 
     - group: ImageProcessingLibraryIntegration
@@ -59,10 +62,6 @@ project:
     - component: AlifSemiconductor::Device:SOC Peripherals:MIPI DSI CSI2 DPHY
     - component: AlifSemiconductor::Device:SOC Peripherals:MIPI CSI2
     - component: AlifSemiconductor::Device:SOC Peripherals:MIPI DSI
-
-    - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
-    #- component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
-    #- component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor OV5675
 
     - component: AlifSemiconductor::BSP:External peripherals:ILI9806E LCD panel
 

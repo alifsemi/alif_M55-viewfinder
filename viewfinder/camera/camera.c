@@ -70,15 +70,15 @@ static void isp_buffer_init(void) {
             break;
         }
         buffer_array[i].imageSize = ISP_OUTPUT_TOTAL_SIZE;
-        buffer_array[i].planes[0].dmaPhyAddr = (vsi_dma_t)y_buffer[i];
+        buffer_array[i].planes[0].dmaPhyAddr = (vsi_dma_t)isp_buf[i].y;
 #if ISP_OUTPUT_SIZE_CB
-        buffer_array[i].planes[1].dmaPhyAddr = (vsi_dma_t)cb_buffer[i];
+        buffer_array[i].planes[1].dmaPhyAddr = (vsi_dma_t)isp_buf[i].cb;
 #endif
 #if ISP_OUTPUT_SIZE_CR
-        buffer_array[i].planes[2].dmaPhyAddr = (vsi_dma_t)cr_buffer[i];
+        buffer_array[i].planes[2].dmaPhyAddr = (vsi_dma_t)isp_buf[i].cr;
 #endif
 #if ISP_OUTPUT_SIZE_CBCR
-        buffer_array[i].planes[1].dmaPhyAddr = (vsi_dma_t)cbcr_buffer[i];
+        buffer_array[i].planes[1].dmaPhyAddr = (vsi_dma_t)isp_buf[i].cbcr;
 #endif
     }
 }
@@ -128,7 +128,8 @@ static void camera_callback(uint32_t event) {
 int camera_init(void) {
 #if RTE_ISP
     /* Apply project-local ISP calibration before the ISP is initialized. */
-    isp_apply_calibration();
+    isp_set_user_configuration();
+    isp_param_set_square_crop();
     isp_buffer_init();
 #endif
     int ret = CAMERAdrv->Initialize(camera_callback);
@@ -176,12 +177,14 @@ int camera_init(void) {
             return ret;
         }
     }
-#endif
+#else
     // NOTE: There is automatic gain control implemented for ARX3A0 in ML example repository
     //       https://github.com/alifsemi/alif_ml-embedded-evaluation-kit
 #if defined(RTE_Drivers_CAMERA_SENSOR_ARX3A0)
     CAMERAdrv->Control(CPI_CAMERA_SENSOR_GAIN, 0x10000 * 2.0f);
 #endif
+#endif
+
     printf("CPI camera Initialization Success\r\n");
     return ret;
 }
@@ -216,6 +219,35 @@ int camera_capture(void) {
         printf("\r\n Error: ISP Process Frame End failed.\r\n");
         return ret;
     }
+
+#if RTE_ISP_AE_MODULE
+    /* Apply the AE-computed exposure and gain back to the sensor. Without this
+     * the ISP AE loop computes new values every frame but they are never
+     * written to the sensor, so auto exposure never converges. */
+    static uint32_t prev_int_line = 0;
+    static uint32_t prev_gain_q16_16 = 0;
+    struct isp_ae_cached_values ae = {0};
+    ret = CAMERAdrv->Control(ISP_CONTROL_AE_GET_CACHED, (uint32_t)&ae);
+    if (ret == ARM_DRIVER_OK && ae.int_line != 0) {
+        uint32_t gain_q16_16 = (ae.again * ae.dgain) / 16;
+        if (ae.int_line != prev_int_line || gain_q16_16 != prev_gain_q16_16) {
+            printf("AE: int_line=%d, again=%d, dgain=%d, gain_q16_16=%d\r\n",
+                    ae.int_line, ae.again, ae.dgain, gain_q16_16);
+            ret = CAMERAdrv->Control(CPI_ISP_CAMERA_SENSOR_EXPOSURE, ae.int_line);
+            if (ret != ARM_DRIVER_OK) {
+                printf("\r\n Error: Setting camera exposure failed: %d\r\n", ret);
+                return ret;
+            }
+            ret = CAMERAdrv->Control(CPI_ISP_CAMERA_SENSOR_GAIN, gain_q16_16);
+            if (ret != ARM_DRIVER_OK) {
+                printf("\r\n Error: Setting camera gain failed: %d\r\n", ret);
+                return ret;
+            }
+            prev_int_line = ae.int_line;
+            prev_gain_q16_16 = gain_q16_16;
+        }
+    }
+#endif /* RTE_ISP_AE_MODULE */
 #endif
 
     if (g_cam_cb_events & CAM_CB_EVENT_ERROR) {
@@ -256,9 +288,17 @@ aipl_image_t camera_post_capture_process(bool *buffer_is_dynamic)
     *buffer_is_dynamic = true;
 
 #if RTE_ISP
-    aipl_ret = aipl_color_convert_yuy2_to_rgb565(y_buffer[0], cam_image.data,
+#if RTE_ISP_OUTPUT_FORMAT == 39 // RGB888 planar
+    aipl_ret = aipl_color_convert_rgb888p_to_rgb565(isp_buf[0].y, cam_image.data,
+                                                    cam_image.pitch, cam_image.width,
+                                                    cam_image.height);
+#elif RTE_ISP_OUTPUT_FORMAT == 32 // YUV422 packed
+    aipl_ret = aipl_color_convert_yuy2_to_rgb565(isp_buf[0].y, cam_image.data,
                                                  cam_image.pitch, cam_image.width,
                                                  cam_image.height);
+#else
+#error "Chosen ISP output format not supported in this example"
+#endif
     if (aipl_ret != AIPL_ERR_OK)
     {
         printf("\r\nError: Camera format conversion from yuy2 to rgb565 failed (%s)\r\n",

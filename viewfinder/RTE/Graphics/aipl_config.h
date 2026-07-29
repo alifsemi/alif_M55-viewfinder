@@ -128,6 +128,7 @@ extern "C" {
 #define AIPL_CONVERT_NV21           TO_ARGB8888
 #define AIPL_CONVERT_YUY2           TO_RGB565
 #define AIPL_CONVERT_UYVY           TO_ARGB8888
+#define AIPL_CONVERT_RGB888P        TO_RGB888 | TO_RGB565
 
 #ifdef __cplusplus
 } /*extern "C"*/
