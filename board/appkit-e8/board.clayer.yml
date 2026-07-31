@@ -2,6 +2,10 @@
 layer:
   type: Board
   components:
+    #- component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
+    #- component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
+    - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor OV5675
+
     - component: AlifSemiconductor::BSP:Board Config
     - component: AlifSemiconductor::BSP:AppKit Config&AppKit-E8-AIML
     - component: AlifSemiconductor::Device:SOC Peripherals:ISP

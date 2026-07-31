@@ -89,28 +89,27 @@ enum {
 #elif (RTE_ISP_OUTPUT_FORMAT == 39) // RGB888 planar output from ISP
 #define ISP_OUTPUT_SIZE_Y  (ISP_OUTPUT_X * ISP_OUTPUT_Y)
 #define ISP_AUX_BUFFER_TYPE  ISP_PLANAR
+#define ISP_PITCH          ISP_OUTPUT_X
 #define ISP_OUTPUT_SIZE_CB  (ISP_OUTPUT_X * ISP_OUTPUT_Y)
 #define ISP_OUTPUT_SIZE_CR  (ISP_OUTPUT_X * ISP_OUTPUT_Y)
 #define ISP_OUTPUT_TOTAL_SIZE  (ISP_OUTPUT_SIZE_Y + ISP_OUTPUT_SIZE_CB + ISP_OUTPUT_SIZE_CR)
 #endif
 
 #if (ISP_OUTPUT_SIZE_Y)
-uint8_t y_buffer[RTE_ISP_BUFFER_COUNT][ISP_OUTPUT_SIZE_Y] \
-    __attribute__((section(".bss.lcd_frame_buf"), aligned(32)));
+struct isp_buffers {
+    uint8_t y[ISP_OUTPUT_SIZE_Y];
+#if defined(ISP_OUTPUT_SIZE_CB) && (ISP_OUTPUT_SIZE_CB)
+    uint8_t cb[ISP_OUTPUT_SIZE_CB];
 #endif
-
-#if (ISP_OUTPUT_SIZE_CB)
-uint8_t cb_buffer[RTE_ISP_BUFFER_COUNT][ISP_OUTPUT_SIZE_CB] \
-    __attribute__((section(".bss.lcd_frame_buf"), aligned(32)));
+#if defined(ISP_OUTPUT_SIZE_CR) && (ISP_OUTPUT_SIZE_CR)
+    uint8_t cr[ISP_OUTPUT_SIZE_CR];
 #endif
-
-#if (ISP_OUTPUT_SIZE_CR)
-uint8_t cr_buffer[RTE_ISP_BUFFER_COUNT][ISP_OUTPUT_SIZE_CR] \
-    __attribute__((section(".bss.lcd_frame_buf"), aligned(32)));
+#if defined(ISP_OUTPUT_SIZE_CBCR) && (ISP_OUTPUT_SIZE_CBCR)
+    uint8_t cbcr[ISP_OUTPUT_SIZE_CBCR];
 #endif
+} __attribute__((packed));
 
-#if (ISP_OUTPUT_SIZE_CBCR)
-uint8_t cbcr_buffer[RTE_ISP_BUFFER_COUNT][ISP_OUTPUT_SIZE_CBCR] \
+struct isp_buffers isp_buf[RTE_ISP_BUFFER_COUNT]
     __attribute__((section(".bss.lcd_frame_buf"), aligned(32)));
 #endif
 

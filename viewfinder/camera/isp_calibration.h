@@ -10,10 +10,27 @@
 #ifndef ISP_CALIBRATION_H_
 #define ISP_CALIBRATION_H_
 
-/* Applies the project-local, editable ISP calibration (see isp_calibration.c)
- * on top of the pack default. Must be called before the ISP is initialized
- * (i.e. before the camera controller is configured). No-op unless RTE_ISP is
- * enabled with the MT9M114 sensor. */
-void isp_apply_calibration(void);
+#include "RTE_Components.h"
+#include "RTE_Device.h"
+
+#if RTE_ISP == 1
+#include "isp_param.h"
+
+/* Editable, project-local ISP calibration for the selected sensor. Defined
+ * (with external linkage) in the sensor-specific isp_calibration_<sensor>.c
+ * that matches the RTE camera sensor component. */
+extern const ISP_CALIB_DATA_S calibration_data_user;
+#endif /* RTE_ISP */
+
+void isp_set_user_configuration(void);
+
+/* Set the ISP output crop rectangle */
+void isp_param_set_crop(vsi_u32_t top, vsi_u32_t left, vsi_u32_t width, vsi_u32_t height);
+
+/* Set a centred square crop using the maximum square that fits the sensor. (helpful for keeping the aspect ratio) */
+void isp_param_set_square_crop(void);
+
+/* Set the ISP channel output dimensions (rescaling) the cropped area */
+void isp_param_set_output_dimensions(vsi_u32_t width, vsi_u32_t height);
 
 #endif /* ISP_CALIBRATION_H_ */

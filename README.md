@@ -8,11 +8,11 @@ Please choose the target using CMSIS Solution
 **NOTE:** On DevKit-E8 the camera module should be connected to the backside of the board (connector J16)
 
 Camera modules supported by the demo application are:
-- MT9M114 **This is the default camera**
-- OV5675 **Latest introduced camera module (default in near future)**
+- MT9M114 **This is the default camera for DevKit-E7**
+- OV5675 **Latest introduced camera module (default for DevKit-E8 and AppKit-E8)**
 - ARX3A0 **This camera module has also been shipped with Alif Semiconductor kits**
 
-You can change the camera module in the project by using the CMSIS Solution user interface or by commenting|uncommenting camera component in `viewfinder.cproject.yaml`
+You can change the camera module in the project by using the CMSIS Solution GUI or by commenting|uncommenting camera component in corresponding board config file `board.clayer.yml`
 ```
     - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
     # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
