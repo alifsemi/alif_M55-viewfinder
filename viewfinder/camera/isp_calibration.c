@@ -98,25 +98,6 @@ void isp_set_user_configuration(void)
     port_attr = port_attr_user;
 }
 
-void isp_param_set_crop(vsi_u32_t top, vsi_u32_t left, vsi_u32_t width, vsi_u32_t height)
-{
-    /* RECT_S field naming is swapped in the libisp:
-     * RECT_S.top  -> ISP_OUT_H_OFFS (horizontal/left offset)
-     * RECT_S.left -> ISP_OUT_V_OFFS (vertical/top offset)
-     * We swap here so our API uses conventional image coordinates. */
-    port_attr.outFormRect.top    = left;
-    port_attr.outFormRect.left   = top;
-    port_attr.outFormRect.width  = width;
-    port_attr.outFormRect.height = height;
-
-    /* Set the AE measurement block to match the crop region */
-    calibration_data.modules.aem.blockWin.hOffs = 0;
-    calibration_data.modules.aem.blockWin.vOffs = 0;
-    calibration_data.modules.aem.blockWin.hSize = width;
-    calibration_data.modules.aem.blockWin.vSize = height;
-}
-
-
 void isp_param_set_square_crop(void)
 {
     vsi_u32_t side = CAMERA_SENSOR_FRAME_WIDTH < CAMERA_SENSOR_FRAME_HEIGHT
@@ -125,12 +106,12 @@ void isp_param_set_square_crop(void)
     vsi_u32_t top  = (CAMERA_SENSOR_FRAME_HEIGHT - side) / 2;
     vsi_u32_t left = (CAMERA_SENSOR_FRAME_WIDTH - side) / 2;
     isp_param_set_crop(top, left, side, side);
-}
 
-void isp_param_set_output_dimensions(vsi_u32_t width, vsi_u32_t height)
-{
-    chan_attr.chnFormat.width  = width;
-    chan_attr.chnFormat.height = height;
+    /* Set the AE measurement block to match the crop region */
+    calibration_data.modules.aem.blockWin.hOffs = 0;
+    calibration_data.modules.aem.blockWin.vOffs = 0;
+    calibration_data.modules.aem.blockWin.hSize = side;
+    calibration_data.modules.aem.blockWin.vSize = side;
 }
 
 #endif  // RTE_ISP

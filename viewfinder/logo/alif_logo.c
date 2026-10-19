@@ -366,7 +366,7 @@ static const uint8_t Alif240_data[] = {
 };
 
 static aipl_image_t Alif240_image = {
-    .data = Alif240_data,
+    .data = (void *)Alif240_data,
     .pitch = alif_logo_width,
     .width = alif_logo_width,
     .height = alif_logo_height,

@@ -24,13 +24,7 @@ extern const ISP_CALIB_DATA_S calibration_data_user;
 
 void isp_set_user_configuration(void);
 
-/* Set the ISP output crop rectangle */
-void isp_param_set_crop(vsi_u32_t top, vsi_u32_t left, vsi_u32_t width, vsi_u32_t height);
-
 /* Set a centred square crop using the maximum square that fits the sensor. (helpful for keeping the aspect ratio) */
 void isp_param_set_square_crop(void);
-
-/* Set the ISP channel output dimensions (rescaling) the cropped area */
-void isp_param_set_output_dimensions(vsi_u32_t width, vsi_u32_t height);
 
 #endif /* ISP_CALIBRATION_H_ */
