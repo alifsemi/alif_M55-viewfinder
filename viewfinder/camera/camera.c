@@ -177,6 +177,25 @@ int camera_init(void) {
             return ret;
         }
     }
+#if RTE_ISP_EXPM_MODULE
+    /* The driver (Ensemble 2.2.1) offsets the AE measurement window by the crop
+     * offset, but the measurement runs on the already-cropped image, so the
+     * window ends up outside the frame. Reset the offsets to zero. */
+    {
+        static struct isp_params meas_params;
+        meas_params.valid_mask = ISP_PARAM_MASK_AEM;
+        ret = CAMERAdrv->Control(ISP_CONTROL_GET_PARAM, (uint32_t)&meas_params);
+        if (ret == ARM_DRIVER_OK) {
+            meas_params.aem.h_offs = 0;
+            meas_params.aem.v_offs = 0;
+            ret = CAMERAdrv->Control(ISP_CONTROL_SET_PARAM, (uint32_t)&meas_params);
+        }
+        if (ret != ARM_DRIVER_OK) {
+            printf("\r\n Error: ISP measurement window configuration failed.\r\n");
+            return ret;
+        }
+    }
+#endif
 #else
     // NOTE: There is automatic gain control implemented for ARX3A0 in ML example repository
     //       https://github.com/alifsemi/alif_ml-embedded-evaluation-kit

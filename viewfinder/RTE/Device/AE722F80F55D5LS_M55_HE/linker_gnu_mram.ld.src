@@ -173,6 +173,7 @@ SECTIONS
     * (.bss.video_mem_heap)                /* Heap buffer for video memory */
     * (.bss.camera_rgb565_frame_buf)       /* Camera RGB565 frame buffer */
     * (.bss.lcd_frame_buf1)                /* LCD frame buffer. */
+    * (.data.audio_samples)                /* Audio sample data */
   } > SRAM0
 
   .bss.at_sram1 (NOLOAD) :
